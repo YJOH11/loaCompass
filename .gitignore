@@ -1,5 +1,30 @@
+# 프론트엔드 관련 (Vite + npm)
 node_modules/
 dist/
 .env
-/backend/target/
+.env.*  # 환경별 .env 파일도 무시
+
+# 백엔드 관련 (Spring Boot + Gradle)
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar  # Gradle Wrapper 유지
+!/gradlew
+!/gradlew.bat
+
+# 로그
 *.log
+
+# IDE 관련 (공통)
+*.iml
+.idea/
+.vscode/
+
+# OS 관련
+.DS_Store
+Thumbs.db
+
+# 특정 백엔드 하위 폴더
+/backend/build/
+backend/.gradle/
+backend/target/
+g
