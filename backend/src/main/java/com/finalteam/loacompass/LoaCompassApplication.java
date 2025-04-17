@@ -1,11 +1,11 @@
-package com.loacompass.loaspec;
+package com.finalteam.loacompass;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class LoaspecApplication {
+public class LoaCompassApplication {
     public static void main(String[] args) {
-        SpringApplication.run(LoaspecApplication.class, args);
+        SpringApplication.run(LoaCompassApplication.class, args);
     }
 }
