@@ -8,24 +8,48 @@ import java.util.Map;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-
 public class CharacterProfileDto {
+
+    @JsonProperty("CharacterName")
     private String characterName;
+
+    @JsonProperty("CharacterClassName")
     private String characterClassName;
+
+    @JsonProperty("CharacterLevel")
     private int characterLevel;
+
+    @JsonProperty("ItemAvgLevel")
     private String itemAvgLevel;
+
+    @JsonProperty("ItemMaxLevel")
     private String itemMaxLevel;
+
+    @JsonProperty("ServerName")
     private String serverName;
+
+    @JsonProperty("CharacterImage")
     private String characterImage;
 
+    @JsonProperty("ExpeditionLevel")
     private int expeditionLevel;
+
+    @JsonProperty("GuildName")
     private String guildName;
+
+    @JsonProperty("GuildMemberGrade")
     private String guildMemberGrade;
+
+    @JsonProperty("Title")
     private String title;
+
+    @JsonProperty("PvpGradeName")
     private String pvpGradeName;
+
+    @JsonProperty("TownLevel")
     private int townLevel;
+
+    @JsonProperty("TownName")
     private String townName;
 
-    private Map<String, Integer> combatStats;  // 치명, 특화 등
-    private Map<String, Integer> socialStats;  // 지성, 담력 등
 }
