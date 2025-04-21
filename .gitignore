@@ -27,4 +27,6 @@ Thumbs.db
 /backend/build/
 backend/.gradle/
 backend/target/
-g
+
+# API Key 보관
+application-local.yml
