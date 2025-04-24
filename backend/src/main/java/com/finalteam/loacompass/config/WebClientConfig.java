@@ -31,11 +31,4 @@ public class WebClientConfig {
                         .build())
                 .build();
     }
-
-    @PostConstruct
-    public void debug() {
-        System.out.println("🔍 WebClientConfig 확인:");
-        System.out.println("baseUrl = " + baseUrl);
-        System.out.println("apiKey = " + apiKey); // null 또는 빈 값이면 문제!
-    }
 }
