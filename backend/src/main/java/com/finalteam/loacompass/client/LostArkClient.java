@@ -42,13 +42,14 @@ public class LostArkClient {
 
         List<EquipmentDto> equipmentList = response.getArmoryEquipment();
 
+        int totalTranscendence = 0;
+
         for (EquipmentDto dto : equipmentList) {
             // 장비 유형 로그 확인용
             log.info("==== [{}] {} ====", dto.getType(), dto.getName());
 
             if (isGear(dto.getType())) {
                 TooltipParser.populateEquipmentDetails(dto); // 강화/초월/엘릭서 추출
-
             } else {
                 log.info("※ [{}]은(는) 장비 외 항목이므로 파싱 생략", dto.getType());
             }
@@ -56,6 +57,7 @@ public class LostArkClient {
 
         return equipmentList;
     }
+
 
 }
 

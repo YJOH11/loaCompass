@@ -19,11 +19,19 @@ public class CharacterService {
         CharacterProfileDto profile = lostArkClient.getCharacterProfile(nickname);
         List<EquipmentDto> equipmentList = lostArkClient.getCharacterEquipment(nickname);
 
+        int totalTranscendence = 0;
+        for (EquipmentDto dto : equipmentList) {
+            if (dto.getTranscendencePoint() != null) {
+                totalTranscendence += dto.getTranscendencePoint();
+            }
+        }
+
         CharacterSummaryDto summary = new CharacterSummaryDto();
         summary.setProfile(profile);
         summary.setEquipments(equipmentList);
-
+        summary.setTranscendenceTotal(totalTranscendence); // ← 여기에 설정
 
         return summary;
     }
+
 }

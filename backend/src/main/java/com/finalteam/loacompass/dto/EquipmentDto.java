@@ -28,5 +28,10 @@ public class EquipmentDto {
     private Integer transcendenceLevel;      // 초월 단계
     private String elixirName;               // 엘릭서 이름
     private List<String> elixirEffects;      // 엘릭서 효과
+    private List<String> elixirOptions;  // 옵션 이름만 저장
+    private Integer quality;            // 품질
+    private Integer transcendencePoint;  // 장비별 초월 포인트
+
+
 
 }
