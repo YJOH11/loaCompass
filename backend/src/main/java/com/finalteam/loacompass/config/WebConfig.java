@@ -13,9 +13,9 @@ public class WebConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**") // 모든 요청 허용
-                        .allowedOrigins("http://localhost:5173") // 프론트 주소
-                        .allowedMethods("*") // GET, POST 등 모두 허용
+                registry.addMapping("/**")
+                        .allowedOriginPatterns("http://localhost:5173") // ✅ allowedOrigins 말고 allowedOriginPatterns 사용
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // ✅ * 말고 직접 명시
                         .allowCredentials(true);
             }
         };
