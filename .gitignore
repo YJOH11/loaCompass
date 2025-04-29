@@ -29,4 +29,4 @@ backend/.gradle/
 backend/target/
 
 # API Key 보관
-application-local.yml
+/backend/src/main/resources/application-local.yml

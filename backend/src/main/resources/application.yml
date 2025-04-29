@@ -7,6 +7,8 @@ spring:
     username: bit1234
     password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
+    config:
+      import: application-local.yml
 
 mybatis:
   mapper-locations: classpath:mapper/**/*.xml
@@ -14,4 +16,5 @@ mybatis:
 
 lostark:
   api:
-    key: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6IktYMk40TkRDSTJ5NTA5NWpjTWk5TllqY2lyZyIsImtpZCI6IktYMk40TkRDSTJ5NTA5NWpjTWk5TllqY2lyZyJ9.eyJpc3MiOiJodHRwczovL2x1ZHkuZ2FtZS5vbnN0b3ZlLmNvbSIsImF1ZCI6Imh0dHBzOi8vbHVkeS5nYW1lLm9uc3RvdmUuY29tL3Jlc291cmNlcyIsImNsaWVudF9pZCI6IjEwMDAwMDAwMDA1NzU0MTMifQ.SZAuxOz2pTuL-r8H8j408R4D1MCdO_q9qoMtjiY_4xpmPj3ix5GB77eed7pjoIFpy9fDdxGHwcZONbF4Tf_Rnofs11H3e9k3zkBGeTyqg7v2AkIQ5d3aH_VNMamqcmbzPIo9sr0Exyu4cvkLucchton0dqyw2XvW9OsSVwywTYcGPC-dh0zEPYbzFi6J9F8WqhFcy8nfNvPZzW7oooQ-DKCBXDxsl-X-L_KjodBm-uRZz1l7RaAsuvtyJj8tZBtjon_wg98Q7g-wSk28sXMFr725G9H1u4hGmGZc-u_uPEcToND_We12b9F1VE7zggXsqtgJnaknQ8NixgH0-ZH-Rw'
+    base-url: https://api-lostark.game.onstove.com
+    key: dummy-key # <- 가짜 키
