@@ -22,7 +22,7 @@ export default function SassagaeCrawler() {
 
         try {
             const response = await axios.get(
-                `http://localhost:8080/api/sassagae/search`, {
+                `http://localhost:5000/api/search`, {
                     params: {
                         keyword,
                         searchType,
