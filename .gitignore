@@ -30,3 +30,20 @@ backend/target/
 
 # API Key 보관
 /backend/src/main/resources/application-local.yml
+
+# ── Python ───────────────────────────────────────────────────
+# 컴파일된 바이트코드
+__pycache__/
+*.py[cod]
+*$py.class
+
+# 가상환경
+venv/
+ENV/
+env/
+.venv/
+
+# 패키지 분배 파일
+*.egg-info/
+dist/
+build/
