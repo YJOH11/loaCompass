@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from '../pages/Home';
 import About from '../pages/About';
 import NotFound from '../pages/NotFound';
+import CharacterSearch from '../pages/CharacterSearch';
 
 const AppRouter = () => {
     return (
@@ -12,6 +13,7 @@ const AppRouter = () => {
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/about" element={<About />} />
+                <Route path="/user" element={<CharacterSearch />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
         </Router>
