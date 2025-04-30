@@ -51,12 +51,6 @@ export default function CharacterSearch() {
                 </button>
             </div>
 
-            <button
-                onClick={goToCrawlerPage}
-                className="mb-8 p-2 px-4 rounded-lg bg-green-600 hover:bg-green-700"
-            >
-                사사게 검색기
-            </button>
 
             {hasSearched && (
                 characterData ? (
