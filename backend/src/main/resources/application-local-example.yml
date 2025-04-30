@@ -1,0 +1,29 @@
+# 📌 이 파일은 예시 파일입니다. application-local.yml로 복사해 사용하세요.
+# ⚠️ application-local.yml은 Git에 추가하지 마세요 (API 키 보안).
+# ✅ 이 파일은 Git에 올라가도 괜찮습니다 (실제 키가 없음).
+
+# 서버 설정
+server:
+  port: 8080  # 개발용 포트
+
+# 데이터베이스 설정
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/loacompass  # 로컬 DB 주소
+    username: bit1234                   # 본인 DB 아이디
+    password: 1234                 # 본인 DB 비밀번호
+    driver-class-name: com.mysql.cj.jdbc.Driver   # MySQL 드라이버
+    profiles:
+      active: local
+
+
+# MyBatis 설정
+mybatis:
+  mapper-locations: classpath:mapper/**/*.xml     # 매퍼 파일 경로
+  type-aliases-package: com.finalteam.loacompass.entity  # 엔티티 패키지 위치
+
+# 로스트아크 API 설정
+lostark:
+  api:
+    base-url: https://api-lostark.game.onstove.com  # 기본 제공된 LostArk API 주소
+    key: dummy-key  # 🔥 여기에 본인의 LostArk API 키를 입력하세요
