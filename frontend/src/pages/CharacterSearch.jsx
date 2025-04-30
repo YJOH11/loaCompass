@@ -6,7 +6,6 @@ export default function CharacterSearch() {
     const [characterName, setCharacterName] = useState("");
     const [characterData, setCharacterData] = useState(null);
     const [hasSearched, setHasSearched] = useState(false);
-    const navigate = useNavigate();
 
     const searchCharacter = async () => {
         setHasSearched(true);
@@ -27,9 +26,6 @@ export default function CharacterSearch() {
         }
     };
 
-    const goToCrawlerPage = () => {
-        navigate("/sassagae-crawler");
-    };
 
     return (
         <div className="min-h-screen bg-gray-900 text-white p-8">
