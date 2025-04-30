@@ -1,10 +1,12 @@
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function CharacterSearch() {
     const [characterName, setCharacterName] = useState("");
     const [characterData, setCharacterData] = useState(null);
     const [hasSearched, setHasSearched] = useState(false);
+    const navigate = useNavigate();
 
     const searchCharacter = async () => {
         setHasSearched(true);
@@ -25,11 +27,15 @@ export default function CharacterSearch() {
         }
     };
 
+    const goToCrawlerPage = () => {
+        navigate("/sassagae-crawler");
+    };
+
     return (
         <div className="min-h-screen bg-gray-900 text-white p-8">
             <h1 className="text-3xl font-bold mb-8">유저 검색</h1>
 
-            <div className="flex mb-8">
+            <div className="flex mb-4">
                 <input
                     type="text"
                     placeholder="유저 이름을 입력하세요"
@@ -44,6 +50,13 @@ export default function CharacterSearch() {
                     검색
                 </button>
             </div>
+
+            <button
+                onClick={goToCrawlerPage}
+                className="mb-8 p-2 px-4 rounded-lg bg-green-600 hover:bg-green-700"
+            >
+                사사게 검색기
+            </button>
 
             {hasSearched && (
                 characterData ? (
