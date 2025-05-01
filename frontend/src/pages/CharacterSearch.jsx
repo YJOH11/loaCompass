@@ -1,52 +1,38 @@
-import { useState } from "react";
+// src/pages/CharacterSearch.jsx
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
 export default function CharacterSearch() {
-    const [characterName, setCharacterName] = useState("");
+    const { name: characterName } = useParams();
     const [characterData, setCharacterData] = useState(null);
     const [hasSearched, setHasSearched] = useState(false);
 
-    const searchCharacter = async () => {
-        setHasSearched(true);
-        try {
-            const response = await axios.get(
-                `http://localhost:8080/api/character/${characterName}`
-            );
-            console.log(response.data);
-
-            if (response.data && response.data.profile) {
-                setCharacterData(response.data);
-            } else {
+    useEffect(() => {
+        const fetchCharacter = async () => {
+            try {
+                const response = await axios.get(
+                    `http://localhost:8080/api/character/${characterName}`
+                );
+                if (response.data && response.data.profile) {
+                    setCharacterData(response.data);
+                } else {
+                    setCharacterData(null);
+                }
+            } catch (error) {
+                console.error(error);
                 setCharacterData(null);
             }
-        } catch (error) {
-            console.error(error);
-            setCharacterData(null);
-        }
-    };
+            setHasSearched(true);
+        };
 
+        if (characterName) fetchCharacter();
+    }, [characterName]);
 
     return (
         <div className="min-h-screen bg-gray-900 text-white p-8">
-            <h1 className="text-3xl font-bold mb-8">유저 검색</h1>
-
-            <div className="flex mb-4">
-                <input
-                    type="text"
-                    placeholder="유저 이름을 입력하세요"
-                    value={characterName}
-                    onChange={(e) => setCharacterName(e.target.value)}
-                    className="flex-1 p-2 rounded-l-lg bg-gray-800 border border-gray-600 focus:outline-none"
-                />
-                <button
-                    onClick={searchCharacter}
-                    className="p-2 px-4 rounded-r-lg bg-blue-600 hover:bg-blue-700"
-                >
-                    검색
-                </button>
-            </div>
-
+            <h1 className="text-3xl font-bold mb-8">
+                {characterData?.profile?.CharacterName} 님의 정보</h1>
 
             {hasSearched && (
                 characterData ? (
