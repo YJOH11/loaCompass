@@ -51,6 +51,11 @@ export default function CharacterSearch() {
                                 <li>
                                     <span className="font-semibold">레벨:</span> {characterData.profile?.CharacterLevel}
                                 </li>
+                                <li>
+                                    <span className="font-semibold">아이템 레벨:</span> {characterData.profile?.ItemAvgLevel}
+                                </li>
+                                <img src={characterData.profile?.CharacterImage} alt="캐릭터 이미지" 
+                                className="w-128 h-128 rounded border border-gray-600" />
                             </ul>
                         </div>
 
@@ -59,16 +64,16 @@ export default function CharacterSearch() {
                                 characterData.equipments.map((item, idx) => (
                                     item && (
                                         <div key={idx} className="bg-gray-700 rounded p-4 mb-2">
-                                            {item.icon && (
+                                            {item.Icon && (
                                                 <img
-                                                    src={item.icon}
+                                                    src={item.Icon}
                                                     alt={item.name || "장비"}
                                                     className="w-12 h-12 mb-2"
                                                 />
                                             )}
-                                            <div className="font-semibold">{item.name || "이름 없음"}</div>
+                                            <div className="font-semibold">{item.Name || "이름 없음"}</div>
                                             <div className="text-sm text-gray-300">
-                                                {item.type || "타입 없음"} | {item.grade || "등급 없음"}
+                                                {item.Type || "타입 없음"} | {item.Grade || "등급 없음"}
                                             </div>
                                             <div className="text-sm">
                                                 +{item.refinementLevel ?? 0} | 품질: {item.quality ?? 0}
