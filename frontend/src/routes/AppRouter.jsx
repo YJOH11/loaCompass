@@ -7,13 +7,16 @@ import About from '../pages/About';
 import NotFound from '../pages/NotFound';
 import CharacterSearch from '../pages/CharacterSearch'
 import SassagaeCrawler from '../pages/SassagaeCrawler'
+import Navbar from "../components/Navbar.jsx";
 
 const AppRouter = () => {
     return (
         <Router>
+            <Navbar />
             <Routes>
+                <Route path="/character/:name" element={<CharacterSearch />} />
                 <Route path="/" element={<Home />} />
-                <Route path="/user" element={<CharacterSearch />} />
+               {/* <Route path="/user" element={<CharacterSearch />} />*/}
                 <Route path="/sassagae" element={<SassagaeCrawler />} />
                 <Route path="/about" element={<About />} />
                 <Route path="*" element={<NotFound />} />
