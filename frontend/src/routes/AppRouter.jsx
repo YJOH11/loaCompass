@@ -7,6 +7,7 @@ import About from '../pages/About';
 import NotFound from '../pages/NotFound';
 import CharacterSearch from '../pages/CharacterSearch'
 import SassagaeCrawler from '../pages/SassagaeCrawler'
+import CharacterDetailPage from '../pages/CharacterDetailPage'
 
 const AppRouter = () => {
     return (
@@ -17,6 +18,8 @@ const AppRouter = () => {
                 <Route path="/sassagae" element={<SassagaeCrawler />} />
                 <Route path="/about" element={<About />} />
                 <Route path="*" element={<NotFound />} />
+                <Route path="/character/:name" element={<CharacterDetailPage />} />
+
             </Routes>
         </Router>
     );
