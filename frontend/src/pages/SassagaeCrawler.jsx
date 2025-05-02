@@ -42,9 +42,6 @@ export default function SassagaeCrawler() {
         }
     };
 
-    const goBack = () => {
-        navigate(-1);
-    };
 
     // 서버명 추출 (제목 내 대괄호 안의 텍스트)
     const extractServer = (title) => {
@@ -55,13 +52,8 @@ export default function SassagaeCrawler() {
     return (
         <div className="min-h-screen bg-gray-900 text-white p-8">
             <div className="flex items-center mb-8">
-                <button 
-                    onClick={goBack}
-                    className="mr-4 p-2 rounded-lg bg-gray-700 hover:bg-gray-600"
-                >
-                    &larr; 뒤로
-                </button>
-                <h1 className="text-3xl font-bold">사사게 검색기</h1>
+
+                <h1 className="text-3xl font-bold">사사게 검색</h1>
             </div>
 
             <div className="bg-gray-800 rounded-lg p-6 mb-8">
