@@ -2,6 +2,7 @@ package com.finalteam.loacompass.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.finalteam.loacompass.dto.ElixirOptionDto;
 import com.finalteam.loacompass.dto.EquipmentDto;
 
 import java.util.ArrayList;
@@ -12,7 +13,11 @@ import java.util.regex.Pattern;
 public class TooltipParser {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
-
+    public static class ElixirOption {
+        private String name;
+        private int level;
+        // getters, setters, constructor 등
+    }
     public static void populateEquipmentDetails(EquipmentDto dto) {
         try {
             String rawTooltip = dto.getTooltip();
@@ -63,27 +68,35 @@ public class TooltipParser {
                 }
             }
 
-            // 엘릭서 이름
-            List<String> elixirOptions = new ArrayList<>();
 
-            JsonNode contentGroup = tooltipJson.path("Element_010").path("value")
+            // 엘릭서 이름
+            List<ElixirOptionDto> elixirOptions = new ArrayList<>();
+
+
+            JsonNode optionGroup = tooltipJson.path("Element_010").path("value")
                     .path("Element_000").path("contentStr");
 
-            if (contentGroup != null && contentGroup.isObject()) {
-                contentGroup.fields().forEachRemaining(entry -> {
+            if (optionGroup != null && optionGroup.isObject()) {
+                optionGroup.fields().forEachRemaining(entry -> {
                     JsonNode content = entry.getValue().path("contentStr");
                     if (content.isTextual()) {
-                        String text = content.asText().replaceAll("<.*?>", "").trim(); // HTML 제거
-                        // 예: "[투구] 선각자 (질서) Lv.5 아군 공격력 강화 효과 +4%"
-                        String[] parts = text.split("Lv\\."); // "Lv." 기준으로 앞부분 추출
-                        if (parts.length > 0) {
-                            String effectName = parts[0].replaceAll("\\[.*?\\]", "").trim(); // [투구] 제거
-                            elixirOptions.add(effectName);
+                        String text = content.asText().replaceAll("<.*?>", "").trim();
+                        // 예: "[공용] 힘 Lv.3"
+                        Matcher matcher = Pattern.compile("]\\s*(.*?)\\s*Lv\\.(\\d+)").matcher(text);
+                        if (matcher.find()) {
+                            String name = matcher.group(1).trim();
+                            int level = Integer.parseInt(matcher.group(2).trim());
+                            ElixirOptionDto opt = new ElixirOptionDto();
+                            opt.setName(name);
+                            opt.setLevel(level);
+                            elixirOptions.add(opt);
                         }
                     }
                 });
                 dto.setElixirOptions(elixirOptions);
             }
+
+
 
             // 엘릭서 효과
             JsonNode elixirEffectGroup = tooltipJson.path("Element_011").path("value")
