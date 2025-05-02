@@ -17,4 +17,9 @@ mybatis:
 lostark:
   api:
     base-url: https://developer-lostark.game.onstove.com
-    key: ${LOSTARK_API_KEY}
+    key:
+
+openai:
+  api:
+    key: 
+    base-url: https://api.openai.com/v1/chat/completions

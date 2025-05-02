@@ -1,12 +1,13 @@
 // src/pages/CharacterSearch.jsx
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export default function CharacterSearch() {
     const { name: characterName } = useParams();
     const [characterData, setCharacterData] = useState(null);
     const [hasSearched, setHasSearched] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchCharacter = async () => {
@@ -29,10 +30,33 @@ export default function CharacterSearch() {
         if (characterName) fetchCharacter();
     }, [characterName]);
 
+    const goToMbtiJob = () => {
+        navigate('/mbti-job');
+    };
+
+    const goToSassagae = () => {
+        navigate('/sassagae');
+    };
+
     return (
         <div className="min-h-screen bg-gray-900 text-white p-8">
-            <h1 className="text-3xl font-bold mb-8">
-                {characterData?.profile?.CharacterName} 님의 정보</h1>
+            <div className="flex justify-between items-center mb-8">
+                
+                <div className="flex gap-4">
+                    <button 
+                        onClick={goToSassagae}
+                        className="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded shadow-md transition duration-200"
+                    >
+                        사사게 검색기
+                    </button>
+                    <button 
+                        onClick={goToMbtiJob}
+                        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded shadow-md transition duration-200"
+                    >
+                        MBTI 직업 추천
+                    </button>
+                </div>
+            </div>
 
             {hasSearched && (
                 characterData ? (
