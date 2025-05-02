@@ -27,7 +27,7 @@ public class UpdateController {
 
             Document doc = Jsoup.connect(url)
                     .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36")
-                    .timeout(5000)
+                    .timeout(10000)
                     .get();
 
             Elements items = doc.select("li:has(.list__title)");
