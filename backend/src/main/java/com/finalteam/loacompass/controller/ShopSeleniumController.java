@@ -62,17 +62,20 @@ public class ShopSeleniumController {
                     String title = el.findElement(By.cssSelector(".item-name")).getText();
                     String image = el.findElement(By.cssSelector(".thumbs img")).getAttribute("src");
 
-                    String currency = "", price = "", original = "";
+                    WebElement button = el.findElement(By.tagName("button"));
+                    String currency = "crystal", price = "", original = "";
 
                     try {
-                        String priceBlock = el.findElement(By.cssSelector(".list__price")).getText();
-                        String[] parts = priceBlock.trim().split("\\s+");
-                        currency = parts.length > 0 ? parts[0] : "";
-                        price = parts.length > 1 ? parts[1] : "";
-                        original = parts.length > 2 ? parts[2] : "";
+                        WebElement priceBox = button.findElement(By.className("list__price"));
+                        currency = priceBox.findElement(By.className("icon")).getText();
+                        price = priceBox.findElement(By.tagName("em")).getText();
+                        try {
+                            original = priceBox.findElement(By.tagName("del")).getText();
+                        } catch (NoSuchElementException ignore) {}
                     } catch (Exception e) {
-                        System.out.println("[" + title + "] 가격 블록 파싱 실패");
+                        System.out.println("[" + title + "] 가격 파싱 실패");
                     }
+
 
 
                     Map<String, String> item = new HashMap<>();

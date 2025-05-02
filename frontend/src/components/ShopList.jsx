@@ -70,7 +70,8 @@ function ShopList() {
                         <div className="font-medium">{item.title}</div>
 
                         <div className="text-sm text-blue-500">
-                            {item.currency} {item.price}
+                            {item.currency === 'crystal' && <span className="mr-1">💎</span>}
+                            {item.price}
                         </div>
 
                         {item.originalPrice && (
@@ -79,6 +80,7 @@ function ShopList() {
                             </div>
                         )}
                     </div>
+
                 ))}
 
             </div>
