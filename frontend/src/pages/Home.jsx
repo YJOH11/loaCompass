@@ -2,14 +2,13 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const Home = () => {
-    const navigate = useNavigate();
-    const [notices, setNotices] = useState([]);
+function Home() {
+    const [updates, setUpdates] = useState([]);
 
     useEffect(() => {
-        axios.get('http://localhost:8080/api/notice')
-            .then(res => setNotices(res.data))
-            .catch(err => console.error(err));
+        axios.get("http://localhost:8080/api/update")
+            .then(res => setUpdates(res.data))
+            .catch(err => console.error("업데이트 불러오기 실패:", err));
     }, []);
 
     return (
@@ -23,23 +22,17 @@ const Home = () => {
                 </button>
             </div>
 
-            <h1 className="text-2xl font-bold mb-4">📢 로스트아크 공지사항</h1>
-            <ul className="space-y-2">
-                {notices.map((notice, index) => (
+            <h2 className="text-2xl font-bold mb-4">🛠 로스트아크 업데이트</h2>
+                {updates.map((item, index) => (
                     <li key={index}>
-                        <a
-                            href={notice.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-blue-500 hover:underline"
-                        >
-                            {notice.title}
+                        <a href={item.link} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                           {item.title}
                         </a>
                     </li>
+
                 ))}
-            </ul>
         </div>
-    );
+    )
 };
 
 export default Home;
