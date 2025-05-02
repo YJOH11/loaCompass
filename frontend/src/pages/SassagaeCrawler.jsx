@@ -12,10 +12,11 @@ export default function SassagaeCrawler() {
     const navigate = useNavigate();
 
     const handleSearch = async () => {
-        if (!keyword.trim()) {
-            setError("검색어를 입력해주세요");
+        if (!keyword || keyword.trim() === '') {
+            alert('검색어를 입력하세요.');
             return;
         }
+
 
         setIsLoading(true);
         setError(null);
