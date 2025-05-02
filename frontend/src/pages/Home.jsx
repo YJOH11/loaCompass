@@ -13,12 +13,12 @@ function Home() {
                 >
                     📰 사사게 게시판 검색
                 </button>
-
+            </div>
 
             <UpdateList />
             <ShopList />
         </div>
-        </div>
+
 
     );
 }
