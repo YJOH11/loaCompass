@@ -1,8 +1,10 @@
 import React from 'react';
 import UpdateList from '../components/UpdateList';
 import ShopList from '../components/ShopList';
+import {useNavigate} from "react-router-dom";
 
 function Home() {
+    const navigate = useNavigate();
     return (
 
         <div className="min-h-screen bg-white text-black dark:bg-black dark:text-white p-6">
@@ -13,12 +15,12 @@ function Home() {
                 >
                     📰 사사게 게시판 검색
                 </button>
-
+            </div>
 
             <UpdateList />
             <ShopList />
         </div>
-        </div>
+
 
     );
 }
