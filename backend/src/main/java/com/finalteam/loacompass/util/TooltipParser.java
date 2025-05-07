@@ -150,11 +150,16 @@ public class TooltipParser {
                 dto.setRefinementEffect(refinementEffect);
             }
 
-            // 아크 패시브 효과
-            JsonNode arcPassiveNode = root.path("Element_007").path("value").path("Element_001");
-            if (!arcPassiveNode.isMissingNode()) {
-                String arcPassive = Jsoup.parse(arcPassiveNode.asText()).text();
-                dto.setArcPassiveEffect(arcPassive);
+            // 아크 패시브 or 추가 효과
+            JsonNode effectNode = root.path("Element_007").path("value").path("Element_001");
+            if (!effectNode.isMissingNode()) {
+                String effectText = Jsoup.parse(effectNode.asText()).text();
+
+                if (dto.getType().equals("목걸이") || dto.getType().equals("귀걸이") || dto.getType().equals("반지")) {
+                    dto.setArcPassiveEffect(effectText);
+                } else {
+                    dto.setAdditionalEffect(effectText); // 추가 효과로 분리
+                }
             }
 
             // 획득처 정보
