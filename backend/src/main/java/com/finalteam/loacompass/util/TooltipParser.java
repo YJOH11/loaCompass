@@ -4,11 +4,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.finalteam.loacompass.dto.ElixirOptionDto;
 import com.finalteam.loacompass.dto.EquipmentDto;
+import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Jsoup;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+@Slf4j
 
 public class TooltipParser {
 
@@ -68,7 +71,6 @@ public class TooltipParser {
                 }
             }
 
-
             // 엘릭서 이름
             List<ElixirOptionDto> elixirOptions = new ArrayList<>();
 
@@ -96,8 +98,6 @@ public class TooltipParser {
                 dto.setElixirOptions(elixirOptions);
             }
 
-
-
             // 엘릭서 효과
             JsonNode elixirEffectGroup = tooltipJson.path("Element_011").path("value")
                     .path("Element_000").path("contentStr");
@@ -113,11 +113,6 @@ public class TooltipParser {
                 dto.setElixirEffects(effects);
             }
 
-            // 품질
-            JsonNode qualityNode = tooltipJson.path("Element_001").path("value").path("qualityValue");
-            if (qualityNode.isInt()) {
-                dto.setQuality(qualityNode.intValue());
-            }
 
             //디버깅용.  콘솔 엄청 기니까 나중에 삭제 ㄱ
             System.out.println("강화단계: " + dto.getRefinementLevel());
@@ -130,4 +125,56 @@ public class TooltipParser {
             System.err.println("Tooltip parsing failed: " + e.getMessage());
         }
     }
+
+    public static void populateGeneralDetails(EquipmentDto dto) {
+        try {
+            JsonNode root = parseTooltip(dto.getTooltip());
+
+            // 품질
+            JsonNode qualityNode = root.path("Element_001").path("value").path("qualityValue");
+            if (!qualityNode.isMissingNode() && qualityNode.isInt()) {
+                dto.setQuality(qualityNode.asInt());
+            }
+
+            // 기본 효과
+            JsonNode basicEffectNode = root.path("Element_004").path("value").path("Element_001");
+            if (!basicEffectNode.isMissingNode()) {
+                String basicEffect = Jsoup.parse(basicEffectNode.asText().replace("<BR>", "\n")).text();
+                dto.setBasicEffect(basicEffect);
+            }
+
+            // 연마 효과
+            JsonNode refinementNode = root.path("Element_005").path("value").path("Element_001");
+            if (!refinementNode.isMissingNode()) {
+                String refinementEffect = Jsoup.parse(refinementNode.asText().replace("<BR>", "\n")).text();
+                dto.setRefinementEffect(refinementEffect);
+            }
+
+            // 아크 패시브 효과
+            JsonNode arcPassiveNode = root.path("Element_007").path("value").path("Element_001");
+            if (!arcPassiveNode.isMissingNode()) {
+                String arcPassive = Jsoup.parse(arcPassiveNode.asText()).text();
+                dto.setArcPassiveEffect(arcPassive);
+            }
+
+            // 획득처 정보
+            JsonNode acquisitionNode = root.path("Element_008").path("value");
+            if (!acquisitionNode.isMissingNode()) {
+                String acquisition = Jsoup.parse(acquisitionNode.asText().replace("<BR>", "\n")).text();
+                dto.setAcquisitionInfo(acquisition);
+            }
+
+        } catch (Exception e) {
+            log.warn("Tooltip 공통 정보 파싱 실패 [{}]: {}", dto.getName(), e.getMessage());
+        }
+    }
+
+    private static JsonNode parseTooltip(String rawTooltip) throws Exception {
+        JsonNode node = objectMapper.readTree(rawTooltip);
+        if (node.isTextual()) {
+            node = objectMapper.readTree(node.asText());
+        }
+        return node;
+    }
+
 }
