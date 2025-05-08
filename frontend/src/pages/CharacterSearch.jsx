@@ -42,35 +42,35 @@ export default function CharacterSearch() {
   ) || [];
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-6">
+    <div className="min-h-screen bg-white text-black dark:bg-gray-900 dark:text-white p-6">
       {hasSearched && characterData ? (
         <>
-          <h1 className="text-2xl font-bold mb-6 text-center">
+          <h1 className="text-2xl font-bold mb-6 text-center text-gray-800 dark:text-white">
             {characterData.profile.CharacterName} 님의 캐릭터 정보
           </h1>
 
           <div className="flex flex-col items-center">
             <div className="flex w-full max-w-[1280px] gap-6">
               {/* 캐릭터 요약 박스 */}
-              <div className="min-w-[260px] max-w-[260px]">
+              <div className="min-w-[260px] max-w-[260px] bg-gray-100 dark:bg-gray-800 rounded-lg p-6 shadow">
                 <CharacterProfileCard profile={characterData.profile} />
               </div>
 
-              {/* 보석/장비/악세서리 전체 박스 */}
+              {/* 보석 + 장비/악세서리 */}
               <div className="flex-1">
-                <div className="bg-gray-800 rounded p-4">
+                <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-4 shadow">
                   <GemList gems={characterData.gems} />
 
                   <div className="mt-6 flex gap-4">
                     {/* 장비 */}
                     <div className="w-1/2">
-                      <h2 className="text-lg font-semibold mb-2 border-b border-gray-600 pb-1">🛡 장비</h2>
+                      <h2 className="text-lg font-semibold mb-2 border-b border-gray-300 dark:border-gray-600 pb-1 text-gray-800 dark:text-white">🛡 장비</h2>
                       <EquipmentList equipments={gears} />
                     </div>
 
                     {/* 악세서리 */}
                     <div className="w-1/2">
-                      <h2 className="text-lg font-semibold mb-2 border-b border-gray-600 pb-1">💍 악세서리</h2>
+                      <h2 className="text-lg font-semibold mb-2 border-b border-gray-300 dark:border-gray-600 pb-1 text-gray-800 dark:text-white">💍 악세서리</h2>
                       <AccessoryList accessories={accessories} />
                     </div>
                   </div>
@@ -80,9 +80,8 @@ export default function CharacterSearch() {
           </div>
         </>
       ) : (
-        <p className="text-red-400">검색 결과가 없습니다.</p>
+        <p className="text-red-500 dark:text-red-400">검색 결과가 없습니다.</p>
       )}
     </div>
   );
-
 }
