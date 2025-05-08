@@ -17,6 +17,6 @@ public class ArmoryResponse {
     private List<EquipmentDto> armoryEquipment;
 
     @JsonProperty("ArmoryGem")
-    private List<GemDto> armoryGem;
+    private ArmoryGem armoryGem;
 }
 

@@ -19,14 +19,22 @@ public class GemTooltipParser {
                 root = objectMapper.readTree(root.asText());
             }
 
+            //icon 추출 (기존 값이 없을 때만 덮어쓰기)
+            if (gem.getIcon() == null || gem.getIcon().isBlank()) {
+                JsonNode iconNode = root.path("Element_001").path("value").path("slotData").path("iconPath");
+                if (iconNode.isTextual()) {
+                    gem.setIcon(iconNode.asText());
+                }
+            }
+
             // 효과 추출
             JsonNode effectNode = root.path("Element_006").path("value").path("Element_001");
             if (effectNode.isTextual()) {
                 String raw = Jsoup.parse(effectNode.asText().replace("<BR>", "\n")).text();
                 gem.setEffect(raw);
 
-                // 스킬명 추출 예: [홀리나이트] 신성의 오라 지원 효과 7% 증가
-                Matcher matcher = Pattern.compile("\\[(.*?)\\]\\s*(.*?)\\s*지원 효과.*").matcher(raw);
+                // [클래스명] 스킬명 (효과 설명...) 에서 클래스와 스킬명을 추출
+                Matcher matcher = Pattern.compile("\\[(.*?)\\]\\s*(.*?)\\s").matcher(raw);
                 if (matcher.find()) {
                     String skill = matcher.group(2).trim();
                     gem.setSkillName(skill);

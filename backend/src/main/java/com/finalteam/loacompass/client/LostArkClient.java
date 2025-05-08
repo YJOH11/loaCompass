@@ -86,10 +86,12 @@ public class LostArkClient {
         summary.setTranscendenceTotal(totalTranscendence);
 
         // 보석
-        List<GemDto> gems = response.getArmoryGem();
+        List<GemDto> gems = response.getArmoryGem().getGems();
         if (gems != null) {
             for (GemDto gem : gems) {
+                System.out.println("raw Icon from dto: " + gem.getIcon());
                 GemTooltipParser.populateGemDetails(gem);
+                System.out.println("after parsing icon: " + gem.getIcon());
             }
             summary.setGems(gems);
         }
