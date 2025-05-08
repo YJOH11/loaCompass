@@ -1,8 +1,7 @@
 package com.finalteam.loacompass.client;
 
-import com.finalteam.loacompass.dto.ArmoryResponse;
-import com.finalteam.loacompass.dto.CharacterProfileDto;
-import com.finalteam.loacompass.dto.EquipmentDto;
+import com.finalteam.loacompass.dto.*;
+import com.finalteam.loacompass.util.GemTooltipParser;
 import com.finalteam.loacompass.util.TooltipParser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -59,6 +58,45 @@ public class LostArkClient {
 
         return equipmentList;
     }
+
+    public CharacterSummaryDto getCharacterSummary(String nickname) {
+        ArmoryResponse response = lostArkWebClient.get()
+                .uri("/armories/characters/{name}", nickname)
+                .retrieve()
+                .bodyToMono(ArmoryResponse.class)
+                .block();
+
+        CharacterSummaryDto summary = new CharacterSummaryDto();
+        summary.setProfile(response.getArmoryProfile());
+
+        // 장비
+        List<EquipmentDto> equipmentList = response.getArmoryEquipment();
+        int totalTranscendence = 0;
+
+        for (EquipmentDto dto : equipmentList) {
+            TooltipParser.populateGeneralDetails(dto);
+            if (isGear(dto.getType())) {
+                TooltipParser.populateEquipmentDetails(dto);
+                if (dto.getTranscendencePoint() != null) {
+                    totalTranscendence += dto.getTranscendencePoint();
+                }
+            }
+        }
+        summary.setEquipments(equipmentList);
+        summary.setTranscendenceTotal(totalTranscendence);
+
+        // 보석
+        List<GemDto> gems = response.getArmoryGem();
+        if (gems != null) {
+            for (GemDto gem : gems) {
+                GemTooltipParser.populateGemDetails(gem);
+            }
+            summary.setGems(gems);
+        }
+
+        return summary;
+    }
+
 
 
 }
