@@ -32,6 +32,13 @@ public class EquipmentDto {
     private Integer quality;            // 품질
     private Integer transcendencePoint;  // 장비별 초월 포인트
 
+    // 악세서리
+    private String basicEffect;           // 기본 능력치
+    private String refinementEffect;      // 연마 효과
+    private String arcPassiveEffect;     // 악세서리 전용
+    private String additionalEffect;     // 장비 전용 (ex: 무기 특수 효과)
+    private String acquisitionInfo;       // 획득처
+
 
 
 }
