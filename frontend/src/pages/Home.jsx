@@ -4,6 +4,7 @@ import ShopList from '../components/ShopList';
 import {useNavigate} from "react-router-dom";
 import axios from 'axios';
 
+
 function Home() {
     const navigate = useNavigate();
     const [events, setEvents] = useState([]);

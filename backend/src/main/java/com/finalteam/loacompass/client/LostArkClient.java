@@ -32,6 +32,9 @@ public class LostArkClient {
     private boolean isGear(String type) {
         return List.of("무기", "투구", "상의", "하의", "장갑", "어깨").contains(type);
     }
+    private boolean isAccessory(String type) {
+        return List.of("목걸이", "귀걸이", "반지").contains(type);
+    }
 
     public List<EquipmentDto> getCharacterEquipment(String nickname) {
         ArmoryResponse response = lostArkWebClient.get()
@@ -45,13 +48,12 @@ public class LostArkClient {
         int totalTranscendence = 0;
 
         for (EquipmentDto dto : equipmentList) {
-            // 장비 유형 로그 확인용
             log.info("==== [{}] {} ====", dto.getType(), dto.getName());
 
+            TooltipParser.populateGeneralDetails(dto); // 장비/악세서리 공통 정보
+
             if (isGear(dto.getType())) {
-                TooltipParser.populateEquipmentDetails(dto); // 강화/초월/엘릭서 추출
-            } else {
-                log.info("※ [{}]은(는) 장비 외 항목이므로 파싱 생략", dto.getType());
+                TooltipParser.populateEquipmentDetails(dto); // 강화, 초월, 엘릭서 등 장비 전용
             }
         }
 
