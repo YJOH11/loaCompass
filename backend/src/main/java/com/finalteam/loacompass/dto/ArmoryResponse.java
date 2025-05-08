@@ -16,6 +16,7 @@ public class ArmoryResponse {
     @JsonProperty("ArmoryEquipment")
     private List<EquipmentDto> armoryEquipment;
 
-    // 필요 시 ArmoryEquipment 등 다른 필드도 추가 가능
+    @JsonProperty("ArmoryGem")
+    private ArmoryGem armoryGem;
 }
 
