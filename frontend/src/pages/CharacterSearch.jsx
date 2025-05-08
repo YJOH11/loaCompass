@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import CharacterProfileCard from "../components/CharacterProfileCard";
-import GemList from "../components/GemList";
-import EquipmentAccessoryRow from "../components/EquipmentAccessoryRow";
+import GemList from "../components/Gem/GemList";
+import EquipmentAccessoryRow from "../components/Accessory/EquipmentAccessoryRow";
 
 export default function CharacterSearch() {
   const { name: characterName } = useParams();

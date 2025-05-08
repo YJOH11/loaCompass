@@ -21,11 +21,6 @@ export default function GemCard({ gem }) {
         <div className="text-green-300 whitespace-pre-wrap break-words leading-snug mt-1">
           {gem.effect}
         </div>
-        {gem.skillName && (
-          <div className="text-[11px] text-blue-300 mt-1 break-words">
-            스킬: {gem.skillName}
-          </div>
-        )}
       </div>
     </div>
   );

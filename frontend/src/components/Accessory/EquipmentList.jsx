@@ -1,4 +1,4 @@
-import EquipmentCard from "./EquipmentCard";
+import EquipmentCard from "../EquipmentCard";
 
 export default function EquipmentList({ equipments }) {
   const gears = equipments.filter((item) =>
