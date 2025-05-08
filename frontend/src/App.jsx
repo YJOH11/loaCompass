@@ -6,9 +6,9 @@ import Navbar from "./components/Navbar.jsx";
 
 function App() {
     return (
-        <div className="min-h-screen bg-black">
+        
             <AppRouter/>
-        </div>
+
     );
 }
 export default App;
