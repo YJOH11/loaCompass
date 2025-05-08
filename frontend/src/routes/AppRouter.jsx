@@ -8,6 +8,7 @@ import NotFound from '../pages/NotFound';
 import CharacterSearch from '../pages/CharacterSearch'
 import SassagaeCrawler from '../pages/SassagaeCrawler'
 import Navbar from "../components/Navbar.jsx";
+import Footer from "../components/Footer.jsx";
 
 const AppRouter = () => {
     return (
@@ -21,6 +22,7 @@ const AppRouter = () => {
                 <Route path="/about" element={<About />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
+            <Footer />
         </Router>
     );
 };

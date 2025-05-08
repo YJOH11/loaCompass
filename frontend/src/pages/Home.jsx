@@ -10,7 +10,7 @@ function Home() {
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    
+
     useEffect(() => {
         const fetchEvents = async () => {
             try {
@@ -25,10 +25,10 @@ function Home() {
                 setLoading(false);
             }
         };
-        
+
         fetchEvents();
     }, []);
-    
+
     return (
         <div className="flex flex-col min-h-screen">
             <div className="flex-grow bg-white text-black dark:bg-black dark:text-white p-6">
@@ -44,7 +44,7 @@ function Home() {
                 {/* 로스트아크 이벤트 섹션 */}
                 <div className="mb-8 bg-black text-white p-4 rounded">
                     <h2 className="text-2xl font-bold mb-4 text-center border-b border-gray-700 pb-2">진행중인 로스트아크 이벤트</h2>
-                    
+
                     {loading ? (
                         <div className="flex justify-center items-center h-40">
                             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
@@ -54,16 +54,16 @@ function Home() {
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {events.map(event => (
-                                <a 
-                                    key={event.id} 
-                                    href={event.url} 
-                                    target="_blank" 
+                                <a
+                                    key={event.id}
+                                    href={event.url}
+                                    target="_blank"
                                     rel="noopener noreferrer"
                                     className="cursor-pointer hover:opacity-90 transition-opacity"
                                 >
                                     <div className="relative overflow-hidden rounded">
-                                        <img 
-                                            src={event.imageUrl} 
+                                        <img
+                                            src={event.imageUrl}
                                             alt={event.title}
                                             className="w-full object-cover"
                                         />
@@ -80,20 +80,7 @@ function Home() {
                 <UpdateList />
                 <ShopList />
             </div>
-            
-            <footer className="w-full bg-gray-100 py-4">
-                <div className="container mx-auto px-4">
-                    <div className="flex justify-center space-x-8 mb-2">
-                        <a href="#" className="text-gray-600 hover:text-gray-900">1:1문의</a>
-                        <a href="#" className="text-gray-600 hover:text-gray-900">후원안내</a>
-                        <a href="#" className="text-gray-600 hover:text-gray-900">디스코드</a>
-                        <a href="#" className="text-gray-600 hover:text-gray-900">credit</a>
-                    </div>
-                    <div className="text-center text-gray-500 text-sm">
-                        Copyright 2025 로침반. kr All rights reserved.
-                    </div>
-                </div>
-            </footer>
+
         </div>
     );
 }
