@@ -141,8 +141,19 @@ public class TooltipParser {
             // 연마 효과
             JsonNode refinementNode = root.path("Element_005").path("value").path("Element_001");
             if (!refinementNode.isMissingNode()) {
-                String refinementEffect = Jsoup.parse(refinementNode.asText().replace("<BR>", "\n")).text();
-                dto.setRefinementEffect(refinementEffect);
+                String html = refinementNode.asText();
+                // <BR>을 기준으로 먼저 분리
+                String[] lines = html.split("(?i)<br\\s*/?>");
+
+                List<String> effects = new ArrayList<>();
+                for (String line : lines) {
+                    // 줄마다 <img ...> 같은 HTML 태그 제거
+                    String cleaned = Jsoup.parse(line).text().trim();
+                    if (!cleaned.isEmpty()) {
+                        effects.add(cleaned);
+                    }
+                }
+                dto.setRefinementEffects(effects);
             }
 
             // 아크 패시브 or 추가 효과
@@ -196,10 +207,30 @@ public class TooltipParser {
         try {
             JsonNode root = parseTooltip(dto.getTooltip());
 
-            JsonNode braceletEffect = root.path("Element_004").path("value").path("Element_001");
-            if (braceletEffect.isTextual()) {
-                String effect = Jsoup.parse(braceletEffect.asText().replace("<BR>", "\n")).text();
-                dto.setAdditionalEffect(effect); // reuse or define braceletEffect
+            JsonNode braceletEffectNode = root.path("Element_004").path("value").path("Element_001");
+            if (braceletEffectNode.isTextual()) {
+                String html = braceletEffectNode.asText();
+
+                // <BR> 기준으로 옵션 줄 분리
+                String[] rawLines = html.split("<BR>");
+                List<String> effects = new ArrayList<>();
+
+                for (int i = 0; i < rawLines.length; i++) {
+                    String cleaned = Jsoup.parse(rawLines[i]).text().trim();
+
+                    // 빈 줄이 아닌 경우만 추가
+                    if (!cleaned.isEmpty()) {
+                        // "각성기는 적용되지 않는다." 는 무조건 앞줄과 붙이기
+                        if (cleaned.startsWith("각성기는") && !effects.isEmpty()) {
+                            String prev = effects.remove(effects.size() - 1);
+                            effects.add(prev + " " + cleaned); // 앞 문장과 합침
+                        } else {
+                            effects.add(cleaned);
+                        }
+                    }
+                }
+
+                dto.setBraceletEffects(effects);
             }
 
         } catch (Exception e) {

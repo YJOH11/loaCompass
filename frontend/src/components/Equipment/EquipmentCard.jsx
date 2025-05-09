@@ -1,31 +1,33 @@
 export default function EquipmentCard({ item }) {
+  if (!item) return null;
+
+  const {
+    Icon, Name, quality, elixirEffects, elixirOptions,
+    refinementEffect, additionalEffect
+  } = item;
+
   return (
-<div className="bg-white dark:bg-gray-800 p-4 rounded shadow w-full h-[160px] flex flex-col justify-between">
+    <div className="bg-white dark:bg-gray-800 p-3 rounded shadow w-full h-[100px] flex gap-3 items-start">
+      <img src={Icon} alt={Name} className="w-12 h-12 object-contain shrink-0" />
+      <div className="flex-1 text-xs text-orange-500 whitespace-pre-wrap leading-snug overflow-hidden">
+        <div className="font-semibold text-sm text-black dark:text-white mb-1">{Name}</div>
 
-<img
-        src={item.Icon}
-        alt={item.Name}
-        className="w-10 h-10 object-contain mt-1"
-      />
-      <div className="flex-1">
-        <div className="font-semibold text-sm mb-1">
-          +{item.refinementLevel ?? 0} {item.Name}
-        </div>
-        <div className="text-xs text-gray-600 dark:text-gray-300">
-          {item.Type} | <span className="font-semibold">{item.Grade}</span>
-        </div>
-        <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">품질: {item.quality ?? 0}</div>
-
-        {/* 엘릭서 옵션 */}
-        {item.elixirOptions?.length > 0 && (
-          <ul className="text-xs text-orange-500 dark:text-orange-400 list-disc ml-4 space-y-0.5">
-            {item.elixirOptions.map((opt, i) => (
-              <li key={i}>
-                {opt.level} {opt.name}
-              </li>
+        {/* 엘릭서 옵션 (가로 정렬) */}
+        {elixirOptions && elixirOptions.length > 0 && (
+          <div className="flex gap-2 flex-wrap mb-1">
+            {elixirOptions.map((e, i) => (
+              <span
+                key={i}
+                className="bg-gray-100 dark:bg-gray-700 text-green-500 px-2 py-0.5 rounded text-xs"
+              >
+                [{e.name}] Lv.{e.level}
+              </span>
             ))}
-          </ul>
+          </div>
         )}
+
+        {refinementEffect && <div>• {refinementEffect}</div>}
+        
       </div>
     </div>
   );
