@@ -43,7 +43,7 @@ export default function CharacterSearch() {
   const abilityStone = characterData?.equipments?.find(item => item.Type === "어빌리티 스톤");
   const bracelet = characterData?.equipments?.find(item => item.Type === "팔찌");
   const maxLen = Math.max(gears.length, accessories.length);
-  
+
   return (
     <div className="min-h-screen bg-white text-black dark:bg-gray-900 dark:text-white p-6">
       {hasSearched && characterData ? (
@@ -72,18 +72,17 @@ export default function CharacterSearch() {
                       <h2 className="text-lg font-semibold text-gray-800 dark:text-white">🛡 장비</h2>
                       <h2 className="text-lg font-semibold text-gray-800 dark:text-white">💍 악세서리</h2>
                     </div>
-                    <div className="space-y-4">
-  {Array.from({ length: maxLen }).map((_, i) => (
-    <EquipmentAccessoryRow
-      key={i}
-      equipment={gears[i] || null}
-      accessory={accessories[i] || null}
-      abilityStone={i === maxLen - 1 ? abilityStone : null}
-      bracelet={i === maxLen - 1 ? bracelet : null}
-    />
-  ))}
-</div>
-                  </div>
+                    <div className="flex flex-col gap-2">
+                      {Array.from({ length: maxLen }).map((_, i) => (
+                        <EquipmentAccessoryRow
+                          key={i}
+                          equipment={gears[i] || null}
+                          accessory={accessories[i] || null}
+                          abilityStone={i === maxLen - 1 ? abilityStone : null}
+                          bracelet={i === maxLen - 1 ? bracelet : null}
+                        />
+                      ))}
+                    </div>            </div>
                 </div>
               </div>
 

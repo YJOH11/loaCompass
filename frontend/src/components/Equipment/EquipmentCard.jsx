@@ -1,7 +1,8 @@
 export default function EquipmentCard({ item }) {
   return (
-    <div className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white p-4 rounded shadow min-h-[120px] flex items-start gap-4">
-      <img
+<div className="bg-white dark:bg-gray-800 p-4 rounded shadow w-full h-[160px] flex flex-col justify-between">
+
+<img
         src={item.Icon}
         alt={item.Name}
         className="w-10 h-10 object-contain mt-1"

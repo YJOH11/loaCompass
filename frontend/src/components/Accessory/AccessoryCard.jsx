@@ -8,8 +8,9 @@ export default function AccessoryCard({ item }) {
   } = item;
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-4 rounded shadow w-full">
-      <div className="flex items-start gap-3">
+<div className="bg-white dark:bg-gray-800 p-4 rounded shadow w-full h-[160px] flex flex-col justify-between">
+
+<div className="flex items-start gap-3">
         <img src={Icon} alt={Name} className="w-12 h-12 object-contain" />
         <div>
           <div className="font-semibold text-sm">{Name}</div>
