@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import CharacterProfileCard from "../components/CharacterProfileCard";
 import GemList from "../components/Gem/GemList";
-import EquipmentAccessoryRow from "../components/Accessory/EquipmentAccessoryRow";
+import EquipmentAccessoryRow from "../components/Equipment/EquipmentAccessoryRow"
 
 export default function CharacterSearch() {
   const { name: characterName } = useParams();

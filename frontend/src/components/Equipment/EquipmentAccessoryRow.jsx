@@ -1,5 +1,5 @@
 import EquipmentCard from "../Equipment/EquipmentCard";
-import AccessoryCard from "./AccessoryCard";
+import AccessoryCard from "../Accessory/AccessoryCard";
 
 export default function EquipmentAccessoryRow({ equipment, accessory }) {
   return (
