@@ -9,6 +9,7 @@ import CharacterSearch from '../pages/CharacterSearch'
 import SassagaeCrawler from '../pages/SassagaeCrawler'
 import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
+import DiscordCallback from "../pages/DiscordCallback.jsx";
 
 const AppRouter = () => {
     return (
@@ -20,7 +21,9 @@ const AppRouter = () => {
                {/* <Route path="/user" element={<CharacterSearch />} />*/}
                 <Route path="/sassagae" element={<SassagaeCrawler />} />
                 <Route path="/about" element={<About />} />
+                <Route path="/discord/callback" element={<DiscordCallback />} />
                 <Route path="*" element={<NotFound />} />
+
             </Routes>
             <Footer />
         </Router>
