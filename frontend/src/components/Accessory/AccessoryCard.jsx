@@ -1,39 +1,38 @@
 export default function AccessoryCard({ item }) {
-  const splitEffect = (effect) =>
-    effect?.match(/[^+]+[+][\d.,%]+(?:\s*\S*)?/g)?.map(s => s.trim()) || [];
+  if (!item) return null;
+
+  const {
+    Type, Name, Icon, Grade, quality,
+    basicEffect, refinementEffect, arcPassiveEffect,
+    acquisitionInfo, abilityStoneEngravings, additionalEffect
+  } = item;
 
   return (
-    <div className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white p-4 rounded shadow w-full min-h-[120px] flex gap-3">
-      {item.Icon && (
-        <img
-          src={item.Icon}
-          alt={item.Name}
-          className="w-12 h-12 object-contain"
-        />
-      )}
-      <div className="flex-1">
-        <div className="font-semibold text-sm">{item.Name}</div>
-        <div className="text-xs text-gray-600 dark:text-gray-300">
-          {item.Type} | <span className="font-semibold">{item.Grade}</span>
+    <div className="bg-white dark:bg-gray-800 p-4 rounded shadow w-full">
+      <div className="flex items-start gap-3">
+        <img src={Icon} alt={Name} className="w-12 h-12 object-contain" />
+        <div>
+          <div className="font-semibold text-sm">{Name}</div>
+          <div className="text-xs text-gray-400">{Type} | {Grade}</div>
+          {quality >= 0 && <div className="text-xs text-gray-500">품질: {quality}</div>}
         </div>
-        <div className="text-xs text-gray-600 dark:text-gray-300 mb-1">
-          품질: {item.quality}
-        </div>
+      </div>
 
-        {/* 연마 효과 */}
-        {item.refinementEffect && (
-          <ul className="text-xs text-green-600 dark:text-green-400 mt-1 list-disc list-inside space-y-0.5">
-            {splitEffect(item.refinementEffect).map((line, i) => (
-              <li key={i}>{line}</li>
-            ))}
-          </ul>
+      <div className="mt-2 text-xs text-green-500 whitespace-pre-wrap leading-snug">
+        {Type === "어빌리티 스톤" && abilityStoneEngravings?.map((e, i) => (
+          <div key={i}>• {e}</div>
+        ))}
+
+        {Type === "팔찌" && additionalEffect && (
+          <div dangerouslySetInnerHTML={{ __html: additionalEffect.replace(/\n/g, "<br />") }} />
         )}
 
-        {/* 아크 패시브 */}
-        {item.arcPassiveEffect && (
-          <div className="text-xs text-purple-600 dark:text-purple-400 mt-1 whitespace-pre-wrap break-words">
-            {item.arcPassiveEffect}
-          </div>
+        {["목걸이", "귀걸이", "반지"].includes(Type) && (
+          <>
+            {basicEffect && <div>• {basicEffect}</div>}
+            {refinementEffect && <div>• {refinementEffect}</div>}
+            {arcPassiveEffect && <div>• {arcPassiveEffect}</div>}
+          </>
         )}
       </div>
     </div>
