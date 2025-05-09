@@ -5,6 +5,9 @@ import axios from "axios";
 import CharacterProfileCard from "../components/CharacterProfileCard";
 import GemList from "../components/Gem/GemList";
 import EquipmentAccessoryRow from "../components/Equipment/EquipmentAccessoryRow"
+import AbilityStoneCard from "../components/AbilityStoneCard";
+import BraceletCard from "../components/BraceletCard";
+
 
 export default function CharacterSearch() {
   const { name: characterName } = useParams();
@@ -39,6 +42,8 @@ export default function CharacterSearch() {
   const accessories = characterData?.equipments?.filter((item) =>
     ["목걸이", "귀걸이", "반지"].includes(item.Type)
   ) || [];
+  const abilityStone = characterData?.equipments?.find(item => item.Type === "어빌리티 스톤");
+  const bracelet = characterData?.equipments?.find(item => item.Type === "팔찌");
 
   return (
     <div className="min-h-screen bg-white text-black dark:bg-gray-900 dark:text-white p-6">
@@ -77,9 +82,24 @@ export default function CharacterSearch() {
                         />
                       ))}
                     </div>
+                    <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+  {abilityStone && (
+    <div>
+      <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">💠 어빌리티 스톤</h2>
+      <AbilityStoneCard item={abilityStone} />
+    </div>
+  )}
+  {bracelet && (
+    <div>
+      <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">🔗 팔찌</h2>
+      <BraceletCard item={bracelet} />
+    </div>
+  )}
+</div>
                   </div>
                 </div>
               </div>
+              
             </div>
           </div>
         </>
