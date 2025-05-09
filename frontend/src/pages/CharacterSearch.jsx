@@ -3,9 +3,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import CharacterProfileCard from "../components/CharacterProfileCard";
-import EquipmentList from "../components/EquipmentList";
-import AccessoryList from "../components/AccessoryList";
-import GemList from "../components/GemList";
+import GemList from "../components/Gem/GemList";
+import EquipmentAccessoryRow from "../components/Equipment/EquipmentAccessoryRow"
 
 export default function CharacterSearch() {
   const { name: characterName } = useParams();
@@ -59,19 +58,24 @@ export default function CharacterSearch() {
               {/* 보석 + 장비/악세서리 */}
               <div className="flex-1">
                 <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-4 shadow">
-                  <GemList gems={characterData.gems} />
+                  <div className="mb-6">
+                    <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">💎 보석</h2>
+                    <GemList gems={characterData.gems} layout="inline" />
+                  </div>
 
-                  <div className="mt-6 flex gap-4">
-                    {/* 장비 */}
-                    <div className="w-1/2">
-                      <h2 className="text-lg font-semibold mb-2 border-b border-gray-300 dark:border-gray-600 pb-1 text-gray-800 dark:text-white">🛡 장비</h2>
-                      <EquipmentList equipments={gears} />
+                  <div className="mt-6">
+                    <div className="grid grid-cols-2 mb-2">
+                      <h2 className="text-lg font-semibold text-gray-800 dark:text-white">🛡 장비</h2>
+                      <h2 className="text-lg font-semibold text-gray-800 dark:text-white">💍 악세서리</h2>
                     </div>
-
-                    {/* 악세서리 */}
-                    <div className="w-1/2">
-                      <h2 className="text-lg font-semibold mb-2 border-b border-gray-300 dark:border-gray-600 pb-1 text-gray-800 dark:text-white">💍 악세서리</h2>
-                      <AccessoryList accessories={accessories} />
+                    <div className="grid grid-cols-2 gap-4 items-start">
+                      {Array.from({ length: Math.max(gears.length, accessories.length) }).map((_, i) => (
+                        <EquipmentAccessoryRow
+                          key={i}
+                          equipment={gears[i] || null}
+                          accessory={accessories[i] || null}
+                        />
+                      ))}
                     </div>
                   </div>
                 </div>
