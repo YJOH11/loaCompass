@@ -3,6 +3,7 @@ import React from 'react';
 import DarkToggle from "./DarkToggle.jsx";
 import CharacterSearchInput from './CharacterSearchInput';
 import { Link, NavLink } from "react-router-dom";
+import DiscordLoginButton from "./DiscordLoginButton.jsx";
 
 const Navbar = () => {
     const menuItems = [
@@ -29,6 +30,10 @@ const Navbar = () => {
 
                 <div className="flex items-center gap-2">
                     <DarkToggle />
+                </div>
+
+                <div className="flex items-center gap-2">
+                    <DiscordLoginButton />
                 </div>
             </div>
 
