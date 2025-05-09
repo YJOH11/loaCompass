@@ -11,16 +11,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 @Slf4j
 
 public class TooltipParser {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
+
     public static class ElixirOption {
         private String name;
         private int level;
         // getters, setters, constructor 등
     }
+
     public static void populateEquipmentDetails(EquipmentDto dto) {
         try {
             String rawTooltip = dto.getTooltip();
@@ -113,14 +116,6 @@ public class TooltipParser {
                 dto.setElixirEffects(effects);
             }
 
-
-            //디버깅용.  콘솔 엄청 기니까 나중에 삭제 ㄱ
-            System.out.println("강화단계: " + dto.getRefinementLevel());
-            System.out.println("초월단계: " + dto.getTranscendenceLevel());
-            System.out.println("엘릭서이름: " + dto.getElixirName());
-            System.out.println("엘릭서효과: " + dto.getElixirEffects());
-
-
         } catch (Exception e) {
             System.err.println("Tooltip parsing failed: " + e.getMessage());
         }
@@ -171,6 +166,44 @@ public class TooltipParser {
 
         } catch (Exception e) {
             log.warn("Tooltip 공통 정보 파싱 실패 [{}]: {}", dto.getName(), e.getMessage());
+        }
+
+
+    }
+
+    public static void populateAbilityStoneDetails(EquipmentDto dto) {
+        try {
+            JsonNode root = parseTooltip(dto.getTooltip());
+
+            JsonNode engravingGroup = root.path("Element_006").path("value").path("Element_000").path("contentStr");
+            if (engravingGroup != null && engravingGroup.isObject()) {
+                List<String> engravings = new ArrayList<>();
+                engravingGroup.fields().forEachRemaining(entry -> {
+                    JsonNode content = entry.getValue().path("contentStr");
+                    if (content.isTextual()) {
+                        String cleaned = Jsoup.parse(content.asText()).text();
+                        engravings.add(cleaned);
+                    }
+                });
+                dto.setAbilityStoneEngravings(engravings);
+            }
+        } catch (Exception e) {
+            log.warn("AbilityStone 파싱 실패 [{}]: {}", dto.getName(), e.getMessage());
+        }
+    }
+
+    public static void populateBraceletDetails(EquipmentDto dto) {
+        try {
+            JsonNode root = parseTooltip(dto.getTooltip());
+
+            JsonNode braceletEffect = root.path("Element_004").path("value").path("Element_001");
+            if (braceletEffect.isTextual()) {
+                String effect = Jsoup.parse(braceletEffect.asText().replace("<BR>", "\n")).text();
+                dto.setAdditionalEffect(effect); // reuse or define braceletEffect
+            }
+
+        } catch (Exception e) {
+            log.warn("Bracelet 파싱 실패 [{}]: {}", dto.getName(), e.getMessage());
         }
     }
 

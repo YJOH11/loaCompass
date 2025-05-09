@@ -9,6 +9,7 @@ import java.util.List;
 
 public class EquipmentDto {
 
+    // 공통 필드
     @JsonProperty("Type")
     private String type;
 
@@ -24,20 +25,25 @@ public class EquipmentDto {
     @JsonProperty("Tooltip")
     private String tooltip;
 
-    private Integer refinementLevel;         // 강화 단계
-    private Integer transcendenceLevel;      // 초월 단계
-    private String elixirName;               // 엘릭서 이름
-    private List<String> elixirEffects;      // 엘릭서 효과
-    private List<ElixirOptionDto> elixirOptions;  // 옵션 이름만 저장
-    private Integer quality;            // 품질
-    private Integer transcendencePoint;  // 장비별 초월 포인트
+    private Integer quality; // 품질
+    private String acquisitionInfo; // 획득처
 
-    // 악세서리
-    private String basicEffect;           // 기본 능력치
-    private String refinementEffect;      // 연마 효과
-    private String arcPassiveEffect;     // 악세서리 전용
-    private String additionalEffect;     // 장비 전용 (ex: 무기 특수 효과)
-    private String acquisitionInfo;       // 획득처
+    // 장비 전용
+    private Integer refinementLevel;
+    private Integer transcendenceLevel;
+    private Integer transcendencePoint;
+    private String elixirName;
+    private List<String> elixirEffects;
+    private List<ElixirOptionDto> elixirOptions;
+    private String additionalEffect; // 무기 특수 효과 등
+
+    // 악세서리 전용
+    private String basicEffect;
+    private String refinementEffect;
+    private String arcPassiveEffect;
+
+    // 어빌리티 스톤 전용
+    private List<String> abilityStoneEngravings;
 
 
 
