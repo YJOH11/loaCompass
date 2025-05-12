@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+import java.util.List;
 import java.util.Map;
 
 @Data
@@ -56,6 +57,8 @@ public class CharacterProfileDto {
     @JsonInclude(JsonInclude.Include.ALWAYS)
     @JsonProperty("cardSet")
     private CardSetDto cardSet;
+
+    private List<EngravingDto> engravings;
 
 
 }

@@ -18,5 +18,9 @@ public class ArmoryResponse {
 
     @JsonProperty("ArmoryGem")
     private ArmoryGem armoryGem;
+
+    @JsonProperty("ArmoryEngraving")
+    private ArmoryEngraving armoryEngraving;
+
 }
 
