@@ -1,6 +1,7 @@
 package com.finalteam.loacompass.client;
 
 import com.finalteam.loacompass.dto.*;
+import com.finalteam.loacompass.util.CardParser;
 import com.finalteam.loacompass.util.GemTooltipParser;
 import com.finalteam.loacompass.util.TooltipParser;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,18 @@ public class LostArkClient {
                 .bodyToMono(ArmoryResponse.class)
                 .block();
         return response.getArmoryProfile();
+    }
+
+    public CardSetDto getCardSet(String nickname) {
+        CardResponse cardResponse = lostArkWebClient.get()
+                .uri("/armories/characters/{name}/cards", nickname)
+                .retrieve()
+                .bodyToMono(CardResponse.class)
+                .block();
+        System.out.println("=== cardResponse ===");
+        System.out.println("Effects: " + cardResponse.getEffects());
+
+        return CardParser.extractActiveCardSet(cardResponse);
     }
 
     private boolean isGear(String type) {
@@ -103,15 +116,20 @@ public class LostArkClient {
         List<GemDto> gems = response.getArmoryGem().getGems();
         if (gems != null) {
             for (GemDto gem : gems) {
-                System.out.println("raw Icon from dto: " + gem.getIcon());
                 GemTooltipParser.populateGemDetails(gem);
-                System.out.println("after parsing icon: " + gem.getIcon());
             }
             summary.setGems(gems);
         }
 
+        // 카드 세트
+        CardSetDto cardSet = getCardSet(nickname);
+        summary.getProfile().setCardSet(cardSet);
+        System.out.println("cardSet debug = " + summary.getProfile().getCardSet());
+
         return summary;
+
     }
+
 
 
 }
