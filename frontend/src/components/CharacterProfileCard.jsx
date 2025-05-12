@@ -20,7 +20,21 @@ export default function CharacterProfileCard({ profile }) {
           <div className="mt-3 text-xs text-green-500 bg-gray-200 dark:bg-gray-700 rounded px-2 py-1">
             <div className="font-semibold">카드</div>
             <div>{profile.cardSet.Name}</div>
-            <div className="text-green-300">{profile.cardSet.description}</div>
+            <div className="text-green-300">{profile.cardSet.Description}</div>
+          </div>
+        )}
+
+        {profile.engravings && profile.engravings.length > 0 && (
+          <div className="mt-3 text-xs text-blue-500 bg-gray-100 dark:bg-gray-700 rounded px-2 py-1">
+            <div className="font-semibold mb-1">각인</div>
+            <ul className="space-y-1">
+              {profile.engravings.map((engraving, index) => (
+                <li key={index} className="flex justify-between text-sm">
+                  <span>{engraving.name}</span>
+                  <span className="text-blue-300">{engraving.level}</span>
+                </li>
+              ))}
+            </ul>
           </div>
         )}
       </div>
