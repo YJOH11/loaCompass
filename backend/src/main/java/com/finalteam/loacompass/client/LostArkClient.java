@@ -19,20 +19,29 @@ public class LostArkClient {
 
     private final WebClient lostArkWebClient;
 
-   public CharacterProfileDto getCharacterProfile(String nickname) {
-   ArmoryResponse response = lostArkWebClient.get()
-           .uri("/armories/characters/{name}", nickname)
-           .retrieve()
-           .bodyToMono(ArmoryResponse.class)
-           .block();
-   return response.getArmoryProfile();
-   }
+    public CharacterProfileDto getCharacterProfile(String nickname) {
+        ArmoryResponse response = lostArkWebClient.get()
+                .uri("/armories/characters/{name}", nickname)
+                .retrieve()
+                .bodyToMono(ArmoryResponse.class)
+                .block();
+        return response.getArmoryProfile();
+    }
 
     private boolean isGear(String type) {
         return List.of("무기", "투구", "상의", "하의", "장갑", "어깨").contains(type);
     }
+
     private boolean isAccessory(String type) {
         return List.of("목걸이", "귀걸이", "반지").contains(type);
+    }
+
+    private boolean isAbilityStone(String type) {
+        return "어빌리티 스톤".equals(type);
+    }
+
+    private boolean isBracelet(String type) {
+        return "팔찌".equals(type);
     }
 
     public List<EquipmentDto> getCharacterEquipment(String nickname) {
@@ -75,11 +84,16 @@ public class LostArkClient {
 
         for (EquipmentDto dto : equipmentList) {
             TooltipParser.populateGeneralDetails(dto);
+
             if (isGear(dto.getType())) {
                 TooltipParser.populateEquipmentDetails(dto);
                 if (dto.getTranscendencePoint() != null) {
                     totalTranscendence += dto.getTranscendencePoint();
                 }
+            } else if ("어빌리티 스톤".equals(dto.getType())) {
+                TooltipParser.populateAbilityStoneDetails(dto);
+            } else if ("팔찌".equals(dto.getType())) {
+                TooltipParser.populateBraceletDetails(dto);
             }
         }
         summary.setEquipments(equipmentList);
@@ -98,7 +112,6 @@ public class LostArkClient {
 
         return summary;
     }
-
 
 
 }
