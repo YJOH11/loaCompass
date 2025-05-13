@@ -1,4 +1,4 @@
-package com.finalteam.loacompass.population;
+package com.finalteam.loacompass.population.dto;
 
 import lombok.Data;
 

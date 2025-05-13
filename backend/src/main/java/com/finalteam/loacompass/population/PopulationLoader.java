@@ -2,6 +2,7 @@ package com.finalteam.loacompass.population;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.finalteam.loacompass.population.dto.PopulationDto;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
