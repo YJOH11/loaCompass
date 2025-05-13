@@ -1,9 +1,11 @@
 package com.finalteam.loacompass.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+import java.util.List;
 import java.util.Map;
 
 @Data
@@ -51,5 +53,12 @@ public class CharacterProfileDto {
 
     @JsonProperty("TownName")
     private String townName;
+
+    @JsonInclude(JsonInclude.Include.ALWAYS)
+    @JsonProperty("cardSet")
+    private CardSetDto cardSet;
+
+    private List<EngravingDto> engravings;
+
 
 }
