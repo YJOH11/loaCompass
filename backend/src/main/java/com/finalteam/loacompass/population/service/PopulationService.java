@@ -35,4 +35,13 @@ public class PopulationService {
     public List<PopulationLog> getLatestPopulation() {
         return repository.findLatestSnapshot();
     }
+
+    public List<PopulationLog> getPopulationHistory(String serverName) {
+        return repository.findAllByServerNameOrderByRecordedAtAsc(serverName);
+    }
+
+    public List<PopulationLog> getServerRanking() {
+        return repository.findRankedSnapshot();
+    }
+
     }

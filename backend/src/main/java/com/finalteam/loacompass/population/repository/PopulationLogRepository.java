@@ -13,4 +13,13 @@ public interface PopulationLogRepository extends JpaRepository<PopulationLog, Lo
     List<PopulationLog> findLatestSnapshot();
 
     List<PopulationLog> findAllByRecordedAt(LocalDateTime recordedAt);
+
+    List<PopulationLog> findAllByServerNameOrderByRecordedAtAsc(String serverName);
+
+    @Query("""
+  SELECT p FROM PopulationLog p
+  WHERE p.recordedAt = (SELECT MAX(p2.recordedAt) FROM PopulationLog p2)
+  ORDER BY p.population DESC
+""")
+    List<PopulationLog> findRankedSnapshot();
 }

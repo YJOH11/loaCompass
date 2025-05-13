@@ -20,4 +20,14 @@ public class PopulationController {
     public List<PopulationLog> getLatestPopulation() {
         return populationService.getLatestPopulation();
     }
+
+    @GetMapping("/history")
+    public List<PopulationLog> getPopulationHistory(@RequestParam String server) {
+        return populationService.getPopulationHistory(server);
+    }
+
+    @GetMapping("/rank")
+    public List<PopulationLog> getServerRanking() {
+        return populationService.getServerRanking();
+    }
 }
