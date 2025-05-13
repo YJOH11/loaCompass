@@ -12,7 +12,7 @@ const UpdateList = () => {
 
     return (
         <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-4">🛠 로스트아크 업데이트</h2>
+            <h2 className="text-2xl font-bold mb-4">업데이트</h2>
             <ul className="list-disc ml-6">
                 {updates.map((item, index) => (
                     <li key={index}>
