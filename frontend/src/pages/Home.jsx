@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import UpdateList from '../components/UpdateList';
 import ShopList from '../components/ShopList';
-import {useNavigate, Link} from "react-router-dom";
 import axios from 'axios';
 
+
 function Home() {
-    const navigate = useNavigate();
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [activeTab, setActiveTab] = useState('home');
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
 
     useEffect(() => {
         const fetchEvents = async () => {
@@ -30,9 +28,7 @@ function Home() {
         fetchEvents();
     }, []);
 
-    const toggleMobileMenu = () => {
-        setMobileMenuOpen(!mobileMenuOpen);
-    };
+
 
     return (
         <div className="flex flex-col min-h-screen">
@@ -204,7 +200,6 @@ function Home() {
                     </div>
                 </div>
             </nav>
-
             <div className="flex-grow bg-white text-black dark:bg-black dark:text-white p-6">
                 {/* 로스트아크 이벤트 섹션 */}
                 <div className="mb-8 bg-gray-50 dark:bg-gray-900 rounded-lg shadow-md overflow-hidden">
