@@ -24,14 +24,17 @@ def search_inven():
 
     try:
         name = 'content' if content_search else 'subject'
+
         first_html = fetch_page(BASE_URL, page=1, name=name, keyword=keyword)
         total_pages = get_total_pages(first_html)
+
         search_results = asyncio.run(fetch_all_pages(BASE_URL, total_pages, name=name, keyword=keyword))
 
         if content_search:
             search_results = asyncio.run(fetch_all_contents(search_results))
 
         filtered = search_posts(search_results, kw=keyword, content_search=content_search)
+
         return jsonify(filtered)
 
     except Exception as e:
@@ -54,6 +57,7 @@ def shop_mari():
     }
 
     try:
+        # 남은 시간 추출
         WebDriverWait(driver, 10).until(
             EC.presence_of_all_elements_located((By.CSS_SELECTOR, ".flip-clock-active"))
         )
@@ -65,6 +69,7 @@ def shop_mari():
                 remain_time += ":"
         data["remainTime"] = remain_time
 
+        # 아이템 목록 추출
         WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, "ul.list-items > li"))
         )
@@ -75,26 +80,31 @@ def shop_mari():
                 image = el.find_element(By.CSS_SELECTOR, ".thumbs img").get_attribute("src")
 
                 price = ""
-                currency = "crystal"
                 original = ""
+                price_display = ""
+                currency = "crystal"
 
                 try:
-                    price_box = el.find_element(By.CLASS_NAME, "list__price")
-                    currency = price_box.find_element(By.CLASS_NAME, "icon").text
-                    price = price_box.find_element(By.TAG_NAME, "em").text
+                    price = el.find_element(By.CSS_SELECTOR, ".area-amount > .amount").text
                     try:
-                        original = price_box.find_element(By.TAG_NAME, "del").text
+                        original = el.find_element(By.CSS_SELECTOR, ".area-amount > .amount--through").text
+                        price_display = f"{price} {original}"
                     except:
-                        pass
-                except:
-                    print(f"[{title}] 가격 정보 없음")
+                        original = ""
+                        price_display = price
+                except Exception as e:
+                    print(f"[{title}] 가격 정보 없음: {e}")
+                    price = ""
+                    original = ""
+                    price_display = ""
 
                 data["items"].append({
                     "title": title,
                     "image": image,
                     "currency": currency,
                     "price": price,
-                    "originalPrice": original
+                    "originalPrice": original,
+                    "priceDisplay": price_display
                 })
 
             except Exception as e:

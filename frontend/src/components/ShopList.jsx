@@ -23,7 +23,7 @@ function ShopList() {
     const fetchShop = async () => {
         try {
             setLoading(true);
-            const res = await axios.get('/api/shop'); 
+            const res = await axios.get('/api/shop');
             setItems(res.data.items);
             setRemainTime(res.data.remainTime);
             setLoading(false);
@@ -91,11 +91,11 @@ function ShopList() {
                                     <div className="flex-shrink-0 w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded">
                                         {item.image && <img src={item.image} alt={item.title} className="w-16 h-16 object-cover" />}
                                     </div>
-                                    
+
                                     <div className="ml-4 flex-grow">
                                         <div className="flex items-center">
                                             <h3 className="text-lg font-medium text-gray-900 dark:text-white">{item.title}</h3>
-                                            
+
                                             {/* 태그 표시 */}
                                             {item.isNew && (
                                                 <span className="ml-2 px-2 py-1 text-xs font-semibold rounded bg-blue-500 text-white">신규</span>
@@ -104,14 +104,17 @@ function ShopList() {
                                                 <span className="ml-2 px-2 py-1 text-xs font-semibold rounded bg-red-500 text-white">한정</span>
                                             )}
                                         </div>
-                                        
-                                        <div className="flex items-center mt-1">
-                                            <span className="text-lg font-bold text-amber-500">
-                                                {item.price}
-                                            </span>
-                                            {item.secondPrice && (
-                                                <span className="ml-2 text-sm text-blue-500">
-                                                    {item.secondPrice}
+
+                                        <div className="flex items-center mt-1 space-x-2">
+                                            <div className="flex items-center space-x-1">
+                                                <span className="text-lg font-semibold text-purple-500">
+                                                    💎 {item.price}
+                                                </span>
+                                            </div>
+
+                                            {item.originalPrice && (
+                                                <span className="text-sm text-gray-400 line-through">
+                                                    {item.originalPrice}
                                                 </span>
                                             )}
                                         </div>
