@@ -51,7 +51,7 @@ function Home() {
                             <h2 className="text-xl font-bold text-gray-800 dark:text-white flex items-center">
                                 진행중인 로스트아크 이벤트
                             </h2>
-                            <a href="/events" className="text-sm text-blue-600 dark:text-blue-400 hover:underline flex items-center">
+                            <a href="https://lostark.game.onstove.com/News/Event/Now" target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 dark:text-blue-400 hover:underline flex items-center">
                                 모든 이벤트 보기
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
                                     <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
@@ -86,9 +86,6 @@ function Home() {
                                                     alt={event.title}
                                                     className="w-full h-40 object-cover"
                                                 />
-                                                <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-70 text-white text-xs py-2 px-2">
-                                                    <p className="text-center font-medium">{event.period}</p>
-                                                </div>
                                             </div>
                                         </a>
                                     ))}
