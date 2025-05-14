@@ -12,7 +12,11 @@ const Navbar = () => {
             {/* 첫 번째 줄 */}
             <div className="flex items-center justify-between py-3">
                 <div className="text-2xl font-bold">
-                    <Link to="/" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">
+                    <Link to="/" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+                        </svg>
                         로침반
                     </Link>
                 </div>
