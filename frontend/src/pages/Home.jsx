@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import UpdateList from '../components/UpdateList';
 import ShopList from '../components/ShopList';
-import { useNavigate } from "react-router-dom";
+import {useNavigate, Link} from "react-router-dom";
 import axios from 'axios';
 
 function Home() {
@@ -9,6 +9,8 @@ function Home() {
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [activeTab, setActiveTab] = useState('home');
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     useEffect(() => {
         const fetchEvents = async () => {
@@ -28,24 +30,149 @@ function Home() {
         fetchEvents();
     }, []);
 
-    return (
-        <div className="flex flex-col min-h-screen bg-white text-black dark:bg-gray-900 dark:text-white">
-            <div className="flex-grow p-6 max-w-7xl mx-auto">
-                {/* 버튼 */}
-                <div className="mb-8 flex justify-center">
-                    <button
-                        onClick={() => navigate('/sassagae')}
-                        className="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold px-6 py-3 rounded-lg shadow"
-                    >
-                        📰 사사게 게시판 검색
-                    </button>
-                </div>
+    const toggleMobileMenu = () => {
+        setMobileMenuOpen(!mobileMenuOpen);
+    };
 
-                {/* 이벤트 */}
-                <div className="mb-12 bg-gray-100 dark:bg-gray-800 text-black dark:text-white p-6 rounded-lg shadow">
-                    <h2 className="text-2xl font-bold mb-6 text-center border-b border-gray-300 dark:border-gray-700 pb-2">
-                        진행중인 이벤트
-                    </h2>
+    return (
+        <div className="flex flex-col min-h-screen">
+            {/* 네비게이션 바 */}
+            <nav className="bg-gray-200 text-gray-800 dark:bg-gray-800 dark:text-white shadow-lg">
+                <div className="max-w-7xl mx-auto px-4">
+                    <div className="flex justify-center h-16">
+                        <div className="flex items-center">
+                            <div className="hidden md:block">
+                                <div className="flex space-x-4">
+                                    <Link 
+                                        to="/" 
+                                        className={`px-3 py-2 rounded-md text-sm font-medium ${activeTab === 'home' ? 'bg-gray-300 dark:bg-gray-900' : 'hover:bg-gray-300 dark:hover:bg-gray-700'}`}
+                                        onClick={() => setActiveTab('home')}
+                                    >
+                                        홈
+                                    </Link>
+                                    <Link 
+                                        to="/sassagae" 
+                                        className={`px-3 py-2 rounded-md text-sm font-medium ${activeTab === 'sassagae' ? 'bg-gray-300 dark:bg-gray-900' : 'hover:bg-gray-300 dark:hover:bg-gray-700'}`}
+                                        onClick={() => setActiveTab('sassagae')}
+                                    >
+                                        사사게 게시판
+                                    </Link>
+                                    <Link 
+                                        to="/guild" 
+                                        className={`px-3 py-2 rounded-md text-sm font-medium ${activeTab === 'guild' ? 'bg-gray-300 dark:bg-gray-900' : 'hover:bg-gray-300 dark:hover:bg-gray-700'}`}
+                                        onClick={() => setActiveTab('guild')}
+                                    >
+                                        길드
+                                    </Link>
+                                    <Link 
+                                        to="/ranking" 
+                                        className={`px-3 py-2 rounded-md text-sm font-medium ${activeTab === 'ranking' ? 'bg-gray-300 dark:bg-gray-900' : 'hover:bg-gray-300 dark:hover:bg-gray-700'}`}
+                                        onClick={() => setActiveTab('ranking')}
+                                    >
+                                        순위
+                                    </Link>
+                                    <Link 
+                                        to="/statistics" 
+                                        className={`px-3 py-2 rounded-md text-sm font-medium ${activeTab === 'statistics' ? 'bg-gray-300 dark:bg-gray-900' : 'hover:bg-gray-300 dark:hover:bg-gray-700'}`}
+                                        onClick={() => setActiveTab('statistics')}
+                                    >
+                                        통계
+                                    </Link>
+                                    <Link 
+                                        to="/tools" 
+                                        className={`px-3 py-2 rounded-md text-sm font-medium ${activeTab === 'tools' ? 'bg-gray-300 dark:bg-gray-900' : 'hover:bg-gray-300 dark:hover:bg-gray-700'}`}
+                                        onClick={() => setActiveTab('tools')}
+                                    >
+                                        도구
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+                        {/* 모바일 메뉴 버튼 - 중앙에서 우측으로 이동 */}
+                        <div className="md:hidden absolute right-4 flex items-center h-16">
+                            <button 
+                                className="mobile-menu-button" 
+                                onClick={toggleMobileMenu}
+                            >
+                                <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                {/* 모바일 메뉴 */}
+                <div className={`md:hidden ${mobileMenuOpen ? 'block' : 'hidden'}`}>
+                    <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                        <Link 
+                            to="/" 
+                            className={`block px-3 py-2 rounded-md text-base font-medium ${activeTab === 'home' ? 'bg-gray-300 dark:bg-gray-900' : 'hover:bg-gray-300 dark:hover:bg-gray-700'}`}
+                            onClick={() => {
+                                setActiveTab('home');
+                                setMobileMenuOpen(false);
+                            }}
+                        >
+                            홈
+                        </Link>
+                        <Link 
+                            to="/sassagae" 
+                            className={`block px-3 py-2 rounded-md text-base font-medium ${activeTab === 'sassagae' ? 'bg-gray-300 dark:bg-gray-900' : 'hover:bg-gray-300 dark:hover:bg-gray-700'}`}
+                            onClick={() => {
+                                setActiveTab('sassagae');
+                                setMobileMenuOpen(false);
+                            }}
+                        >
+                            사사게 게시판
+                        </Link>
+                        <Link 
+                            to="/guild" 
+                            className={`block px-3 py-2 rounded-md text-base font-medium ${activeTab === 'guild' ? 'bg-gray-300 dark:bg-gray-900' : 'hover:bg-gray-300 dark:hover:bg-gray-700'}`}
+                            onClick={() => {
+                                setActiveTab('guild');
+                                setMobileMenuOpen(false);
+                            }}
+                        >
+                            길드
+                        </Link>
+                        <Link 
+                            to="/ranking" 
+                            className={`block px-3 py-2 rounded-md text-base font-medium ${activeTab === 'ranking' ? 'bg-gray-300 dark:bg-gray-900' : 'hover:bg-gray-300 dark:hover:bg-gray-700'}`}
+                            onClick={() => {
+                                setActiveTab('ranking');
+                                setMobileMenuOpen(false);
+                            }}
+                        >
+                            순위
+                        </Link>
+                        <Link 
+                            to="/statistics" 
+                            className={`block px-3 py-2 rounded-md text-base font-medium ${activeTab === 'statistics' ? 'bg-gray-300 dark:bg-gray-900' : 'hover:bg-gray-300 dark:hover:bg-gray-700'}`}
+                            onClick={() => {
+                                setActiveTab('statistics');
+                                setMobileMenuOpen(false);
+                            }}
+                        >
+                            통계
+                        </Link>
+                        <Link 
+                            to="/tools" 
+                            className={`block px-3 py-2 rounded-md text-base font-medium ${activeTab === 'tools' ? 'bg-gray-300 dark:bg-gray-900' : 'hover:bg-gray-300 dark:hover:bg-gray-700'}`}
+                            onClick={() => {
+                                setActiveTab('tools');
+                                setMobileMenuOpen(false);
+                            }}
+                        >
+                            도구
+                        </Link>
+                    </div>
+                </div>
+            </nav>
+
+            <div className="flex-grow bg-white text-black dark:bg-black dark:text-white p-6">
+                {/* 로스트아크 이벤트 섹션 */}
+                <div className="mb-8 bg-black text-white p-4 rounded">
+                    <h2 className="text-2xl font-bold mb-4 text-center border-b border-gray-700 pb-2">진행중인 로스트아크 이벤트</h2>
 
                     {loading ? (
                         <div className="flex justify-center items-center h-40">
