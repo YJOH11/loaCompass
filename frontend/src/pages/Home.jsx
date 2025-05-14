@@ -38,7 +38,7 @@ function Home() {
         const fetchEvents = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get('http://localhost:8080/api/events');
+                const response = await axios.get('api/events');
                 setEvents(response.data);
                 setError(null);
             } catch (err) {

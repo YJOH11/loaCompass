@@ -3,11 +3,13 @@ from flask_cors import CORS
 import asyncio
 from scraper.inven_search import fetch_page, get_total_pages, fetch_all_pages, fetch_all_contents, search_posts
 from scraper.mari_shop import crawl_mari_shop
+from scraper.event_scraper import crawl_event_list
 
 app = Flask(__name__)
 CORS(app)
 
 BASE_URL = 'https://www.inven.co.kr/board/lostark/5355/'
+
 
 @app.route('/api/search', methods=['GET'])
 def search_inven():
@@ -35,10 +37,20 @@ def search_inven():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
 @app.route("/api/shop-mari", methods=["GET"])
 def shop_mari():
     data = crawl_mari_shop()
     return jsonify(data)
+
+
+@app.route("/api/events", methods=["GET"])
+def get_events():
+    try:
+        return jsonify(crawl_event_list())
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
