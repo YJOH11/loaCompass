@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const DiscordLoginButton = () => {
     const [discordUser, setDiscordUser] = useState(null);
@@ -32,12 +33,12 @@ const DiscordLoginButton = () => {
                     로그아웃 ({discordUser.username})
                 </button>
             ) : (
-                <a
-                    href={discordAuthUrl}
+                <Link
+                    to="/login"
                     className="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg shadow transition"
                 >
                     로그인
-                </a>
+                </Link>
             )}
         </>
     );
