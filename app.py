@@ -2,11 +2,17 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import asyncio
 from scraper.inven_search import fetch_page, get_total_pages, fetch_all_pages, fetch_all_contents, search_posts
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 app = Flask(__name__)
-CORS(app)  # React에서 요청 가능하게 해줌
+CORS(app)
 
 BASE_URL = 'https://www.inven.co.kr/board/lostark/5355/'
+
 
 @app.route('/api/search', methods=['GET'])
 def search_inven():
@@ -18,25 +24,89 @@ def search_inven():
 
     try:
         name = 'content' if content_search else 'subject'
-
-        # 1. 첫 페이지 HTML 가져오기
         first_html = fetch_page(BASE_URL, page=1, name=name, keyword=keyword)
         total_pages = get_total_pages(first_html)
-
-        # 2. 전체 페이지 크롤링
         search_results = asyncio.run(fetch_all_pages(BASE_URL, total_pages, name=name, keyword=keyword))
 
-        # 3. 본문도 가져올 경우
         if content_search:
             search_results = asyncio.run(fetch_all_contents(search_results))
 
-        # 4. 키워드 필터링
         filtered = search_posts(search_results, kw=keyword, content_search=content_search)
-
         return jsonify(filtered)
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/shop-mari", methods=["GET"])
+def shop_mari():
+    options = Options()
+    options.add_argument("--headless")
+    options.add_argument("--disable-gpu")
+    options.add_argument("--no-sandbox")
+
+    driver = webdriver.Chrome(options=options)
+    driver.get("https://lostark.game.onstove.com/Shop#mari")
+
+    data = {
+        "remainTime": "",
+        "items": []
+    }
+
+    try:
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_all_elements_located((By.CSS_SELECTOR, ".flip-clock-active"))
+        )
+        time_digits = driver.find_elements(By.CSS_SELECTOR, ".flip-clock-active")
+        remain_time = ""
+        for i, digit in enumerate(time_digits):
+            remain_time += digit.get_attribute("data-digit")
+            if (i + 1) % 2 == 0 and i < len(time_digits) - 1:
+                remain_time += ":"
+        data["remainTime"] = remain_time
+
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, "ul.list-items > li"))
+        )
+        items = driver.find_elements(By.CSS_SELECTOR, "ul.list-items > li")
+        for el in items[:6]:
+            try:
+                title = el.find_element(By.CSS_SELECTOR, ".item-name").text
+                image = el.find_element(By.CSS_SELECTOR, ".thumbs img").get_attribute("src")
+
+                price = ""
+                currency = "crystal"
+                original = ""
+
+                try:
+                    price_box = el.find_element(By.CLASS_NAME, "list__price")
+                    currency = price_box.find_element(By.CLASS_NAME, "icon").text
+                    price = price_box.find_element(By.TAG_NAME, "em").text
+                    try:
+                        original = price_box.find_element(By.TAG_NAME, "del").text
+                    except:
+                        pass
+                except:
+                    print(f"[{title}] 가격 정보 없음")
+
+                data["items"].append({
+                    "title": title,
+                    "image": image,
+                    "currency": currency,
+                    "price": price,
+                    "originalPrice": original
+                })
+
+            except Exception as e:
+                print("아이템 파싱 오류:", e)
+
+    except Exception as e:
+        print("크롤링 전체 실패:", e)
+    finally:
+        driver.quit()
+
+    return jsonify(data)
+
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
