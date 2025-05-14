@@ -10,6 +10,8 @@ import SassagaeCrawler from '../pages/SassagaeCrawler'
 import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
 import DiscordCallback from "../pages/DiscordCallback.jsx";
+import Login from '../pages/Login';
+import Register from '../pages/Register';
 
 const AppRouter = () => {
     return (
@@ -18,12 +20,12 @@ const AppRouter = () => {
             <Routes>
                 <Route path="/character/:name" element={<CharacterSearch />} />
                 <Route path="/" element={<Home />} />
-               {/* <Route path="/user" element={<CharacterSearch />} />*/}
                 <Route path="/sassagae" element={<SassagaeCrawler />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/discord/callback" element={<DiscordCallback />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
                 <Route path="*" element={<NotFound />} />
-
             </Routes>
             <Footer />
         </Router>
