@@ -4,7 +4,6 @@ import ShopList from '../components/ShopList';
 import {useNavigate, Link} from "react-router-dom";
 import axios from 'axios';
 
-
 function Home() {
     const navigate = useNavigate();
     const [events, setEvents] = useState([]);
@@ -177,10 +176,10 @@ function Home() {
 
                     {loading ? (
                         <div className="flex justify-center items-center h-40">
-                            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
+                            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-400 dark:border-white"></div>
                         </div>
                     ) : error ? (
-                        <div className="text-center text-red-500 py-4">{error}</div>
+                        <div className="text-center text-red-500 dark:text-red-400 py-4">{error}</div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {events.map(event => (
@@ -191,7 +190,7 @@ function Home() {
                                     rel="noopener noreferrer"
                                     className="cursor-pointer hover:opacity-90 transition-opacity"
                                 >
-                                    <div className="relative overflow-hidden rounded">
+                                    <div className="relative overflow-hidden rounded shadow">
                                         <img
                                             src={event.imageUrl}
                                             alt={event.title}
@@ -207,10 +206,16 @@ function Home() {
                     )}
                 </div>
 
-                <UpdateList />
-                <ShopList />
+                {/* 업데이트 & 마리샵 */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="bg-gray-100 dark:bg-gray-800 p-6 rounded-lg shadow">
+                        <UpdateList />
+                    </div>
+                    <div className="bg-gray-100 dark:bg-gray-800 p-6 rounded-lg shadow">
+                        <ShopList />
+                    </div>
+                </div>
             </div>
-
         </div>
     );
 }

@@ -54,7 +54,7 @@ function ShopList() {
 
     return (
         <div className="my-8">
-            <h2 className="text-2xl font-bold mb-4">🛒 마리샵</h2>
+            <h2 className="text-2xl font-bold mb-4">마리샵</h2>
 
             {remainTime && (
                 <div className="text-lg font-semibold text-red-500 mb-4">

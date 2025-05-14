@@ -9,4 +9,6 @@ public class CharacterSummaryDto {
     private List<EquipmentDto> equipments;
     private int transcendenceTotal;  // 총 초월 수치
     private List<GemDto> gems;
+    private List<EngravingDto> engravings;
+
 }
