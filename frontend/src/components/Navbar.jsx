@@ -10,7 +10,7 @@ const Navbar = () => {
     return (
         <nav className="w-full bg-white dark:bg-gray-900 text-black dark:text-white px-6 md:px-12">
             {/* 첫 번째 줄 */}
-            <div className="flex items-center justify-between py-3">
+            <div className="flex items-center justify-between py-3 pl-20">
                 <div className="text-2xl font-bold">
                     <Link to="/" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -25,7 +25,7 @@ const Navbar = () => {
                     <CharacterSearchInput />
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 mr-3">
                     <DarkToggle />
                 </div>
 
@@ -35,8 +35,8 @@ const Navbar = () => {
             </div>
 
             {/* 두 번째 줄 - 탭 네비게이션 */}
-            <div className="w-full bg-gray-200 text-gray-800 dark:bg-gray-800 dark:text-white shadow-sm">
-                <div className="flex justify-center space-x-4 py-2">
+            <div className="w-screen relative left-1/2 right-1/2 -translate-x-1/2 bg-gray-200 text-gray-800 dark:bg-gray-800 dark:text-white shadow-sm">
+                <div className="flex w-full">
                     {[
                         { 
                             to: '/', 
@@ -97,7 +97,7 @@ const Navbar = () => {
                             key={tab.to}
                             to={tab.to}
                             className={({ isActive }) =>
-                                `px-4 py-2 rounded-md text-sm font-medium flex items-center ${
+                                `px-4 py-4 rounded-md text-sm font-medium flex items-center justify-center flex-1 ${
                                     isActive
                                         ? 'bg-gray-300 dark:bg-gray-900'
                                         : 'hover:bg-gray-300 dark:hover:bg-gray-700'
