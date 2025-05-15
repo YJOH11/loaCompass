@@ -4,6 +4,7 @@ import asyncio
 from scraper.inven_search import fetch_page, get_total_pages, fetch_all_pages, fetch_all_contents, search_posts
 from scraper.mari_shop import crawl_mari_shop
 from scraper.event_scraper import crawl_event_list
+from scraper.population import fetch_population_data
 
 app = Flask(__name__)
 CORS(app)
@@ -50,7 +51,12 @@ def get_events():
         return jsonify(crawl_event_list())
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
 
+@app.route('/api/population', methods=['GET'])
+def get_population_data():
+    data = fetch_population_data()
+    return jsonify({ "KR": data })  # Spring 쪽에서 .get("KR")로 파싱
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
