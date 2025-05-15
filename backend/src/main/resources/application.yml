@@ -9,7 +9,6 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   profiles:
     active: local
-
   jpa:
     hibernate:
       ddl-auto: update  # 또는 create, validate
@@ -17,17 +16,20 @@ spring:
     properties:
       hibernate:
         format_sql: true
-
+  main:
+    allow-circular-references: true
 mybatis:
   mapper-locations: classpath:mapper/**/*.xml
   type-aliases-package: com.finalteam.loacompass.entity
 
-lostark:
-  api:
-    base-url: https://developer-lostark.game.onstove.com
-    key: ${LOSTARK_API_KEY}
 
-discord:
-  client-id: ${DISCORD_CLIENT_ID}
-  client-secret: ${DISCORD_CLIENT_SECRET}
-  redirect-uri: ${DISCORD_REDIRECT_URI}
+
+# JWT 설정
+jwt:
+  secret: finalteam_loacompass_secret_key_very_long_at_least_256_bits_please_change_in_production
+  expiration: 1800000  # 30분 (밀리초 단위)
+
+# 로깅 설정
+logging:
+  level:
+    org.springframework.security: DEBUG

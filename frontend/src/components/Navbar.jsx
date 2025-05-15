@@ -1,11 +1,36 @@
 // components/Navbar.jsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import DarkToggle from "./DarkToggle.jsx";
 import CharacterSearchInput from './CharacterSearchInput';
-import { Link, NavLink } from "react-router-dom";
-import DiscordLoginButton from "./DiscordLoginButton.jsx";
+import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 
 const Navbar = () => {
+    const [user, setUser] = useState(null);
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    // 로컬 스토리지에서 사용자 정보 가져오기
+    const loadUserFromStorage = () => {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+        } else {
+            setUser(null);
+        }
+    };
+
+    // 컴포넌트 마운트 시와 경로 변경 시 사용자 정보 확인
+    useEffect(() => {
+        loadUserFromStorage();
+    }, [location.pathname]); // 경로가 변경될 때마다 실행
+
+    // 로그아웃 처리
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        setUser(null);
+        navigate('/');
+    };
 
     return (
         <nav className="w-full bg-white dark:bg-gray-900 text-black dark:text-white px-6 md:px-12">
@@ -30,14 +55,32 @@ const Navbar = () => {
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <DiscordLoginButton />
-                    <Link to="/register" className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-gray-800 dark:text-white bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-100 dark:hover:bg-gray-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6z" />
-                            <path d="M16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z" />
-                        </svg>
-                        회원가입
-                    </Link>
+                    {user ? (
+                        <div className="flex items-center gap-3">
+                            <span className="text-sm font-medium text-gray-800 dark:text-white">
+                                {user.nickname || user.username}님
+                            </span>
+                            <button 
+                                onClick={handleLogout}
+                                className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-white bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 border border-transparent rounded-md transition"
+                            >
+                                로그아웃
+                            </button>
+                        </div>
+                    ) : (
+                        <>
+                            <Link to="/login" className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-white bg-indigo-500 hover:bg-indigo-600 border border-transparent rounded-md transition">
+                                로그인
+                            </Link>
+                            <Link to="/register" className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-gray-800 dark:text-white bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-100 dark:hover:bg-gray-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6z" />
+                                    <path d="M16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z" />
+                                </svg>
+                                회원가입
+                            </Link>
+                        </>
+                    )}
                 </div>
             </div>
 
