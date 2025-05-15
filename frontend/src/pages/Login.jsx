@@ -31,15 +31,23 @@ function Login() {
         
         setIsLoading(true);
         try {
-            // 실제 API 연동 시 이 부분을 수정
-            // const response = await axios.post('http://localhost:8080/api/auth/login', {
-            //     username: formData.username,
-            //     password: formData.password
-            // });
+            // 실제 API 연동
+            const response = await axios.post('http://localhost:8080/api/auth/login', {
+                username: formData.username,
+                password: formData.password
+            });
             
-            // 임시 로그인 처리 (API 연동 후 수정 필요)
-            // localStorage.setItem('token', response.data.token);
-            // localStorage.setItem('user', JSON.stringify(response.data.user));
+            // 로그인 처리
+            const userData = {
+                id: response.data.id,
+                username: response.data.username,
+                email: response.data.email,
+                nickname: response.data.nickname,
+                role: response.data.role
+            };
+            
+            localStorage.setItem('token', response.data.token);
+            localStorage.setItem('user', JSON.stringify(userData));
             
             if (formData.rememberMe) {
                 localStorage.setItem('rememberedUser', formData.username);
@@ -48,6 +56,7 @@ function Login() {
             // 홈 페이지로 리디렉션
             navigate('/');
         } catch (error) {
+            console.error('로그인 오류:', error);
             if (error.response && error.response.status === 401) {
                 setError('아이디 또는 비밀번호가 올바르지 않습니다.');
             } else {

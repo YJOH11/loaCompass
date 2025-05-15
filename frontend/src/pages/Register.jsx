@@ -86,15 +86,15 @@ function Register() {
         setIsLoading(true);
         try {
             // 실제 API 연동 시 이 부분을 수정
-            // const response = await axios.post('http://localhost:8080/api/auth/register', {
-            //     username: formData.username,
-            //     email: formData.email,
-            //     password: formData.password,
-            //     nickname: formData.nickname
-            // });
+            const response = await axios.post('http://localhost:8080/api/auth/signup', {
+                username: formData.username,
+                email: formData.email,
+                password: formData.password,
+                nickname: formData.nickname
+            });
             
-            // 임시 성공 메시지 (API 연동 후 수정 필요)
-            setSuccessMessage('회원가입이 완료되었습니다! 로그인 페이지로 이동합니다.');
+            // 성공 메시지를 서버 응답에서 가져옴
+            setSuccessMessage(response.data);
             setTimeout(() => {
                 navigate('/login');
             }, 2000);
