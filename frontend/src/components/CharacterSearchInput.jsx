@@ -1,8 +1,7 @@
-// components/CharacterSearchInput.jsx
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function CharacterSearchInput({ favorites, setFavorites }) {
+export default function CharacterSearchInput({ favorites = [], setFavorites }) {
     const [keyword, setKeyword] = useState("");
     const [history, setHistory] = useState([]);
     const [showDropdown, setShowDropdown] = useState(false);
@@ -69,8 +68,8 @@ export default function CharacterSearchInput({ favorites, setFavorites }) {
     };
 
     const sortedHistory = [
-        ...(favorites || []),
-        ...history.filter((term) => !(favorites || []).includes(term))
+        ...favorites,
+        ...history.filter((term) => !favorites.includes(term))
     ];
 
     return (
