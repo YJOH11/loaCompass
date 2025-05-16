@@ -22,6 +22,15 @@ mybatis:
   mapper-locations: classpath:mapper/**/*.xml
   type-aliases-package: com.finalteam.loacompass.entity
 
+lostark:
+  api:
+    base-url: https://developer-lostark.game.onstove.com
+    key: ${LOSTARK_API_KEY}
+
+discord:
+  client-id: ${DISCORD_CLIENT_ID}
+  client-secret: ${DISCORD_CLIENT_SECRET}
+  redirect-uri: ${DISCORD_REDIRECT_URI}
 
 
 # JWT 설정

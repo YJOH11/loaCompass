@@ -19,7 +19,7 @@ function Home() {
                     
                     {/* 메인 콘텐츠 */}
                     <div>
-                        <div className="max-w-6xl mx-auto">
+                        <div className="max-w-6xl mx-auto">server_name
                             <WelcomeBanner />
                             {/* 로스트아크 이벤트 섹션 */}
                             <EventSection />
@@ -67,7 +67,6 @@ function Home() {
                                             >이전 상품 보러가기
                                         </a>
                                     </div>
-
 
                                     <div className="p-4">
                                         <ShopList />
