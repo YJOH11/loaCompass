@@ -33,18 +33,25 @@ public class LostArkClient {
 
     // 카드 세트 정보를 가져오는 메서드
     public CardSetDto getCardSet(String nickname) {
-        CardResponse cardResponse = lostArkWebClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/armories/characters/{name}/cards")
-                        .build(nickname))
-                .retrieve()
-                .bodyToMono(CardResponse.class)
-                .block();
+        try {
+            CardResponse cardResponse = lostArkWebClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/armories/characters/{name}/cards")
+                            .build(nickname))
+                    .retrieve()
+                    .bodyToMono(CardResponse.class)
+                    .block();
 
-        log.debug("=== cardResponse ===");
-        log.debug("Effects: {}", cardResponse.getEffects());
+            if (cardResponse == null || cardResponse.getEffects() == null) {
+                return null;
+            }
 
-        return CardParser.extractActiveCardSet(cardResponse);
+            return CardParser.extractActiveCardSet(cardResponse);
+
+        } catch (Exception e) {
+            log.warn("❌ 카드 정보 요청 실패: {}", nickname);
+            return null;
+        }
     }
 
     private boolean isGear(String type) {
@@ -85,38 +92,52 @@ public class LostArkClient {
     }
 
     public CharacterSummaryDto getCharacterSummary(String nickname) {
-        ArmoryResponse response = lostArkWebClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/armories/characters/{name}")
-                        .build(nickname))
-                .retrieve()
-                .bodyToMono(ArmoryResponse.class)
-                .block();
+        try {
+            ArmoryResponse response = lostArkWebClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/armories/characters/{name}")
+                            .build(nickname))
+                    .retrieve()
+                    .bodyToMono(ArmoryResponse.class)
+                    .block();
 
-        CharacterSummaryDto summary = new CharacterSummaryDto();
-        summary.setProfile(response.getArmoryProfile());
-
-        List<EquipmentDto> equipmentList = parseEquipments(response.getArmoryEquipment());
-        summary.setEquipments(equipmentList);
-        summary.setTranscendenceTotal(calculateTotalTranscendence(equipmentList));
-
-        List<GemDto> gems = response.getArmoryGem() != null ? response.getArmoryGem().getGems() : null;
-        if (gems != null) {
-            for (GemDto gem : gems) {
-                GemTooltipParser.populateGemDetails(gem);
+            if (response == null || response.getArmoryProfile() == null) {
+                return null;
             }
-            summary.setGems(gems);
+
+            CharacterSummaryDto summary = new CharacterSummaryDto();
+            summary.setProfile(response.getArmoryProfile());
+
+            List<EquipmentDto> equipmentList = parseEquipments(response.getArmoryEquipment());
+            summary.setEquipments(equipmentList);
+            summary.setTranscendenceTotal(calculateTotalTranscendence(equipmentList));
+
+            List<GemDto> gems = response.getArmoryGem() != null ? response.getArmoryGem().getGems() : null;
+            if (gems != null) {
+                for (GemDto gem : gems) {
+                    GemTooltipParser.populateGemDetails(gem);
+                }
+                summary.setGems(gems);
+            }
+
+            if (response.getArmoryEngraving() != null) {
+                List<EngravingDto> engravings = EngravingParser.parse(
+                        response.getArmoryEngraving().getArkPassiveEffects()
+                );
+                summary.getProfile().setEngravings(engravings);
+            }
+
+            CardSetDto cardSet = getCardSet(nickname);
+            if (cardSet != null) {
+                summary.getProfile().setCardSet(cardSet);
+            }
+
+            return summary;
+
+        } catch (Exception e) {
+            log.warn(" 캐릭터 정보 요청 실패: {}", nickname, e);
+            return null;
         }
-
-        List<EngravingDto> engravings = EngravingParser.parse(
-                response.getArmoryEngraving().getArkPassiveEffects()
-        );
-        summary.getProfile().setEngravings(engravings);
-
-        CardSetDto cardSet = getCardSet(nickname);
-        summary.getProfile().setCardSet(cardSet);
-
-        return summary;
     }
 
     private int calculateTotalTranscendence(List<EquipmentDto> equipmentList) {
