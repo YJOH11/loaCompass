@@ -39,6 +39,13 @@ public class SecurityConfig {
                 }) // WebConfig의 CORS 설정을 사용하도록 변경
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/crawling/**").permitAll()
+                        .requestMatchers("/api/events/**").permitAll()
+                        .requestMatchers("/api/shop/**").permitAll()
+                        .requestMatchers("/api/character/**").permitAll()
+                        .requestMatchers("/api/lostark/**").permitAll()
+                        .requestMatchers("/api/update/**").permitAll()
+                        .requestMatchers("/api/user/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
