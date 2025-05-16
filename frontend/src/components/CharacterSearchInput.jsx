@@ -72,6 +72,8 @@ export default function CharacterSearchInput({ favorites = [], setFavorites }) {
         ...history.filter((term) => !favorites.includes(term))
     ];
 
+
+
     return (
         <div className="relative w-full" ref={wrapperRef}>
             <form onSubmit={handleSearch}>
@@ -96,43 +98,90 @@ export default function CharacterSearchInput({ favorites = [], setFavorites }) {
                     🔍
                 </button>
             </form>
-
-            {showDropdown && sortedHistory.length > 0 && (
+            {showDropdown && (history.length > 0 || favorites.length > 0) && (
                 <div className="absolute top-full mt-1 w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow z-20">
-                    <div className="flex justify-between items-center px-4 py-2 text-xs text-gray-500 dark:text-gray-400 border-b">
-                        <span>최근 검색어</span>
+                    {/* 상단 컨트롤 */}
+                    <div className="flex justify-end px-4 py-2 text-xs text-gray-500 dark:text-gray-400 border-b">
                         <button
                             onClick={() => {
                                 localStorage.removeItem("searchHistory");
                                 setHistory([]);
                             }}
                             className="hover:text-red-500"
-                        >전체삭제</button>
-                    </div>
-                    {sortedHistory.map((term) => (
-                        <div
-                            key={term}
-                            onClick={() => handleSelect(term)}
-                            className="flex justify-between items-center px-4 py-2 text-sm text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
                         >
-                            <div className="flex items-center gap-2">
-                                <button
-                                    onClick={(e) => toggleFavorite(term, e)}
-                                    className={`text-lg ${favorites.includes(term) ? 'text-yellow-400' : 'text-gray-400'} hover:text-yellow-500`}
-                                >★</button>
-                                <span>{term}</span>
+                            전체삭제
+                        </button>
+                    </div>
+
+
+
+
+                    {/* 좌우 레이아웃 */}
+                    <div className="flex divide-x divide-gray-300 dark:divide-gray-600">
+                        {/* 왼쪽: 최근 검색어 */}
+                        <div className="w-1/2 max-h-60 overflow-y-auto">
+                            <div className="px-4 py-2 text-xs text-gray-500 dark:text-gray-400 border-b">
+                                최근 검색한 유저명
                             </div>
-                            <button
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleRemove(term);
-                                }}
-                                className="text-gray-400 hover:text-red-400 ml-2"
-                            >×</button>
+                            {history
+                                .filter((term) => !favorites.includes(term))
+                                .map((term) => (
+                                    <div
+                                        key={term}
+                                        onClick={() => handleSelect(term)}
+                                        className="flex justify-between items-center px-4 py-2 text-sm text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                                    >
+                                        <span>{term}</span>
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleRemove(term);
+                                            }}
+                                            className="text-gray-400 hover:text-red-400 ml-2"
+                                        >
+                                            ×
+                                        </button>
+                                    </div>
+                                ))}
                         </div>
-                    ))}
+
+                        {/* 오른쪽: 즐겨찾기 */}
+                        <div className="w-1/2 max-h-60 overflow-y-auto">
+                            <div className="px-4 py-2 text-xs text-gray-500 dark:text-gray-400 border-b">
+                                즐겨찾기
+                            </div>
+                            {favorites.map((term) => (
+                                <div
+                                    key={term}
+                                    onClick={() => handleSelect(term)}
+                                    className="flex justify-between items-center px-4 py-2 text-sm text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                                >
+                                    <div className="flex items-center gap-2">
+                                        <button
+                                            onClick={(e) => toggleFavorite(term, e)}
+                                            className="text-yellow-400 hover:text-yellow-500"
+                                        >
+                                            ★
+                                        </button>
+                                        <span>{term}</span>
+                                    </div>
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleRemove(term);
+                                        }}
+                                        className="text-gray-400 hover:text-red-400 ml-2"
+                                    >
+                                        ×
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 </div>
             )}
+
+
         </div>
     );
 }
