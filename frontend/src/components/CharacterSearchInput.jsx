@@ -69,8 +69,8 @@ export default function CharacterSearchInput({ favorites, setFavorites }) {
     };
 
     const sortedHistory = [
-        ...favorites,
-        ...history.filter((term) => !favorites.includes(term))
+        ...(favorites || []),
+        ...history.filter((term) => !(favorites || []).includes(term))
     ];
 
     return (
