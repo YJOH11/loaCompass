@@ -46,6 +46,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/lostark/**").permitAll()
                         .requestMatchers("/api/update/**").permitAll()
                         .requestMatchers("/api/user/**").permitAll()
+                        .requestMatchers("/api/statistics/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
