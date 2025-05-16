@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-export default function CharacterProfileCard({ profile }) {
+export default function CharacterProfileCard({ profile, onFavoriteToggle }) {
   const [favorites, setFavorites] = useState(() => {
     const stored = localStorage.getItem("favoriteHistory");
     try {
@@ -23,7 +23,30 @@ export default function CharacterProfileCard({ profile }) {
     }
     localStorage.setItem("favoriteHistory", JSON.stringify(updated));
     setFavorites(updated);
+    
+    // 부모 컴포넌트에 즐겨찾기 변경 알림 (마이페이지에서 즐겨찾기 목록 업데이트)
+    if (onFavoriteToggle) {
+      onFavoriteToggle(profile.CharacterName, !isFavorite);
+    }
   };
+
+  // 로컬 스토리지 변경 감지하여 즐겨찾기 상태 업데이트
+  useEffect(() => {
+    const handleStorageChange = () => {
+      try {
+        const stored = localStorage.getItem("favoriteHistory");
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) {
+          setFavorites(parsed);
+        }
+      } catch (error) {
+        console.error("Failed to update favorites from storage", error);
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
 
   return (
     <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded shadow text-black dark:text-white w-full">

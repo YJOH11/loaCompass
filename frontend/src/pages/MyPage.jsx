@@ -5,6 +5,7 @@ import axios from 'axios';
 const MyPage = () => {
   const [user, setUser] = useState(null);
   const [characters, setCharacters] = useState([]);
+  const [favoriteCharacters, setFavoriteCharacters] = useState([]);
   const [activeTab, setActiveTab] = useState('profile');
   const [loading, setLoading] = useState(true);
   const [tokenExists, setTokenExists] = useState(false);
@@ -55,16 +56,55 @@ const MyPage = () => {
       });
       
       // 로컬 스토리지에서 즐겨찾기 캐릭터 불러오기
-      const favoriteChars = localStorage.getItem('favoriteCharacters');
-      if (favoriteChars) {
+      const favoriteHistory = localStorage.getItem('favoriteHistory');
+      if (favoriteHistory) {
         try {
-          setCharacters(JSON.parse(favoriteChars));
+          const parsedFavorites = JSON.parse(favoriteHistory);
+          setFavoriteCharacters(parsedFavorites);
+          
+          // 즐겨찾기 캐릭터 이름 목록 설정
+          setCharacters(parsedFavorites.map(name => ({
+            name,
+            class: '정보 로딩 중...',
+            server: '정보 로딩 중...'
+          })));
+          
+          // 각 캐릭터 정보를 API에서 가져오기
+          const fetchCharacterDetails = async () => {
+            const updatedCharacters = [];
+            
+            for (const characterName of parsedFavorites) {
+              try {
+                const response = await axios.get(`http://localhost:8080/api/character/${characterName}`);
+                if (response.data?.profile) {
+                  updatedCharacters.push({
+                    name: response.data.profile.CharacterName,
+                    class: response.data.profile.CharacterClassName,
+                    server: response.data.profile.ServerName,
+                    itemLevel: response.data.profile.ItemAvgLevel,
+                    image: response.data.profile.CharacterImage
+                  });
+                }
+              } catch (err) {
+                console.error(`Error fetching character ${characterName}:`, err);
+                // 에러가 발생해도 기본 정보라도 표시
+                updatedCharacters.push({ name: characterName, class: '정보 없음', server: '정보 없음' });
+              }
+            }
+            
+            setCharacters(updatedCharacters);
+          };
+          
+          fetchCharacterDetails();
+          
         } catch (e) {
           console.error('Error parsing favorite characters data', e);
           setCharacters([]);
+          setFavoriteCharacters([]);
         }
       } else {
         setCharacters([]);
+        setFavoriteCharacters([]);
       }
     } else {
       setLoading(false);
@@ -79,10 +119,16 @@ const MyPage = () => {
   
   // 즐겨찾기 캐릭터 삭제
   const removeCharacter = (index) => {
-    const updatedCharacters = [...characters];
-    updatedCharacters.splice(index, 1);
-    setCharacters(updatedCharacters);
-    localStorage.setItem('favoriteCharacters', JSON.stringify(updatedCharacters));
+    const characterName = favoriteCharacters[index];
+    const updatedFavorites = [...favoriteCharacters];
+    updatedFavorites.splice(index, 1);
+    
+    // 로컬스토리지 업데이트
+    localStorage.setItem('favoriteHistory', JSON.stringify(updatedFavorites));
+    
+    // 상태 업데이트
+    setFavoriteCharacters(updatedFavorites);
+    setCharacters(prevCharacters => prevCharacters.filter((_, i) => i !== index));
   };
 
   // 비밀번호 변경 처리 함수
@@ -283,7 +329,7 @@ const MyPage = () => {
           
           {activeTab === 'characters' && (
             <div>
-              <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">내 캐릭터</h2>
+              <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">즐겨찾기한 캐릭터</h2>
               {characters.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {characters.map((character, index) => (
@@ -297,11 +343,19 @@ const MyPage = () => {
                         </svg>
                       </button>
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-md bg-blue-600 flex items-center justify-center">
-                          <span className="text-white font-bold">{character.itemLevel || '??'}</span>
-                        </div>
+                        {character.image ? (
+                          <img 
+                            src={character.image} 
+                            alt={character.name} 
+                            className="w-12 h-12 rounded-md object-cover"
+                          />
+                        ) : (
+                          <div className="w-12 h-12 rounded-md bg-blue-600 flex items-center justify-center">
+                            <span className="text-white font-bold">{character.itemLevel || '??'}</span>
+                          </div>
+                        )}
                         <div>
-                          <h3 className="font-bold text-gray-800 dark:text-white">{character.name}</h3>
+                          <Link to={`/character/${character.name}`} className="font-bold text-gray-800 dark:text-white hover:text-blue-600 dark:hover:text-blue-400">{character.name}</Link>
                           <p className="text-sm text-gray-500 dark:text-gray-400">{character.class} · {character.server}</p>
                         </div>
                       </div>
@@ -310,7 +364,7 @@ const MyPage = () => {
                 </div>
               ) : (
                 <div className="bg-gray-50 dark:bg-gray-700 p-8 rounded-md text-center">
-                  <p className="text-gray-600 dark:text-gray-300 mb-4">등록된 캐릭터가 없습니다.</p>
+                  <p className="text-gray-600 dark:text-gray-300 mb-4">즐겨찾기한 캐릭터가 없습니다.</p>
                   <Link to="/character/search" className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 inline-block">
                     캐릭터 검색하기
                   </Link>
