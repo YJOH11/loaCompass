@@ -85,6 +85,7 @@ export default function CharacterSearchPage() {
               <div className="min-w-[260px] max-w-[260px] bg-gray-100 dark:bg-gray-800 rounded-lg p-6 shadow">
                 <CharacterProfileCard
                   profile={characterData.profile}
+                  favorites={favorites}  
                   onFavoriteToggle={handleFavoriteToggle}
                 />
               </div>
