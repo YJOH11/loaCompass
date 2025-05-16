@@ -13,6 +13,17 @@ function Login() {
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
+    // 현재 호스트 URL 가져오기 (포트 포함)
+    const currentHost = window.location.origin;
+    
+    // 디스코드 인증 URL 생성
+    const CLIENT_ID = '1370226057252438068';
+    const REDIRECT_URI = encodeURIComponent(`${currentHost}/discord/callback`);
+    const RESPONSE_TYPE = 'code';
+    const SCOPE = encodeURIComponent('identify email');
+    
+    const discordAuthUrl = `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=${SCOPE}`;
+
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
         setFormData(prev => ({
@@ -173,7 +184,7 @@ function Login() {
 
                         <div className="mt-6">
                             <a
-                                href="https://discord.com/api/oauth2/authorize?client_id=1370226057252438068&redirect_uri=http%3A%2F%2Flocalhost%3A5173%2Fdiscord%2Fcallback&response_type=code&scope=identify%20email"
+                                href={discordAuthUrl}
                                 className="w-full flex justify-center items-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                             >
                                 <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
