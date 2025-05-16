@@ -1,29 +1,31 @@
-// CharacterSearch.jsx
+// 통합된 CharacterSearchPage.jsx
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import CharacterSearchInput from "../components/CharacterSearchInput";
 import CharacterProfileCard from "../components/CharacterProfileCard";
 import GemList from "../components/Gem/GemList";
-import EquipmentAccessoryRow from "../components/Equipment/EquipmentAccessoryRow"
+import EquipmentAccessoryRow from "../components/Equipment/EquipmentAccessoryRow";
 
-export default function CharacterSearch() {
+export default function CharacterSearchPage() {
   const { name: characterName } = useParams();
   const [characterData, setCharacterData] = useState(null);
   const [hasSearched, setHasSearched] = useState(false);
-  const [isLoading, setIsLoading] = useState(false); // 👈 추가
+  const [isLoading, setIsLoading] = useState(false);
+  const [favorites, setFavorites] = useState(() => JSON.parse(localStorage.getItem("favoriteHistory") || "[]"));
 
   useEffect(() => {
     const fetchCharacter = async () => {
-      setIsLoading(true); // 👈 검색 시작
+      setIsLoading(true);
       try {
         const response = await axios.get(`http://localhost:8080/api/character/${characterName}`);
-        if (response.data && response.data.profile) {
+        if (response.data?.profile) {
           setCharacterData(response.data);
         } else {
           setCharacterData(null);
         }
-      } catch (error) {
-        console.error(error);
+      } catch (err) {
+        console.error(err);
         setCharacterData(null);
       }
       setHasSearched(true);
@@ -32,6 +34,14 @@ export default function CharacterSearch() {
 
     if (characterName) fetchCharacter();
   }, [characterName]);
+
+  const handleFavoriteToggle = (name, isNowFavorite) => {
+    const updated = isNowFavorite
+        ? [name, ...favorites]
+        : favorites.filter(n => n !== name);
+    localStorage.setItem("favoriteHistory", JSON.stringify(updated));
+    setFavorites(updated);
+  };
 
   const gears = characterData?.equipments?.filter((item) =>
       ["무기", "투구", "상의", "하의", "장갑", "어깨"].includes(item.Type)
@@ -47,6 +57,8 @@ export default function CharacterSearch() {
 
   return (
       <div className="min-h-screen bg-white text-black dark:bg-gray-900 dark:text-white p-6">
+        <CharacterSearchInput favorites={favorites} setFavorites={setFavorites} />
+
         {isLoading ? (
             <p className="text-center text-gray-500 dark:text-gray-400">잠시만 기다려주세요</p>
         ) : hasSearched && characterData ? (
@@ -58,7 +70,10 @@ export default function CharacterSearch() {
               <div className="flex flex-col items-center">
                 <div className="flex w-full max-w-[1280px] gap-6">
                   <div className="min-w-[260px] max-w-[260px] bg-gray-100 dark:bg-gray-800 rounded-lg p-6 shadow">
-                    <CharacterProfileCard profile={characterData.profile} />
+                    <CharacterProfileCard
+                        profile={characterData.profile}
+                        onFavoriteToggle={handleFavoriteToggle}
+                    />
                   </div>
                   <div className="flex-1">
                     <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-4 shadow">
@@ -84,12 +99,13 @@ export default function CharacterSearch() {
                           ))}
                         </div>
                       </div>
+
                     </div>
                   </div>
                 </div>
               </div>
             </>
-        ) : hasSearched && !characterData ? (
+        ) : hasSearched ? (
             <p className="text-center text-red-500 dark:text-red-400">해당 유저가 존재하지 않습니다.</p>
         ) : null}
       </div>
