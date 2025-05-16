@@ -6,39 +6,29 @@ const WelcomeBanner = () => (
     <div 
       className="p-8 md:p-12 relative"
       style={{ 
-        backgroundImage: `url('https://www.playlostark.com/en-us/news/articles/june-2023-release-notes/images/LA_S3_Banner_1920x1080.jpg')`,
+        backgroundImage: `url('/배너이미지.jpg')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         minHeight: '380px'
       }}
     >
-      {/* 오버레이 */}
-      <div className="absolute inset-0 bg-gradient-to-r from-blue-900/80 via-blue-800/70 to-transparent"></div>
+      {/* 오버레이 - 투명도 낮춤 */}
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-900/30 to-transparent"></div>
       
       {/* 상단 장식 */}
       <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-400"></div>
       
-      {/* 로스트아크 로고 */}
-      <div className="absolute -top-8 right-8 transform hover:scale-105 transition-transform duration-300" style={{ width: "20rem", height: "20rem" }}>
-        <div className="relative w-full h-full">
-          <div className="absolute inset-0 animate-pulse bg-amber-400/20 rounded-full filter blur-xl"></div>
-          <img 
-            src="/로고.png" 
-            alt="Lost Ark Logo" 
-            className="w-full h-full object-contain drop-shadow-[0_0_15px_rgba(251,191,36,0.3)]"
-          />
-        </div>
-      </div>
+     
 
 
       
       {/* 콘텐츠 */}
       <div className="max-w-3xl relative z-10">
         <div className="flex flex-col pl-6 border-l-4 border-amber-500 mb-8 mt-2">
-          <h1 className="text-3xl md:text-4xl font-bold text-amber-300 tracking-wide leading-tight drop-shadow-lg mb-3">
+          <h1 className="text-3xl md:text-4xl font-extrabold text-amber-300 tracking-wide leading-tight drop-shadow-[0_4px_8px_rgba(0,0,0,0.9)] mb-3">
             로침반에 오신 것을<br/>환영합니다
           </h1>
-          <p className="text-lg md:text-xl text-blue-100 leading-relaxed drop-shadow-md">
+          <p className="text-lg md:text-xl text-white font-medium leading-relaxed drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
             아크라시아의 모험가여! 최신 업데이트, 이벤트 정보,<br/>그리고 다양한 로스트아크 게임 콘텐츠를 한 곳에서 만나보세요.
           </p>
         </div>
@@ -69,7 +59,7 @@ const WelcomeBanner = () => (
       </div>
       
       {/* 하단 테마 요소 */}
-      <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-blue-900/90 to-transparent"></div>
+      <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-blue-900/50 to-transparent"></div>
       <div className="absolute bottom-0 left-0 w-full h-2 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-400"></div>
       
     </div>
