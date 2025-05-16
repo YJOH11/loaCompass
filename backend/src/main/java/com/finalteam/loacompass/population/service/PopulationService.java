@@ -1,8 +1,8 @@
 package com.finalteam.loacompass.population.service;
 
-import com.finalteam.loacompass.population.dto.PopulationDto;
 import com.finalteam.loacompass.population.entity.PopulationLog;
 import com.finalteam.loacompass.population.repository.PopulationLogRepository;
+import com.finalteam.loacompass.crawling.dto.PopulationCrawlDto;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -17,15 +17,15 @@ public class PopulationService {
         this.repository = repository;
     }
 
-    public void savePopulationSnapshot(List<PopulationDto> dtoList) {
+    public void savePopulationSnapshot(List<PopulationCrawlDto> dtoList) {
         LocalDateTime now = LocalDateTime.now();  // 한 번만 생성
 
-        for (PopulationDto dto : dtoList) {
+        for (PopulationCrawlDto dto : dtoList) {
             PopulationLog log = PopulationLog.builder()
                     .serverName(dto.getServer())
                     .population(dto.getPopulation())
                     .changeRate(dto.getChange())
-                    .recordedAt(now)  // 모두 동일한 시간
+                    .recordedAt(now)
                     .build();
 
             repository.save(log);
@@ -43,5 +43,4 @@ public class PopulationService {
     public List<PopulationLog> getServerRanking() {
         return repository.findRankedSnapshot();
     }
-
-    }
+}

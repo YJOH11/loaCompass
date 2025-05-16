@@ -53,10 +53,10 @@ def get_events():
         return jsonify({"error": str(e)}), 500
     
 
-@app.route('/api/population', methods=['GET'])
-def get_population_data():
-    data = fetch_population_data()
-    return jsonify({ "KR": data })  # Spring 쪽에서 .get("KR")로 파싱
+@app.route('/api/population')
+def get_population():
+    return jsonify(fetch_population_data())
 
-if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+
+if __name__ == "__main__":
+    app.run(debug=True)
