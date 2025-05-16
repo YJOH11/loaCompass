@@ -5,12 +5,16 @@ import com.finalteam.loacompass.population.dto.ServerPopulationDto;
 import com.finalteam.loacompass.population.dto.TopCharacterDto;
 import com.finalteam.loacompass.population.entity.CharacterRecord;
 import com.finalteam.loacompass.population.repository.CharacterRecordRepository;
+import com.finalteam.loacompass.population.dto.LevelRangeDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -45,5 +49,37 @@ public class PopulationStatisticsService {
                 record.getCharacterClass(),
                 record.getServerName()
         );
+    }
+
+    public List<LevelRangeDto> getTodayLevelDistribution() {
+        LocalDate today = LocalDate.now();
+        List<CharacterRecord> records = repository.findAllByRecordedAt(today);
+
+        Map<String, Map<String, Long>> grouped = records.stream()
+                .collect(Collectors.groupingBy(
+                        CharacterRecord::getServerName,
+                        Collectors.groupingBy(
+                                r -> levelBin(r.getItemLevel()),
+                                Collectors.counting()
+                        )
+                ));
+
+        List<LevelRangeDto> result = new ArrayList<>();
+        for (var serverEntry : grouped.entrySet()) {
+            String server = serverEntry.getKey();
+            for (var binEntry : serverEntry.getValue().entrySet()) {
+                result.add(new LevelRangeDto(server, binEntry.getKey(), binEntry.getValue()));
+            }
+        }
+
+        return result;
+    }
+
+    private String levelBin(float level) {
+        if (level >= 1760f) return "1760+";
+        if (level < 1640f) return "1640 미만";
+        int lower = ((int) level / 10) * 10;
+        int upper = lower + 10;
+        return lower + "-" + upper;
     }
 }

@@ -1,5 +1,6 @@
 package com.finalteam.loacompass.population.controller;
 
+import com.finalteam.loacompass.population.dto.LevelRangeDto;
 import com.finalteam.loacompass.population.dto.ServerClassDistributionDto;
 import com.finalteam.loacompass.population.dto.ServerPopulationDto;
 import com.finalteam.loacompass.population.dto.TopCharacterDto;
@@ -31,5 +32,10 @@ public class PopulationStatisticsController {
     @GetMapping("/top-player")
     public TopCharacterDto getTopPlayer() {
         return service.getTodayTopCharacter();
+    }
+
+    @GetMapping("/server-level-distribution")
+    public List<LevelRangeDto> getLevelDistribution() {
+        return service.getTodayLevelDistribution();
     }
 }

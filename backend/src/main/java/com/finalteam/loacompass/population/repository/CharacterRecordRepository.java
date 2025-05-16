@@ -19,5 +19,8 @@ public interface CharacterRecordRepository extends JpaRepository<CharacterRecord
     List<Object[]> getServerClassDistribution(@Param("date") LocalDate date);
 
     Optional<CharacterRecord> findTopByRecordedAtOrderByItemLevelDesc(LocalDate date);
+
+    List<CharacterRecord> findAllByRecordedAt(LocalDate recordedAt);
+
 }
 
