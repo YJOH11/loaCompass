@@ -13,7 +13,7 @@ export default function Home() {
             <FloatingAd position="right" />
 
             {/* 본문 */}
-            <div className="flex justify-center w-full px-4">
+            <div className="flex justify-center w-full px-4 mt-6">
                 <div className="w-full max-w-screen-xl">
                     <div className="mx-auto max-w-[960px]">
                         {/* 환영 배너 + 이벤트 */}
@@ -23,7 +23,7 @@ export default function Home() {
                         </div>
 
                         {/* 업데이트 + 마리샵 */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
                             {/* 업데이트 공지 */}
                             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
                                 <div className="flex justify-between items-center px-6 py-4 bg-gray-100 dark:bg-gray-700 border-b">

@@ -9,22 +9,18 @@ const WelcomeBanner = () => (
         backgroundImage: `url('/배너이미지.jpg')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        minHeight: '380px'
+        minHeight: '350px'
       }}
     >
       {/* 오버레이 - 투명도 낮춤 */}
-      <div className="absolute inset-0 bg-gradient-to-r from-blue-900/30 to-transparent"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-900/40 to-transparent"></div>
       
       {/* 상단 장식 */}
       <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-400"></div>
       
-     
-
-
-      
       {/* 콘텐츠 */}
       <div className="max-w-3xl relative z-10">
-        <div className="flex flex-col pl-6 border-l-4 border-amber-500 mb-8 mt-2">
+        <div className="flex flex-col pl-6 border-l-4 border-amber-500 mb-8 mt-6">
           <h1 className="text-3xl md:text-4xl font-extrabold text-amber-300 tracking-wide leading-tight drop-shadow-[0_4px_8px_rgba(0,0,0,0.9)] mb-3">
             로침반에 오신 것을<br/>환영합니다
           </h1>
