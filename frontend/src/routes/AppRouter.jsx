@@ -12,6 +12,7 @@ import Footer from "../components/Footer.jsx";
 import DiscordCallback from "../pages/DiscordCallback.jsx";
 import Login from '../pages/Login';
 import Register from '../pages/Register';
+import MyPage from '../pages/MyPage';
 
 const AppRouter = () => {
     return (
@@ -25,6 +26,7 @@ const AppRouter = () => {
                 <Route path="/discord/callback" element={<DiscordCallback />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/mypage" element={<MyPage />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
             <Footer />

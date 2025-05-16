@@ -2,7 +2,7 @@ import React from 'react';
 
 const Advertisement = ({ position }) => {
     return (
-        <div className="sticky top-20">
+        <div className="mb-8">
             <div className="bg-white rounded-md shadow-md overflow-hidden">
                 <div className="text-center p-2 bg-white">
                     <div className="text-red-600 font-bold">거품없는 가격</div>

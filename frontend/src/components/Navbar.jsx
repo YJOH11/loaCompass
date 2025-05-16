@@ -60,6 +60,12 @@ const Navbar = () => {
                             <span className="text-sm font-medium text-gray-800 dark:text-white">
                                 {user.nickname || user.username}님
                             </span>
+                            <Link 
+                                to="/mypage"
+                                className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-white bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-600 dark:hover:bg-indigo-700 border border-transparent rounded-md transition"
+                            >
+                                마이페이지
+                            </Link>
                             <button 
                                 onClick={handleLogout}
                                 className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-white bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 border border-transparent rounded-md transition"

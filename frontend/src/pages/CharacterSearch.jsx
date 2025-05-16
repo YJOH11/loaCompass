@@ -1,6 +1,6 @@
 // CharacterSearch.jsx
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import CharacterProfileCard from "../components/CharacterProfileCard";
 import GemList from "../components/Gem/GemList";
@@ -10,11 +10,16 @@ export default function CharacterSearch() {
   const { name: characterName } = useParams();
   const [characterData, setCharacterData] = useState(null);
   const [hasSearched, setHasSearched] = useState(false);
-  const [isLoading, setIsLoading] = useState(false); // 👈 추가
+  const [isLoading, setIsLoading] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const navigate = useNavigate();
 
+  // 캐릭터 정보 가져오기
   useEffect(() => {
     const fetchCharacter = async () => {
-      setIsLoading(true); // 👈 검색 시작
+      if (!characterName) return;
+      
+      setIsLoading(true);
       try {
         const response = await axios.get(`http://localhost:8080/api/character/${characterName}`);
         if (response.data && response.data.profile) {
@@ -30,8 +35,26 @@ export default function CharacterSearch() {
       setIsLoading(false);
     };
 
-    if (characterName) fetchCharacter();
+    fetchCharacter();
   }, [characterName]);
+
+  // 즐겨찾기 상태 확인
+  useEffect(() => {
+    if (!characterData || !characterData.profile) return;
+    
+    const checkFavorite = () => {
+      const favorites = localStorage.getItem('favoriteCharacters');
+      if (favorites) {
+        const parsedFavorites = JSON.parse(favorites);
+        const isInFavorites = parsedFavorites.some(
+          fav => fav.name === characterData.profile.CharacterName && fav.server === characterData.profile.Server
+        );
+        setIsFavorite(isInFavorites);
+      }
+    };
+    
+    checkFavorite();
+  }, [characterData]);
 
   const gears = characterData?.equipments?.filter((item) =>
       ["무기", "투구", "상의", "하의", "장갑", "어깨"].includes(item.Type)
@@ -44,6 +67,44 @@ export default function CharacterSearch() {
   const abilityStone = characterData?.equipments?.find(item => item.Type === "어빌리티 스톤");
   const bracelet = characterData?.equipments?.find(item => item.Type === "팔찌");
   const maxLen = Math.max(gears.length, accessories.length);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (!characterName || characterName.trim() === '') return;
+    
+    navigate(`/character/${characterName}`);
+  };
+
+  const toggleFavorite = () => {
+    if (!characterData || !characterData.profile) return;
+    
+    const favorites = localStorage.getItem('favoriteCharacters');
+    let favoriteList = [];
+    
+    if (favorites) {
+      favoriteList = JSON.parse(favorites);
+    }
+    
+    if (isFavorite) {
+      // 즐겨찾기 삭제
+      favoriteList = favoriteList.filter(
+        fav => !(fav.name === characterData.profile.CharacterName && fav.server === characterData.profile.Server)
+      );
+      setIsFavorite(false);
+    } else {
+      // 즐겨찾기 추가
+      const characterToAdd = {
+        name: characterData.profile.CharacterName,
+        server: characterData.profile.Server,
+        class: characterData.profile.CharacterClass,
+        itemLevel: characterData.profile.ItemLevel
+      };
+      favoriteList.push(characterToAdd);
+      setIsFavorite(true);
+    }
+    
+    localStorage.setItem('favoriteCharacters', JSON.stringify(favoriteList));
+  };
 
   return (
       <div className="min-h-screen bg-white text-black dark:bg-gray-900 dark:text-white p-6">
