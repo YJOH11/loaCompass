@@ -11,9 +11,23 @@ const Navbar = () => {
 
     // 로컬 스토리지에서 사용자 정보 가져오기
     const loadUserFromStorage = () => {
+        // 일반 로그인 확인
         const storedUser = localStorage.getItem('user');
+        // 디스코드 로그인 확인
+        const discordUser = localStorage.getItem('discordUser');
+        
         if (storedUser) {
             setUser(JSON.parse(storedUser));
+        } else if (discordUser) {
+            // 디스코드 사용자 정보도 확인
+            const parsedDiscordUser = JSON.parse(discordUser);
+            setUser({
+                id: parsedDiscordUser.id,
+                username: parsedDiscordUser.username,
+                discriminator: parsedDiscordUser.discriminator,
+                email: parsedDiscordUser.email,
+                avatar: parsedDiscordUser.avatar
+            });
         } else {
             setUser(null);
         }
@@ -24,10 +38,27 @@ const Navbar = () => {
         loadUserFromStorage();
     }, [location.pathname]); // 경로가 변경될 때마다 실행
 
+    // 추가: 로컬 스토리지 변경 이벤트 감지
+    useEffect(() => {
+        const handleStorageChange = () => {
+            loadUserFromStorage();
+        };
+        
+        window.addEventListener('storage', handleStorageChange);
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+        };
+    }, []);
+
     // 로그아웃 처리
     const handleLogout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
+        localStorage.removeItem('discordUser'); // 디스코드 사용자 정보도 삭제
+        
+        // 로컬 스토리지 이벤트 강제 발생 (다른 탭/창에서 변경 감지)
+        window.dispatchEvent(new Event('storage'));
+        
         setUser(null);
         navigate('/');
     };
@@ -59,6 +90,7 @@ const Navbar = () => {
                         <div className="flex items-center gap-3">
                             <span className="text-sm font-medium text-gray-800 dark:text-white">
                                 {user.nickname || user.username}님
+                                {user.discriminator && `#${user.discriminator}`}
                             </span>
                             <Link 
                                 to="/mypage"
