@@ -46,11 +46,12 @@ export default function CharacterSearchPage() {
 
   const handleFavoriteToggle = (name, isNowFavorite) => {
     const updated = isNowFavorite
-      ? [name, ...favorites.filter(n => n !== name)]
-      : favorites.filter(n => n !== name);
+        ? [name, ...favorites.filter((n) => n !== name)]
+        : favorites.filter((n) => n !== name);
     localStorage.setItem("favoriteHistory", JSON.stringify(updated));
     setFavorites(updated);
   };
+
 
   const gears =
     characterData?.equipments?.filter((item) =>
@@ -66,10 +67,17 @@ export default function CharacterSearchPage() {
   const bracelet = characterData?.equipments?.find((item) => item.Type === "팔찌");
   const maxLen = Math.max(gears.length, accessories.length);
 
+
   return (
     <div className="min-h-screen bg-white text-black dark:bg-gray-900 dark:text-white p-6">
       {(!hasSearched || (!characterData && !isLoading)) && (
-        <CharacterSearchInput favorites={favorites} setFavorites={setFavorites} />
+          <CharacterSearchInput
+              favorites={favorites}
+              setFavorites={setFavorites}
+              onFavoriteToggle={handleFavoriteToggle}
+          />
+
+
       )}
 
       {isLoading ? (
@@ -84,9 +92,9 @@ export default function CharacterSearchPage() {
             <div className="flex w-full max-w-[1280px] gap-6">
               <div className="min-w-[260px] max-w-[260px] bg-gray-100 dark:bg-gray-800 rounded-lg p-6 shadow">
                 <CharacterProfileCard
-                  profile={characterData.profile}
-                  favorites={favorites}  
-                  onFavoriteToggle={handleFavoriteToggle}
+                    profile={characterData.profile}
+                    favorites={favorites}
+                    onFavoriteToggle={handleFavoriteToggle} // ✅ 이거 추가
                 />
               </div>
               <div className="flex-1">

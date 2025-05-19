@@ -14,12 +14,14 @@ import Login from '../pages/Login';
 import Register from '../pages/Register';
 import MyPage from '../pages/MyPage';
 import Statistics from '../pages/Statistics';
+import CharacterPage from "../pages/CharacterPage.jsx";
 
 const AppRouter = () => {
     return (
         <Router>
             <Navbar />
             <Routes>
+                <Route path="/character-name" element={<CharacterPage />} />
                 <Route path="/character/:name" element={<CharacterSearch />} />
                 <Route path="/" element={<Home />} />
                 <Route path="/sassagae" element={<SassagaeCrawler />} />

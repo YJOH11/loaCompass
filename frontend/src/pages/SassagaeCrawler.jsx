@@ -14,6 +14,7 @@ export default function SassagaeCrawler() {
     const handleSearch = async () => {
         if (!keyword || keyword.trim() === '') {
             alert('검색어를 입력하세요.');
+            setHasSearched(true);
             return;
         }
 
@@ -48,11 +49,14 @@ export default function SassagaeCrawler() {
         return match ? match[1] : "기타";
     };
 
+    const [hasSearched, setHasSearched] = useState(false);
+
+
     return (
         <div className="min-h-screen bg-white text-black dark:bg-gray-900 dark:text-white flex flex-col items-center justify-start py-16">
             <div className="w-full max-w-3xl px-4">
                 <div className="text-center mb-12">
-                    <h1 className="text-4xl font-bold mb-2">사사게 검색기</h1>
+                    <h1 className="text-4xl font-bold mb-2">사사게 게시판</h1>
                    
                 </div>
 
@@ -114,7 +118,7 @@ export default function SassagaeCrawler() {
                                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>
-                            검색 중입니다...
+                            검색중 입니다. 잠시만 기다려주세요/
                         </div>
                     </div>
                 )}
@@ -158,7 +162,7 @@ export default function SassagaeCrawler() {
                         </div>
                     </div>
                 ) : (
-                    !isLoading && (
+                    !isLoading && hasSearched && (
                         <div className="text-center text-gray-500 dark:text-gray-400 border border-gray-300 dark:border-gray-700 rounded-lg p-12">
                             검색어를 입력하여 결과를 확인하세요
                         </div>

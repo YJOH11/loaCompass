@@ -1,11 +1,17 @@
 export default function CharacterProfileCard({ profile, onFavoriteToggle, favorites }) {
-    const isFavorite = Array.isArray(favorites) && favorites.includes(profile.CharacterName);
+    const isFavorite = Array.isArray(favorites) && favorites.some((n) =>
+        n.toLowerCase().trim() === profile.CharacterName.toLowerCase().trim()
+    );
+
+
     const toggleFavorite = (e) => {
         e?.stopPropagation?.();
         if (onFavoriteToggle) {
             onFavoriteToggle(profile.CharacterName, !isFavorite);
         }
     };
+
+
 
     return (
         <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded shadow text-black dark:text-white w-full">

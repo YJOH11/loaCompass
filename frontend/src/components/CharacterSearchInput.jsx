@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function CharacterSearchInput({ favorites = [], setFavorites }) {
+export default function CharacterSearchInput({ favorites = [], setFavorites, onFavoriteToggle }) {
     const [keyword, setKeyword] = useState("");
     const [history, setHistory] = useState([]);
     const [showDropdown, setShowDropdown] = useState(false);
@@ -57,22 +57,26 @@ export default function CharacterSearchInput({ favorites = [], setFavorites }) {
 
     const toggleFavorite = (term, e) => {
         e.stopPropagation();
-        let updated;
-        if (favorites.includes(term)) {
-            updated = favorites.filter((t) => t !== term);
+        if (onFavoriteToggle) {
+            const willFavorite = !favorites.includes(term);
+            onFavoriteToggle(term, willFavorite);
         } else {
-            updated = [term, ...favorites];
+            // fallback
+            let updated;
+            if (favorites.includes(term)) {
+                updated = favorites.filter((t) => t !== term);
+            } else {
+                updated = [term, ...favorites];
+            }
+            localStorage.setItem("favoriteHistory", JSON.stringify(updated));
+            setFavorites(updated);
         }
-        localStorage.setItem("favoriteHistory", JSON.stringify(updated));
-        setFavorites(updated);
     };
 
     const sortedHistory = [
         ...favorites,
-        ...history.filter((term) => !favorites.includes(term))
+        ...history.filter((term) => !favorites.includes(term)),
     ];
-
-
 
     return (
         <div className="relative w-full" ref={wrapperRef}>
@@ -84,24 +88,27 @@ export default function CharacterSearchInput({ favorites = [], setFavorites }) {
                     onChange={(e) => setKeyword(e.target.value)}
                     onFocus={() => setShowDropdown(true)}
                     className="w-full py-2 pl-4 pr-10 rounded-md
-                       bg-white dark:bg-gray-800
-                       text-black dark:text-white
-                       placeholder-gray-400
-                       focus:outline-none focus:ring-2 focus:ring-indigo-500
-                       border border-gray-300 dark:border-gray-700"
+            bg-white dark:bg-gray-800
+            text-black dark:text-white
+            placeholder-gray-400
+            focus:outline-none focus:ring-2 focus:ring-indigo-500
+            border border-gray-300 dark:border-gray-700"
                 />
                 <button
                     type="submit"
                     className="absolute right-2 top-1/2 -translate-y-1/2
-                       text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition"
+            text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition"
                 >
                     🔍
                 </button>
             </form>
-            {showDropdown && (history.length > 0 || favorites.length > 0) && (
+
+            {showDropdown && sortedHistory.length > 0 && (
                 <div className="absolute top-full mt-1 w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow z-20">
-                    {/* 상단 컨트롤 */}
-                    <div className="flex justify-end px-4 py-2 text-xs text-gray-500 dark:text-gray-400 border-b">
+
+                    {/* 상단: 검색기록 + 전체삭제 같은 줄 */}
+                    <div className="flex justify-between items-center px-4 py-2 text-xs text-gray-500 dark:text-gray-400 border-b">
+                        <span className="font-semibold">검색 기록</span>
                         <button
                             onClick={() => {
                                 localStorage.removeItem("searchHistory");
@@ -113,75 +120,46 @@ export default function CharacterSearchInput({ favorites = [], setFavorites }) {
                         </button>
                     </div>
 
-
-
-
-                    {/* 좌우 레이아웃 */}
-                    <div className="flex divide-x divide-gray-300 dark:divide-gray-600">
-                        {/* 왼쪽: 최근 검색어 */}
-                        <div className="w-1/2 max-h-60 overflow-y-auto">
-                            <div className="px-4 py-2 text-xs text-gray-500 dark:text-gray-400 border-b">
-                                최근 검색한 유저명
-                            </div>
-                            {history
-                                .filter((term) => !favorites.includes(term))
-                                .map((term) => (
-                                    <div
-                                        key={term}
-                                        onClick={() => handleSelect(term)}
-                                        className="flex justify-between items-center px-4 py-2 text-sm text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
-                                    >
-                                        <span>{term}</span>
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                handleRemove(term);
-                                            }}
-                                            className="text-gray-400 hover:text-red-400 ml-2"
-                                        >
-                                            ×
-                                        </button>
-                                    </div>
-                                ))}
-                        </div>
-
-                        {/* 오른쪽: 즐겨찾기 */}
-                        <div className="w-1/2 max-h-60 overflow-y-auto">
-                            <div className="px-4 py-2 text-xs text-gray-500 dark:text-gray-400 border-b">
-                                즐겨찾기
-                            </div>
-                            {favorites.map((term) => (
-                                <div
-                                    key={term}
-                                    onClick={() => handleSelect(term)}
-                                    className="flex justify-between items-center px-4 py-2 text-sm text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                    {/* 검색기록 리스트 */}
+                    {sortedHistory.map((term) => (
+                        <div
+                            key={term}
+                            className="group flex justify-between items-center px-4 py-2 text-sm text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                        >
+                            <div
+                                className="flex items-center gap-2 cursor-pointer w-full"
+                                onClick={() => handleSelect(term)} // ✅ 줄 클릭 여기에만
+                            >
+                                <button
+                                    type="button"
+                                    onClick={(e) => {
+                                        e.stopPropagation(); // ✅ 줄 클릭 막음
+                                        toggleFavorite(term, e);
+                                    }}
+                                    className={favorites.includes(term)
+                                        ? "text-yellow-400 hover:text-yellow-500"
+                                        : "text-gray-400 hover:text-yellow-400"}
                                 >
-                                    <div className="flex items-center gap-2">
-                                        <button
-                                            onClick={(e) => toggleFavorite(term, e)}
-                                            className="text-yellow-400 hover:text-yellow-500"
-                                        >
-                                            ★
-                                        </button>
-                                        <span>{term}</span>
-                                    </div>
-                                    <button
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleRemove(term);
-                                        }}
-                                        className="text-gray-400 hover:text-red-400 ml-2"
-                                    >
-                                        ×
-                                    </button>
-                                </div>
-                            ))}
+                                    {favorites.includes(term) ? "★" : "☆"}
+                                </button>
+                                <span>{term}</span>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                    e.stopPropagation(); // ✅ 줄 클릭 막음
+                                    handleRemove(term);
+                                }}
+                                className="text-gray-400 hover:text-red-400 ml-2"
+                            >
+                                ×
+                            </button>
                         </div>
-                    </div>
+                    ))}
+
+
                 </div>
             )}
-
-
         </div>
     );
 }
