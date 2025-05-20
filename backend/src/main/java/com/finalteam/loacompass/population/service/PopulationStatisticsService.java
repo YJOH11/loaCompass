@@ -1,15 +1,19 @@
 package com.finalteam.loacompass.population.service;
 
-import com.finalteam.loacompass.population.dto.LevelRangeDto;
 import com.finalteam.loacompass.population.dto.ServerClassDistributionDto;
 import com.finalteam.loacompass.population.dto.ServerPopulationDto;
 import com.finalteam.loacompass.population.dto.TopCharacterDto;
 import com.finalteam.loacompass.population.entity.CharacterRecord;
 import com.finalteam.loacompass.population.repository.CharacterRecordRepository;
+import com.finalteam.loacompass.population.dto.LevelRangeDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,20 +37,13 @@ public class PopulationStatisticsService {
     }
 
     public TopCharacterDto getTopCharacter() {
-        CharacterRecord record = repository.findTopByOrderByItemLevelDesc()
+        CharacterRecord record = repository.findTopByOrderByItemLevelDesc() 
                 .orElseThrow(() -> new NoSuchElementException("저장된 캐릭터가 없습니다."));
-
-        return new TopCharacterDto(
-                record.getCharacterName(),
-                record.getItemLevel(),
-                record.getCharacterClass(),
-                record.getServerName()
-        );
+        return new TopCharacterDto(record.getCharacterName(), record.getItemLevel(), record.getCharacterClass(), record.getServerName());
     }
 
     public List<LevelRangeDto> getLevelDistribution() {
         List<CharacterRecord> records = repository.findAll();
-
         Map<String, Map<String, Long>> grouped = records.stream()
                 .collect(Collectors.groupingBy(
                         CharacterRecord::getServerName,
@@ -55,7 +52,6 @@ public class PopulationStatisticsService {
                                 Collectors.counting()
                         )
                 ));
-
         List<LevelRangeDto> result = new ArrayList<>();
         for (var serverEntry : grouped.entrySet()) {
             String server = serverEntry.getKey();
@@ -63,9 +59,9 @@ public class PopulationStatisticsService {
                 result.add(new LevelRangeDto(server, binEntry.getKey(), binEntry.getValue()));
             }
         }
-
         return result;
     }
+
 
     private String levelBin(float level) {
         if (level >= 1760f) return "1760+";
