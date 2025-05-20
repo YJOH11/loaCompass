@@ -37,13 +37,13 @@ public class PopulationStatisticsService {
     }
 
     public TopCharacterDto getTopCharacter() {
-        CharacterRecord record = repository.findTopByOrderByItemLevelDesc()  // ✅ 전체 중 최고
+        CharacterRecord record = repository.findTopByOrderByItemLevelDesc() 
                 .orElseThrow(() -> new NoSuchElementException("저장된 캐릭터가 없습니다."));
         return new TopCharacterDto(record.getCharacterName(), record.getItemLevel(), record.getCharacterClass(), record.getServerName());
     }
 
     public List<LevelRangeDto> getLevelDistribution() {
-        List<CharacterRecord> records = repository.findAll(); // ✅ 전체 다
+        List<CharacterRecord> records = repository.findAll();
         Map<String, Map<String, Long>> grouped = records.stream()
                 .collect(Collectors.groupingBy(
                         CharacterRecord::getServerName,
