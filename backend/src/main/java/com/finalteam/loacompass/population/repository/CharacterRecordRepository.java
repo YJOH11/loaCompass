@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CharacterRecordRepository extends JpaRepository<CharacterRecord, Long> {
+
+    // 오늘 기준 필터
     boolean existsByCharacterNameAndRecordedAt(String characterName, LocalDate recordedAt);
 
     @Query("SELECT r.serverName, COUNT(r) FROM CharacterRecord r WHERE r.recordedAt = :date GROUP BY r.serverName")
@@ -22,5 +24,13 @@ public interface CharacterRecordRepository extends JpaRepository<CharacterRecord
 
     List<CharacterRecord> findAllByRecordedAt(LocalDate recordedAt);
 
-}
+    // 전체 누적용 통계 쿼리 (신규 추가)
+    @Query("SELECT r.serverName, COUNT(r) FROM CharacterRecord r GROUP BY r.serverName")
+    List<Object[]> getTotalServerPopulation();
 
+    @Query("SELECT r.serverName, r.characterClass, COUNT(r) FROM CharacterRecord r GROUP BY r.serverName, r.characterClass")
+    List<Object[]> getTotalServerClassDistribution();
+
+    @Query("SELECT r FROM CharacterRecord r ORDER BY r.itemLevel DESC LIMIT 1")
+    Optional<CharacterRecord> findTopByOrderByItemLevelDesc();
+}
