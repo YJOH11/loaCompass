@@ -14,14 +14,13 @@ import Login from '../pages/Login';
 import Register from '../pages/Register';
 import MyPage from '../pages/MyPage';
 import Statistics from '../pages/Statistics';
-import CharacterPage from "../pages/CharacterPage.jsx";
+import ForgotPassword from '../pages/ForgotPassword';
 
 const AppRouter = () => {
     return (
         <Router>
             <Navbar />
             <Routes>
-                <Route path="/character-name" element={<CharacterPage />} />
                 <Route path="/character/:name" element={<CharacterSearch />} />
                 <Route path="/" element={<Home />} />
                 <Route path="/sassagae" element={<SassagaeCrawler />} />
@@ -29,6 +28,7 @@ const AppRouter = () => {
                 <Route path="/discord/callback" element={<DiscordCallback />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/mypage" element={<MyPage />} />
                 <Route path="/statistics" element={<Statistics />} />
                 <Route path="*" element={<NotFound />} />
