@@ -79,7 +79,7 @@ export default function ServerLevelChart() {
   return (
     <div className="w-full h-[500px] mt-10">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold">서버별 레벨 구간 분포 ({viewMode})</h2>
+        <h2 className="text-xl font-bold">서버별 레벨 구간 분포 </h2>
         <button
           className="bg-blue-500 text-white px-3 py-1 rounded text-sm"
           onClick={() => setViewMode(viewMode === 'stacked' ? 'grouped' : 'stacked')}
