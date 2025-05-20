@@ -14,6 +14,8 @@ import Login from '../pages/Login';
 import Register from '../pages/Register';
 import MyPage from '../pages/MyPage';
 import Statistics from '../pages/Statistics';
+import ForgotPassword from '../pages/ForgotPassword';
+
 
 const AppRouter = () => {
     return (
@@ -27,6 +29,7 @@ const AppRouter = () => {
                 <Route path="/discord/callback" element={<DiscordCallback />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/mypage" element={<MyPage />} />
                 <Route path="/statistics" element={<Statistics />} />
                 <Route path="*" element={<NotFound />} />
