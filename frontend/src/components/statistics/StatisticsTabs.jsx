@@ -9,10 +9,10 @@ export default function StatisticsTabs() {
   const [activeTab, setActiveTab] = useState("player");
 
   const tabList = [
-    { id: "player", label: "오늘 최고 점수"},
+    { id: "player", label: "로침반 최고 점수"},
     { id: "population", label: "서버 인원 비율" },
-    { id: "class", label: "서버별 직업 분포" },
-    { id: "level", label: "서버별 레벨 분포" },
+    { id: "class", label: "직업별 분포" },
+    { id: "level", label: "레벨별 분포" },
   ];
 
   return (
