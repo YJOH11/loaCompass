@@ -13,7 +13,7 @@ const COLORS = [
 
 export default function TotalClassChart() {
   const [data, setData] = useState([]);
-  const [viewMode, setViewMode] = useState('pie');
+  const [viewMode, setViewMode] = useState('bar');
 
   useEffect(() => {
     axios.get('/api/statistics/total-class-distribution')
