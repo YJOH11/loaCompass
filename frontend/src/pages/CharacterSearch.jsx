@@ -59,16 +59,12 @@ export default function CharacterSearchPage() {
     characterData?.equipments?.filter((item) =>
       ["무기", "투구", "상의", "하의", "장갑", "어깨"].includes(item.Type)
     ) || [];
-    console.log("======================");
-    console.log(gears);
-    console.log("======================");
+
   const accessories =
     characterData?.equipments?.filter((item) =>
       ["목걸이", "귀걸이", "반지"].includes(item.Type)
     ) || [];
-    console.log("======================");
-    console.log(accessories);
-    console.log("======================");
+
 
   const abilityStone = characterData?.equipments?.find((item) => item.Type === "어빌리티 스톤");
   const bracelet = characterData?.equipments?.find((item) => item.Type === "팔찌");

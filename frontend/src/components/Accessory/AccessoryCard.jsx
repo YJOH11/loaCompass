@@ -139,150 +139,174 @@ export default function AccessoryCard({ item }) {
     );
   };
 
-  const braceletRenderEffectTags = (list) => {
-    if (!list?.length) return null;
+ const braceletRenderEffectTags = (list) => {
+   if (!list?.length) return null;
 
-    const postfixRules = [
-      "공격이 치명타로 적중 시", "무력화 상태의 적에게", "악마 및 대악마",
-      "적에게 주는 피해가 4.5%","적에게 주는 피해가 5", "공격 및 이동속도가 1%", "자신의 생명력이", "공격 적중 시"
-    ];
+   const postfixRules = [
+     "공격이 치명타로 적중 시", "무력화 상태의 적에게", "악마 및 대악마",
+     "적에게 주는 피해가 4.5%", "적에게 주는 피해가 5", "공격 및 이동속도가 1%", "자신의 생명력이", "공격 적중 시"
+   ];
 
-    const combined = [];
-    for (let i = 0; i < list.length; i++) {
-      const cur = list[i];
-      const isPostfix = postfixRules.some(rule => cur.startsWith(rule));
-      if (isPostfix && combined.length) {
-        combined[combined.length - 1] += ` ${cur}`;
-      } else {
-        combined.push(cur);
-      }
-    }
+   const combined = [];
+   for (let i = 0; i < list.length; i++) {
+     const cur = list[i];
 
-    const getTier = (text) => {
-      const matches = text.match(/\d+(\.\d+)?/g) || [];
-      const num = matches.length > 0 ? parseFloat(matches[0]) : null;
-      const num2 = matches.length > 1 ? parseFloat(matches[1]) : null;
+     // "해당 효과는 한 파티 당 하나만 적용된다."가 나오면 앞뒤 합치기
+     if (cur === "해당 효과는 한 파티 당 하나만 적용된다.") {
+       let combinedText = "";
 
-      if (text.includes("공격 및 이동속도")) {
-        if (num === 6) return "상";
-        if (num === 5) return "중";
-        return "하";
-      }
-      if (text.includes("전투자원 회복량")) {
-        if (num === 12) return "상";
-        if (num === 10) return "중";
-        return "하";
-      }
-      if (text.includes("면역 지속 시간") || text.includes("재사용 대기시간")) {
-        if (num === 60) return "상";
-        if (num === 70) return "중";
-        return "하";
-      }
-      if (text.includes("치명타 적중률")) {
-        if (num >= 5.0) return "상";
-        if (num >= 4.2) return "중";
-        return "하";
-      }
-      if (text.includes("치명타 피해")) {
-        if (num >= 10) return "상";
-        if (num >= 8.4) return "중";
-        return "하";
-      }
-      if (text.includes("적에게 주는 피해") && text.includes("각성기")) {
-        if (num >= 3.5) return "상";
-        if (num >= 3) return "중";
-        return "하";
-      }
-      if (text.includes("적에게 주는 피해")) {
-        if (num >= 3) return "상";
-        if (num >= 2.5) return "중";
-        return "하";
-      }
-      if (text.includes("피해 증가") && !text.includes("조건")) {
-        if (num >= 3) return "상";
-        if (num >= 2.5) return "중";
-        return "하";
-      }
-      if (text.includes("추가 피해") && !text.includes("악마")) {
-        if (num >= 4) return "상";
-        if (num >= 3.5) return "중";
-        return "하";
-      }
-      if (text.includes("추가 피해") && text.includes("악마")) {
-        if (num >= 3.5) return "상";
-        if (num >= 3) return "중";
-        return "하";
-      }
-      if (text.includes("백어택") || text.includes("헤드어택") || text.includes("방향성 공격 아님")) {
-        if (num >= 3.5) return "상";
-        if (num >= 3) return "중";
-        return "하";
-      }
-      if (text.includes("무기 공격력")) {
-        if ([9000, 8700].includes(num) || num2 === 1480) return "상";
-        if ([8100, 7800].includes(num) || num2 === 1320) return "중";
-        if ([7200, 6900].includes(num) || num2 === 1160) return "하";
-      }
+       // 앞 문장 있으면 합치기
+       if (combined.length > 0) {
+         combinedText += combined.pop() + " ";
+       }
 
-      // 신속, 치명, 특화 상중하 기준 (숫자가 정확히 나와야)
-      if (text.includes("특화") || text.includes("신속") || text.includes("치명")) {
+       // 현재 문장
+       combinedText += cur;
 
-        if (num >= 108) return "상";
-        if (num >= 84) return "중";
-        return "하";
-      }
-      if (text.includes("힘") || text.includes("민첩") || text.includes("지능")) {
-        if (num >= 14400) return "상";
-        if (num >= 11200) return "중";
-        return "하";
-      }
-      if (text.includes("체력")) {
-        if (num >= 5400) return "상";
-        if (num >= 4200) return "중";
-        return "하";
-      }
+       // 뒤 문장 있으면 합치기
+       if (i + 1 < list.length) {
+         combinedText += " " + list[i + 1];
+         i++; // 뒤 문장 처리했으니 인덱스 건너뛰기
+       }
 
-      return null;
-    };
+       combined.push(combinedText);
+       continue;
+     }
 
+     const isPostfix = postfixRules.some(rule => cur.startsWith(rule));
+     if (isPostfix && combined.length) {
+       combined[combined.length - 1] += ` ${cur}`;
+     } else {
+       combined.push(cur);
+     }
+   }
 
-    const getColor = (tier) => {
-      switch (tier) {
-        case "상":
-          return "text-yellow-500"; // gold
-        case "중":
-          return "text-purple-400"; // purple
-        case "하":
-          return "text-sky-400"; // skyblue
-        default:
-          return "text-black"; // default
-      }
-    };
+   // 이하 getTier, getColor, JSX 렌더링 부분은 기존 코드와 동일
 
-    return (
-      <div className="flex gap-2 flex-wrap mb-1">
-        {combined.map((e, i) => {
-          const tier = getTier(e);
-          const colorClass = getColor(tier);
-          const prefix = tier ? `${tier} ` : "";
+   const getTier = (text) => {
+     const matches = text.match(/\d+(\.\d+)?/g) || [];
+     const num = matches.length > 0 ? parseFloat(matches[0]) : null;
+     const num2 = matches.length > 1 ? parseFloat(matches[1]) : null;
 
-          return (
-            <span key={i} className={`px-2 py-0.5 rounded text-xs w-fit ${colorClass} inline-flex items-center gap-[0.15em]`}>
-                <span className="bg-black px-1 rounded text-[10px] font-semibold">{prefix}</span>
-                <span>{e}</span>
-            </span>
-          );
-        })}
-      </div>
-    );
-  };
+     if (text.includes("공격 및 이동속도")) {
+       if (num === 6) return "상";
+       if (num === 5) return "중";
+       return "하";
+     }
+     if (text.includes("전투자원 회복량")) {
+       if (num === 12) return "상";
+       if (num === 10) return "중";
+       return "하";
+     }
+     if (text.includes("면역 지속 시간") || text.includes("재사용 대기시간")) {
+       if (num === 60) return "상";
+       if (num === 70) return "중";
+       return "하";
+     }
+     if (text.includes("치명타 적중률")) {
+       if (num >= 5.0) return "상";
+       if (num >= 4.2) return "중";
+       return "하";
+     }
+     if (text.includes("치명타 피해")) {
+       if (num >= 10) return "상";
+       if (num >= 8.4) return "중";
+       return "하";
+     }
+     if (text.includes("적에게 주는 피해") && text.includes("각성기")) {
+       if (num >= 3.5) return "상";
+       if (num >= 3) return "중";
+       return "하";
+     }
+     if (text.includes("적에게 주는 피해")) {
+       if (num >= 3) return "상";
+       if (num >= 2.5) return "중";
+       return "하";
+     }
+     if (text.includes("피해 증가") && !text.includes("조건")) {
+       if (num >= 3) return "상";
+       if (num >= 2.5) return "중";
+       return "하";
+     }
+     if (text.includes("추가 피해") && !text.includes("악마")) {
+       if (num >= 4) return "상";
+       if (num >= 3.5) return "중";
+       return "하";
+     }
+     if (text.includes("추가 피해") && text.includes("악마")) {
+       if (num >= 3.5) return "상";
+       if (num >= 3) return "중";
+       return "하";
+     }
+     if (text.includes("백어택") || text.includes("헤드어택") || text.includes("방향성 공격 아님")) {
+       if (num >= 3.5) return "상";
+       if (num >= 3) return "중";
+       return "하";
+     }
+     if (text.includes("무기 공격력")) {
+       if ([9000, 8700].includes(num) || num2 === 1480) return "상";
+       if ([8100, 7800].includes(num) || num2 === 1320) return "중";
+       if ([7200, 6900].includes(num) || num2 === 1160) return "하";
+     }
+
+     // 신속, 치명, 특화 상중하 기준 (숫자가 정확히 나와야)
+     if (text.includes("특화") || text.includes("신속") || text.includes("치명") || text.includes("인내") || text.includes("제압") || text.includes("숙련")) {
+       if (num >= 108) return "상";
+       if (num >= 84) return "중";
+       return "하";
+     }
+     if (text.includes("힘") || text.includes("민첩") || text.includes("지능")) {
+       if (num >= 14400) return "상";
+       if (num >= 11200) return "중";
+       return "하";
+     }
+     if (text.includes("체력")) {
+       if (num >= 5400) return "상";
+       if (num >= 4200) return "중";
+       return "하";
+     }
+
+     return null;
+   };
+
+   const getColor = (tier) => {
+     switch (tier) {
+       case "상":
+         return "text-yellow-500"; // gold
+       case "중":
+         return "text-purple-400"; // purple
+       case "하":
+         return "text-sky-400"; // skyblue
+       default:
+         return "text-black"; // default
+     }
+   };
+
+   return (
+     <div className="flex gap-2 flex-wrap mb-1">
+       {combined.map((e, i) => {
+         const tier = getTier(e);
+         const colorClass = getColor(tier);
+         const prefix = tier ? `${tier} ` : "";
+
+         return (
+           <span key={i} className={`px-2 py-0.5 rounded text-xs w-fit ${colorClass} inline-flex items-center gap-[0.15em]`}>
+             <span className="bg-black px-1 rounded text-[10px] font-semibold">{prefix}</span>
+             <span>{e}</span>
+           </span>
+         );
+       })}
+     </div>
+   );
+ };
+
 
 
   const basicStats = parseEffects(basicEffect || "", true);
   const filteredBracelet = Type === "팔찌"
     ? (braceletEffects || []).filter(line => !basicStats.includes(line))
     : [];
-    console.log(filteredBracelet);
+
 
   return (
     <div className="bg-white dark:bg-gray-800 p-3 rounded shadow w-full min-h-[100px] flex gap-3 items-start">

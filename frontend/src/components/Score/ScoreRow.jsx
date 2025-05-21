@@ -30,9 +30,15 @@ const ScoreRow = ({ items ,accessories,engravings,abilityStone,bracelet}) => {
     };
 
     if (Array.isArray(items)) {
-
       items.forEach(item => {
-        statHelper.addEnhanceStats(item.Type, item.Name, item.refinementLevel, tempStat);
+
+        statHelper.addEnhanceStats(
+          item.Grade === "에스더" ? item.Grade : item.Type,
+          item.Name,
+          item.refinementLevel,
+          tempStat
+        );
+
 
 
             // 초월 단계, 초월 레벨 정리
@@ -70,7 +76,7 @@ const ScoreRow = ({ items ,accessories,engravings,abilityStone,bracelet}) => {
     if (Array.isArray(accessories)) {
 
         accessories.forEach(accessory => {
-            console.log(accessory);
+
             statHelper.applyAccessoryEffects(
               { basicEffect: accessory.basicEffect, refinementEffects: accessory.refinementEffects },
               tempStat
@@ -80,20 +86,18 @@ const ScoreRow = ({ items ,accessories,engravings,abilityStone,bracelet}) => {
 
     if (Array.isArray(engravings)) {
         engravings.forEach(engraving => {
-            console.log(engraving);
-            console.log(tempStat);
+
             statHelper.applyEngravingOption(engraving,tempStat);
-            console.log(tempStat);
+
         });
     }
     statHelper.applyAbilityStones(abilityStone.abilityStoneEngravings,tempStat);
-    console.log(bracelet.braceletEffects);
+
     statHelper.applyBraceletEffects(bracelet.braceletEffects,tempStat);
     setMyStat(tempStat);
   }, [items]);
-  console.log("내스텟:", myStat); // ✅ 이건 콘솔에서 펼쳐서 확인 가능
-  // 또는
-  console.table(myStat); // ✅ 표 형태로 보기 편하게 출력
+
+
 
   const score = statHelper.calculateScore(myStat);
   return (
