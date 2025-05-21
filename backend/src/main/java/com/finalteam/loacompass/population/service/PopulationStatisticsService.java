@@ -1,15 +1,15 @@
 package com.finalteam.loacompass.population.service;
 
+import com.finalteam.loacompass.population.dto.LevelRangeDto;
 import com.finalteam.loacompass.population.dto.ServerClassDistributionDto;
 import com.finalteam.loacompass.population.dto.ServerPopulationDto;
 import com.finalteam.loacompass.population.dto.TopCharacterDto;
+import com.finalteam.loacompass.population.dto.ClassDistributionDto;
 import com.finalteam.loacompass.population.entity.CharacterRecord;
 import com.finalteam.loacompass.population.repository.CharacterRecordRepository;
-import com.finalteam.loacompass.population.dto.LevelRangeDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,37 +37,35 @@ public class PopulationStatisticsService {
     }
 
     public TopCharacterDto getTopCharacter() {
-        CharacterRecord record = repository.findTopByOrderByItemLevelDesc() 
+        CharacterRecord record = repository.findTopByOrderByItemLevelDesc()
                 .orElseThrow(() -> new NoSuchElementException("저장된 캐릭터가 없습니다."));
-        return new TopCharacterDto(record.getCharacterName(), record.getItemLevel(), record.getCharacterClass(), record.getServerName());
+
+        return new TopCharacterDto(
+                record.getCharacterName(),
+                record.getItemLevel(),
+                record.getCharacterClass(),
+                record.getServerName()
+        );
     }
 
     public List<LevelRangeDto> getLevelDistribution() {
-        List<CharacterRecord> records = repository.findAll();
-        Map<String, Map<String, Long>> grouped = records.stream()
-                .collect(Collectors.groupingBy(
-                        CharacterRecord::getServerName,
-                        Collectors.groupingBy(
-                                r -> levelBin(r.getItemLevel()),
-                                Collectors.counting()
-                        )
-                ));
-        List<LevelRangeDto> result = new ArrayList<>();
-        for (var serverEntry : grouped.entrySet()) {
-            String server = serverEntry.getKey();
-            for (var binEntry : serverEntry.getValue().entrySet()) {
-                result.add(new LevelRangeDto(server, binEntry.getKey(), binEntry.getValue()));
-            }
-        }
-        return result;
+        List<Object[]> raw = repository.getTotalLevelRangeDistribution();
+        return raw.stream()
+                .map(row -> new LevelRangeDto(null, (String) row[0], (Long) row[1]))
+                .toList();
     }
 
+    public List<ClassDistributionDto> getTotalClassDistribution() {
+        List<Object[]> raw = repository.getTotalClassDistribution();
+        return raw.stream()
+                .map(row -> new ClassDistributionDto((String) row[0], (Long) row[1]))
+                .toList();
+    }
 
-    private String levelBin(float level) {
-        if (level >= 1760f) return "1760+";
-        if (level < 1640f) return "1640 미만";
-        int lower = ((int) level / 10) * 10;
-        int upper = lower + 10;
-        return lower + "-" + upper;
+    public List<LevelRangeDto> getTotalLevelDistribution() {
+        List<Object[]> raw = repository.getTotalLevelRangeDistribution();
+        return raw.stream()
+                .map(row -> new LevelRangeDto(null, (String) row[0], (Long) row[1]))
+                .toList();
     }
 }

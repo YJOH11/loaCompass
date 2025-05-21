@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import TopPlayerCard from "./TopPlayerCard";
 import ServerPopulationChart from "./ServerPopulationChart";
-import ServerClassChart from "./ServerClassChart";
-import ServerLevelChart from "./ServerLevelChart";
+import TotalClassChart from "./TotalClassChart";
+import TotalLevelChart from "./TotalLevelChart";
 
 
 export default function StatisticsTabs() {
@@ -38,8 +38,8 @@ export default function StatisticsTabs() {
       <div>
         {activeTab === "player" && <TopPlayerCard />}
         {activeTab === "population" && <ServerPopulationChart />}
-        {activeTab === "class" && <ServerClassChart />}
-        {activeTab === "level" && <ServerLevelChart />}
+        {activeTab === "class" && <TotalClassChart />}
+        {activeTab === "level" && <TotalLevelChart />}
       </div>
     </div>
   );

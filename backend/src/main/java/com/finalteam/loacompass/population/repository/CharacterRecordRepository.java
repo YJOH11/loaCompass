@@ -33,4 +33,24 @@ public interface CharacterRecordRepository extends JpaRepository<CharacterRecord
 
     @Query("SELECT r FROM CharacterRecord r ORDER BY r.itemLevel DESC LIMIT 1")
     Optional<CharacterRecord> findTopByOrderByItemLevelDesc();
+
+    @Query("SELECT r.characterClass, COUNT(r) FROM CharacterRecord r GROUP BY r.characterClass")
+    List<Object[]> getTotalClassDistribution();
+
+    @Query("""
+        SELECT 
+        CASE 
+            WHEN r.itemLevel < 1640 THEN '1640 미만' 
+            WHEN r.itemLevel >= 1760 THEN '1760+' 
+            ELSE CONCAT(CAST(FLOOR(r.itemLevel / 10) * 10 AS string), '-', CAST(FLOOR(r.itemLevel / 10) * 10 + 10 AS string)) 
+        END AS levelRange, COUNT(r) 
+        FROM CharacterRecord r 
+        GROUP BY 
+        CASE 
+            WHEN r.itemLevel < 1640 THEN '1640 미만' 
+            WHEN r.itemLevel >= 1760 THEN '1760+' 
+            ELSE CONCAT(CAST(FLOOR(r.itemLevel / 10) * 10 AS string), '-', CAST(FLOOR(r.itemLevel / 10) * 10 + 10 AS string)) 
+        END
+    """)
+    List<Object[]> getTotalLevelRangeDistribution();
 }

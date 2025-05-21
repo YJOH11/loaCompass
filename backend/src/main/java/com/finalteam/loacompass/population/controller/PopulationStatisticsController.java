@@ -1,9 +1,6 @@
 package com.finalteam.loacompass.population.controller;
 
-import com.finalteam.loacompass.population.dto.LevelRangeDto;
-import com.finalteam.loacompass.population.dto.ServerClassDistributionDto;
-import com.finalteam.loacompass.population.dto.ServerPopulationDto;
-import com.finalteam.loacompass.population.dto.TopCharacterDto;
+import com.finalteam.loacompass.population.dto.*;
 import com.finalteam.loacompass.population.service.PopulationStatisticsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,5 +34,15 @@ public class PopulationStatisticsController {
     @GetMapping("/server-level-distribution")
     public List<LevelRangeDto> getLevelDistribution() {
         return service.getLevelDistribution();
+    }
+
+    @GetMapping("/total-class-distribution")
+    public List<ClassDistributionDto> getTotalClassDistribution() {
+        return service.getTotalClassDistribution();
+    }
+
+    @GetMapping("/total-level-distribution")
+    public List<LevelRangeDto> getTotalLevelDistribution() {
+        return service.getTotalLevelDistribution();
     }
 }
