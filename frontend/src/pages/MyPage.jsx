@@ -369,7 +369,7 @@ const MyPage = () => {
               <p className="text-blue-200 mt-1">{user?.email || 'email@example.com'}</p>
               <div className="mt-4 flex gap-2">
                 <span className="px-3 py-1 bg-blue-800 rounded-full text-sm">
-                  가입일: {new Date(user?.createdAt || Date.now()).toLocaleDateString()}
+                  가입일: {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : '알 수 없음'}
                 </span>
                 <span className="px-3 py-1 bg-amber-600 rounded-full text-sm">
                   보유 캐릭터: {characters.length}
