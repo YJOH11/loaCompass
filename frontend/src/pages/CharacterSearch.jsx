@@ -5,6 +5,7 @@ import CharacterSearchInput from "../components/CharacterSearchInput";
 import CharacterProfileCard from "../components/CharacterProfileCard";
 import GemList from "../components/Gem/GemList";
 import EquipmentAccessoryRow from "../components/Equipment/EquipmentAccessoryRow";
+import ScoreRow from "../components/score/ScoreRow";
 
 export default function CharacterSearchPage() {
   const { name: characterName } = useParams();
@@ -52,16 +53,22 @@ export default function CharacterSearchPage() {
     setFavorites(updated);
   };
 
+  const engravings = characterData?.profile?.engravings || [];
 
   const gears =
     characterData?.equipments?.filter((item) =>
       ["무기", "투구", "상의", "하의", "장갑", "어깨"].includes(item.Type)
     ) || [];
-
+    console.log("======================");
+    console.log(gears);
+    console.log("======================");
   const accessories =
     characterData?.equipments?.filter((item) =>
       ["목걸이", "귀걸이", "반지"].includes(item.Type)
     ) || [];
+    console.log("======================");
+    console.log(accessories);
+    console.log("======================");
 
   const abilityStone = characterData?.equipments?.find((item) => item.Type === "어빌리티 스톤");
   const bracelet = characterData?.equipments?.find((item) => item.Type === "팔찌");
@@ -95,6 +102,13 @@ export default function CharacterSearchPage() {
                     profile={characterData.profile}
                     favorites={favorites}
                     onFavoriteToggle={handleFavoriteToggle} // ✅ 이거 추가
+                />
+                <ScoreRow
+                    items={gears}
+                    accessories={accessories}
+                    engravings={engravings}
+                    abilityStone={abilityStone}
+                    bracelet={bracelet}
                 />
               </div>
               <div className="flex-1">
