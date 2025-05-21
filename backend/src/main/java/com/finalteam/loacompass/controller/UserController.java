@@ -1,5 +1,6 @@
 package com.finalteam.loacompass.controller;
 
+import com.finalteam.loacompass.dto.JwtResponse;
 import com.finalteam.loacompass.dto.PasswordChangeRequest;
 import com.finalteam.loacompass.entity.User;
 import com.finalteam.loacompass.service.UserService;
@@ -24,6 +25,17 @@ public class UserController {
         }
 
         User user = (User) authentication.getPrincipal();
+
+
+        JwtResponse response = JwtResponse.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .nickname(user.getNickname())
+                .role(user.getRole().name())
+                .createdAt(user.getCreatedAt())
+                .build();
+
         return ResponseEntity.ok(user);
     }
 
