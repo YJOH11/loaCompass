@@ -4,34 +4,28 @@ import {
     BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer,
     PieChart, Pie, Cell, LabelList
 } from 'recharts';
-
-const COLORS = [
-    '#FF6B6B', '#4D96FF', '#FFD93D', '#6BCB77',
-    '#FF922B', '#845EC2', '#00C9A7', '#F9C74F',
-    '#F94144', '#43AA8B', '#F3722C', '#577590',
-    '#B5179E', '#9A031E'
-];
+import {
+    CHART_COLORS,
+    LABEL_STYLE,
+    TOOLTIP_STYLE,
+    formatPercent
+} from '../../styles/chartStyles';
 
 export default function TotalLevelChart() {
     const [data, setData] = useState([]);
     const [viewMode, setViewMode] = useState("bar");
-
+   
     useEffect(() => {
         axios.get('/api/statistics/total-level-distribution')
             .then(res => {
                 const raw = res.data;
-                const total = raw.reduce((sum, d) => sum + d.count, 0);
-
-                const withPercent = raw.map((d, i) => ({
-                    ...d,
-                    percent: total ? Number(((d.count / total) * 100).toFixed(1)) : 0,
-                    fill: COLORS[i % COLORS.length]
-                }));
-
-                setData(withPercent);
+                const sorted = [...raw].sort((a, b) => b.count - a.count); // 인원 수 기준 정렬
+                setData(sorted);
             })
             .catch(err => console.error(err));
     }, []);
+
+    const total = data.reduce((sum, d) => sum + d.count, 0);
 
     return (
         <div className="w-full h-[500px] mt-8">
@@ -56,27 +50,23 @@ export default function TotalLevelChart() {
                         <XAxis type="number" />
                         <YAxis dataKey="levelRange" type="category" width={100} />
                         <Tooltip
-                            formatter={(value, name, props) => {
-                                const total = data.reduce((sum, d) => sum + d.count, 0);
-                                const percent = total ? ((value / total) * 100).toFixed(1) : 0;
-                                return [`${percent}%`, '비율'];
+                            formatter={(value) => {
+                                const percent = formatPercent(value, total);
+                                return [`${value}명 (${percent})`, '인원'];
                             }}
-                            separator=": "
-                            contentStyle={{ fontSize: '14px', fontWeight: 'bold' }}
+                            contentStyle={TOOLTIP_STYLE}
                         />
-
                         <Legend />
-                        <Bar dataKey="percent" name="백분율(%)" fill="#8884d8">
+                        <Bar dataKey="count" name="인원 수">
                             <LabelList
-                                dataKey="percent"
+                                dataKey="count"
                                 position="right"
-                                formatter={(value) => `${value}%`}
-                                style={{
-                                    fill: '#111',
-                                    fontWeight: 'bold',
-                                    fontSize: 13
-                                }}
+                                content={({ value }) => `${value} (${formatPercent(value, total)})`}
+                                style={LABEL_STYLE}
                             />
+                            {data.map((_, idx) => (
+                                <Cell key={idx} fill={CHART_COLORS[idx % CHART_COLORS.length]} />
+                            ))}
                         </Bar>
                     </BarChart>
                 ) : (
@@ -89,27 +79,19 @@ export default function TotalLevelChart() {
                             cy="50%"
                             outerRadius={120}
                             innerRadius={60}
-                            isAnimationActive={true}
-                            label={({ name }) => name} // 퍼센트 제거, 레벨 구간만 표시
+                            label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(1)}%`}
                         >
                             {data.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
                             ))}
                         </Pie>
-
                         <Tooltip
                             formatter={(value) => {
-                                const total = data.reduce((sum, d) => sum + d.count, 0);
-                                const percent = total ? ((value / total) * 100).toFixed(1) : 0;
-                                return [`${percent}%`, '비율'];
+                                const percent = formatPercent(value, total);
+                                return [`${percent}`, '비율'];
                             }}
-                            separator=": "
-                            contentStyle={{
-                                fontSize: '14px',
-                                fontWeight: 'bold',
-                            }}
+                            contentStyle={TOOLTIP_STYLE}
                         />
-
                         <Legend />
                     </PieChart>
                 )}

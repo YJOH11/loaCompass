@@ -3,13 +3,12 @@ import axios from 'axios';
 import {
   ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, LabelList, PieChart, Pie, Cell
 } from 'recharts';
-
-const COLORS = [
-  '#8884d8', '#82ca9d', '#ffc658', '#ff8042',
-  '#a28be6', '#ff7f50', '#00bcd4', '#a3d977',
-  '#ba68c8', '#ffb347', '#26a69a', '#d84315',
-  '#795548', '#64b5f6', '#e53935', '#90caf9'
-];
+import {
+  CHART_COLORS,
+  LABEL_STYLE,
+  TOOLTIP_STYLE,
+  formatPercent
+} from '../../styles/chartStyles'; // ✅ 상대경로
 
 export default function TotalClassChart() {
   const [data, setData] = useState([]);
@@ -17,7 +16,10 @@ export default function TotalClassChart() {
 
   useEffect(() => {
     axios.get('/api/statistics/total-class-distribution')
-      .then(res => setData(res.data))
+      .then(res => {
+        const sorted = [...res.data].sort((a, b) => b.count - a.count);
+        setData(sorted);
+      })
       .catch(err => console.error(err));
   }, []);
 
@@ -28,7 +30,7 @@ export default function TotalClassChart() {
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold">전체 직업 분포</h2>
         <button
-          className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
+          className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700"
           onClick={() => setViewMode(viewMode === 'pie' ? 'bar' : 'pie')}
         >
           {viewMode === 'pie' ? 'Bar 보기' : 'Pie 보기'}
@@ -49,10 +51,16 @@ export default function TotalClassChart() {
               label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(1)}%`}
             >
               {data.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
               ))}
             </Pie>
-            <Tooltip />
+            <Tooltip
+              formatter={(value) => {
+                const percent = formatPercent(value, total);
+                return [`${percent}`, '비율'];
+              }}
+              contentStyle={TOOLTIP_STYLE}
+            />
             <Legend />
           </PieChart>
         ) : (
@@ -63,16 +71,23 @@ export default function TotalClassChart() {
           >
             <XAxis type="number" hide />
             <YAxis type="category" dataKey="characterClass" />
-            <Tooltip formatter={(value) => [`${value}명 (${((value / total) * 100).toFixed(1)}%)`, '인원']} />
+            <Tooltip
+              formatter={(value) => {
+                const percent = formatPercent(value, total);
+                return [`${value}명 (${percent})`, '인원'];
+              }}
+              contentStyle={TOOLTIP_STYLE}
+            />
             <Legend />
-            <Bar dataKey="count" name="백분율(%)">
+            <Bar dataKey="count" name="인원 수">
               <LabelList
                 dataKey="count"
                 position="right"
-                content={({ value }) => `${value} (${((value / total) * 100).toFixed(1)}%)`}
+                content={({ value }) => `${value} (${formatPercent(value, total)})`}
+                style={LABEL_STYLE}
               />
               {data.map((_, index) => (
-                <Cell key={`bar-${index}`} fill={COLORS[index % COLORS.length]} />
+                <Cell key={`bar-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
               ))}
             </Bar>
           </BarChart>
