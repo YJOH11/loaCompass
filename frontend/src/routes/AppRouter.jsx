@@ -1,7 +1,6 @@
 // src/routes/AppRouter.jsx
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-
 import Home from '../pages/Home';
 import About from '../pages/About';
 import NotFound from '../pages/NotFound';
@@ -14,6 +13,7 @@ import Login from '../pages/Login';
 import Register from '../pages/Register';
 import MyPage from '../pages/MyPage';
 import Statistics from '../pages/Statistics';
+import ForgotPassword from '../pages/ForgotPassword';
 
 
 const AppRouter = () => {
@@ -21,7 +21,6 @@ const AppRouter = () => {
         <Router>
             <Navbar />
             <Routes>
-
                 <Route path="/character/:name" element={<CharacterSearch />} />
                 <Route path="/" element={<Home />} />
                 <Route path="/sassagae" element={<SassagaeCrawler />} />
@@ -29,6 +28,7 @@ const AppRouter = () => {
                 <Route path="/discord/callback" element={<DiscordCallback />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/mypage" element={<MyPage />} />
                 <Route path="/statistics" element={<Statistics />} />
                 <Route path="*" element={<NotFound />} />

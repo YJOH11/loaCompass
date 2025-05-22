@@ -21,21 +21,21 @@ public class PopulationStatisticsController {
 
     @GetMapping("/server-count")
     public List<ServerPopulationDto> getServerCounts() {
-        return service.getTodayServerPopulation();
+        return service.getServerPopulation();
     }
 
     @GetMapping("/server-class-distribution")
     public List<ServerClassDistributionDto> getServerClassDistribution() {
-        return service.getTodayClassDistribution();
+        return service.getClassDistribution();
     }
 
     @GetMapping("/top-player")
     public TopCharacterDto getTopPlayer() {
-        return service.getTodayTopCharacter();
+        return service.getTopCharacter();
     }
 
     @GetMapping("/server-level-distribution")
     public List<LevelRangeDto> getLevelDistribution() {
-        return service.getTodayLevelDistribution();
+        return service.getLevelDistribution();
     }
 }
