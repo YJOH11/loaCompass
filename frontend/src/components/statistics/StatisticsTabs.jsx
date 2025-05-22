@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TopPlayerCard from "./TopPlayerCard";
 import ServerPopulationChart from "./ServerPopulationChart";
 import TotalClassChart from "./TotalClassChart";
@@ -10,12 +10,32 @@ export default function StatisticsTabs({ title }) {
   const [activeTab, setActiveTab] = useState("player");
   const [showModal, setShowModal] = useState(false);
   const [showPanel, setShowPanel] = useState(false);
+  const [aiSummaryShort, setAiSummaryShort] = useState([]);
+  const [aiSummaryFull, setAiSummaryFull] = useState([]);
+  const [forecastSummary, setForecastSummary] = useState([]);
 
-  const aiSummary = [
-    "🔥 인기 서버: 카마인",
-    "📈 성장 서버: 카제로스",
-    "🧘 조용한 서버: 니나브",
-  ];
+  // 1. AI 요약 데이터
+  useEffect(() => {
+    fetch("http://localhost:5000/api/ai-summary?mode=short")
+      .then(res => res.json())
+      .then(setAiSummaryShort)
+      .catch(err => console.error("요약 불러오기 실패:", err));
+
+    fetch("http://localhost:5000/api/ai-summary")
+      .then(res => res.json())
+      .then(setAiSummaryFull)
+      .catch(err => console.error("전체 불러오기 실패:", err));
+  }, []);
+
+  // 2. AI 예측 데이터
+  useEffect(() => {
+    fetch("http://localhost:5000/api/forecast/top-growth")
+      .then((res) => res.json())
+      .then((data) => setForecastSummary(data))
+      .catch((err) => {
+        console.error("AI 예측 데이터를 불러오는 데 실패했습니다:", err);
+      });
+  }, []);
 
   const tabList = [
     { id: "player", label: "로침반 최고 점수" },
@@ -24,11 +44,13 @@ export default function StatisticsTabs({ title }) {
     { id: "level", label: "레벨별 분포" },
   ];
 
+  const combinedSummary = [...aiSummaryFull, "------------------------------", ...forecastSummary];
+
   return (
-    <div className="w-full p-4">
+    <div className="w-full p-4 bg-white dark:bg-gray-900 text-black dark:text-white min-h-screen">
       {/* 제목 + 버튼 한 줄에 표시 */}
       <div className="flex items-center space-x-4 mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
+        <h2 className="text-2xl font-bold text-gray-800 dark:text-white">{title}</h2>
         <button
           onClick={() => setShowModal(true)}
           className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded shadow"
@@ -47,7 +69,7 @@ export default function StatisticsTabs({ title }) {
             className={`px-4 py-2 rounded-md font-medium border ${
               activeTab === tab.id
                 ? "bg-blue-600 text-white"
-                : "bg-white text-gray-700 border-gray-300"
+                : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600"
             }`}
           >
             {tab.label}
@@ -63,7 +85,6 @@ export default function StatisticsTabs({ title }) {
         {activeTab === "level" && <TotalLevelChart />}
       </div>
 
-      {/* 중앙 팝업 모달 */}
       <AIAnalysisModal
         visible={showModal}
         onClose={() => setShowModal(false)}
@@ -71,14 +92,13 @@ export default function StatisticsTabs({ title }) {
           setShowModal(false);
           setShowPanel(true);
         }}
-        items={aiSummary}
+        items={aiSummaryShort}
       />
 
-      {/* 오른쪽 슬라이드 패널 */}
       <AISidePanel
         visible={showPanel}
         onClose={() => setShowPanel(false)}
-        items={aiSummary}
+        items={combinedSummary}
       />
     </div>
   );

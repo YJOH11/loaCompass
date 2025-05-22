@@ -4,6 +4,11 @@ import asyncio
 from scraper.inven_search import fetch_page, get_total_pages, fetch_all_pages, fetch_all_contents, search_posts
 from scraper.mari_shop import crawl_mari_shop
 from scraper.event_scraper import crawl_event_list
+from analysis.population_predictor import (
+    generate_population_summary,
+    generate_population_summary_short
+)
+from analysis.population_forecaster import forecast_top_server_growth
 
 app = Flask(__name__)
 CORS(app)
@@ -51,6 +56,28 @@ def get_events():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
+
+@app.route("/api/ai-summary", methods=["GET"])
+def get_ai_summary():
+    mode = request.args.get("mode", "full")
+    try:
+        if mode == "short":
+            return jsonify(generate_population_summary_short())
+        else:
+            return jsonify(generate_population_summary())
+    except Exception as e:
+        import traceback
+        traceback.print_exc() 
+        return jsonify({"error": str(e)}), 500
+    
+@app.route("/api/forecast/top-growth", methods=["GET"])
+def get_top_growth_servers():
+    try:
+        summary_lines = forecast_top_server_growth()
+        return jsonify(summary_lines)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
