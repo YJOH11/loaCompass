@@ -47,10 +47,10 @@ export default function StatisticsTabs({ title }) {
   const combinedSummary = [...aiSummaryFull, "------------------------------", ...forecastSummary];
 
   return (
-    <div className="w-full p-4">
+    <div className="w-full p-4 bg-white dark:bg-gray-900 text-black dark:text-white min-h-screen">
       {/* 제목 + 버튼 한 줄에 표시 */}
       <div className="flex items-center space-x-4 mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
+        <h2 className="text-2xl font-bold text-gray-800 dark:text-white">{title}</h2>
         <button
           onClick={() => setShowModal(true)}
           className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded shadow"
@@ -69,7 +69,7 @@ export default function StatisticsTabs({ title }) {
             className={`px-4 py-2 rounded-md font-medium border ${
               activeTab === tab.id
                 ? "bg-blue-600 text-white"
-                : "bg-white text-gray-700 border-gray-300"
+                : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600"
             }`}
           >
             {tab.label}

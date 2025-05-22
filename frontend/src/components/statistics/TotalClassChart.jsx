@@ -8,7 +8,7 @@ import {
   LABEL_STYLE,
   TOOLTIP_STYLE,
   formatPercent
-} from '../../styles/chartStyles'; // ✅ 상대경로
+} from '../../styles/chartStyles';
 
 export default function TotalClassChart() {
   const [data, setData] = useState([]);
@@ -26,9 +26,9 @@ export default function TotalClassChart() {
   const total = data.reduce((sum, d) => sum + d.count, 0);
 
   return (
-    <div className="w-full h-[500px] mt-8">
+    <div className="w-full h-[500px] mt-8 bg-white dark:bg-gray-900 text-black dark:text-white p-4 rounded shadow">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold">전체 직업 분포</h2>
+        <h2 className="text-xl font-bold text-gray-800 dark:text-white">전체 직업 분포</h2>
         <button
           className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700"
           onClick={() => setViewMode(viewMode === 'pie' ? 'bar' : 'pie')}
@@ -59,9 +59,13 @@ export default function TotalClassChart() {
                 const percent = formatPercent(value, total);
                 return [`${percent}`, '비율'];
               }}
-              contentStyle={TOOLTIP_STYLE}
+              contentStyle={{
+                ...TOOLTIP_STYLE,
+                backgroundColor: '#1f2937',
+                color: '#fff',
+              }}
             />
-            <Legend />
+            <Legend wrapperStyle={{ color: 'currentColor' }} />
           </PieChart>
         ) : (
           <BarChart
@@ -69,16 +73,20 @@ export default function TotalClassChart() {
             data={data}
             margin={{ top: 10, right: 30, bottom: 10, left: 120 }}
           >
-            <XAxis type="number" hide />
-            <YAxis type="category" dataKey="characterClass" />
+            <XAxis type="number" stroke="currentColor" />
+            <YAxis type="category" dataKey="characterClass" stroke="currentColor" />
             <Tooltip
               formatter={(value) => {
                 const percent = formatPercent(value, total);
                 return [`${value}명 (${percent})`, '인원'];
               }}
-              contentStyle={TOOLTIP_STYLE}
+              contentStyle={{
+                ...TOOLTIP_STYLE,
+                backgroundColor: '#1f2937',
+                color: '#fff',
+              }}
             />
-            <Legend />
+            <Legend wrapperStyle={{ color: 'currentColor' }} />
             <Bar dataKey="count" name="인원 수">
               <LabelList
                 dataKey="count"
