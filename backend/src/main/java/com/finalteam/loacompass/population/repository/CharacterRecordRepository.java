@@ -14,27 +14,50 @@ public interface CharacterRecordRepository extends JpaRepository<CharacterRecord
     // 오늘 기준
     boolean existsByCharacterNameAndRecordedAt(String characterName, LocalDate recordedAt);
 
-    @Query("SELECT r.serverName, COUNT(r) FROM CharacterRecord r WHERE r.recordedAt = :date GROUP BY r.serverName")
+    // 오늘 기준 - 중복 캐릭터 제거
+    @Query("""
+        SELECT r.serverName, COUNT(DISTINCT r.characterName)
+        FROM CharacterRecord r
+        WHERE r.recordedAt = :date
+        GROUP BY r.serverName
+    """)
     List<Object[]> getServerPopulation(@Param("date") LocalDate date);
 
-    @Query("SELECT r.serverName, r.characterClass, COUNT(r) FROM CharacterRecord r WHERE r.recordedAt = :date GROUP BY r.serverName, r.characterClass")
+    @Query("""
+        SELECT r.serverName, r.characterClass, COUNT(DISTINCT r.characterName)
+        FROM CharacterRecord r
+        WHERE r.recordedAt = :date
+        GROUP BY r.serverName, r.characterClass
+    """)
     List<Object[]> getServerClassDistribution(@Param("date") LocalDate date);
 
     Optional<CharacterRecord> findTopByRecordedAtOrderByItemLevelDesc(LocalDate date);
 
     List<CharacterRecord> findAllByRecordedAt(LocalDate recordedAt);
 
-    // 누적 기준 쿼리
-    @Query("SELECT r.serverName, COUNT(r) FROM CharacterRecord r GROUP BY r.serverName")
+    // 누적 기준 - 중복 캐릭터 제거
+    @Query("""
+        SELECT r.serverName, COUNT(DISTINCT r.characterName)
+        FROM CharacterRecord r
+        GROUP BY r.serverName
+    """)
     List<Object[]> getTotalServerPopulation();
 
-    @Query("SELECT r.serverName, r.characterClass, COUNT(r) FROM CharacterRecord r GROUP BY r.serverName, r.characterClass")
+    @Query("""
+        SELECT r.serverName, r.characterClass, COUNT(DISTINCT r.characterName)
+        FROM CharacterRecord r
+        GROUP BY r.serverName, r.characterClass
+    """)
     List<Object[]> getTotalServerClassDistribution();
 
     @Query("SELECT r FROM CharacterRecord r ORDER BY r.itemLevel DESC LIMIT 1")
     Optional<CharacterRecord> findTopByOrderByItemLevelDesc();
 
-    @Query("SELECT r.characterClass, COUNT(r) FROM CharacterRecord r GROUP BY r.characterClass")
+    @Query("""
+        SELECT r.characterClass, COUNT(DISTINCT r.characterName)
+        FROM CharacterRecord r
+        GROUP BY r.characterClass
+    """)
     List<Object[]> getTotalClassDistribution();
 
     @Query("""
@@ -43,7 +66,7 @@ public interface CharacterRecordRepository extends JpaRepository<CharacterRecord
             WHEN r.itemLevel < 1640 THEN '1640 미만' 
             WHEN r.itemLevel >= 1760 THEN '1760+' 
             ELSE CONCAT(CAST(FLOOR(r.itemLevel / 10) * 10 AS string), '-', CAST(FLOOR(r.itemLevel / 10) * 10 + 10 AS string)) 
-        END AS levelRange, COUNT(r) 
+        END AS levelRange, COUNT(DISTINCT r.characterName)
         FROM CharacterRecord r 
         GROUP BY 
         CASE 
@@ -53,4 +76,6 @@ public interface CharacterRecordRepository extends JpaRepository<CharacterRecord
         END
     """)
     List<Object[]> getTotalLevelRangeDistribution();
+
+    Optional<CharacterRecord> findByCharacterName(String characterName);
 }
