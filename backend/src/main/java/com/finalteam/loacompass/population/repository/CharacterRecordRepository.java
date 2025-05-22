@@ -11,14 +11,26 @@ import java.util.Optional;
 
 public interface CharacterRecordRepository extends JpaRepository<CharacterRecord, Long> {
 
-    // 오늘 기준
-    boolean existsByCharacterNameAndRecordedAt(String characterName, LocalDate recordedAt);
+    // 완전히 동일한 기록이 존재하는지 확인 (INSERT 전에 사용)
+    @Query("""
+        SELECT COUNT(r) > 0 FROM CharacterRecord r
+        WHERE r.characterName = :characterName
+        AND r.itemLevel = :itemLevel
+        AND r.serverName = :serverName
+        AND r.characterClass = :characterClass
+    """)
+    boolean existsExactRecord(
+            @Param("characterName") String characterName,
+            @Param("itemLevel") float itemLevel,
+            @Param("serverName") String serverName,
+            @Param("characterClass") String characterClass
+    );
 
-    // 오늘 기준 - 중복 캐릭터 제거
+    // 오늘 기준 통계 (캐릭터 중복 제거)
     @Query("""
         SELECT r.serverName, COUNT(DISTINCT r.characterName)
         FROM CharacterRecord r
-        WHERE r.recordedAt = :date
+        WHERE DATE(r.recordedAt) = :date
         GROUP BY r.serverName
     """)
     List<Object[]> getServerPopulation(@Param("date") LocalDate date);
@@ -26,16 +38,18 @@ public interface CharacterRecordRepository extends JpaRepository<CharacterRecord
     @Query("""
         SELECT r.serverName, r.characterClass, COUNT(DISTINCT r.characterName)
         FROM CharacterRecord r
-        WHERE r.recordedAt = :date
+        WHERE DATE(r.recordedAt) = :date
         GROUP BY r.serverName, r.characterClass
     """)
     List<Object[]> getServerClassDistribution(@Param("date") LocalDate date);
 
-    Optional<CharacterRecord> findTopByRecordedAtOrderByItemLevelDesc(LocalDate date);
+    @Query("SELECT r FROM CharacterRecord r WHERE DATE(r.recordedAt) = :date ORDER BY r.itemLevel DESC LIMIT 1")
+    Optional<CharacterRecord> findTopByRecordedAtOrderByItemLevelDesc(@Param("date") LocalDate date);
 
-    List<CharacterRecord> findAllByRecordedAt(LocalDate recordedAt);
+    @Query("SELECT r FROM CharacterRecord r WHERE DATE(r.recordedAt) = :date")
+    List<CharacterRecord> findAllByRecordedAt(@Param("date") LocalDate date);
 
-    // 누적 기준 - 중복 캐릭터 제거
+    //  누적 기준 통계 (캐릭터 중복 제거)
     @Query("""
         SELECT r.serverName, COUNT(DISTINCT r.characterName)
         FROM CharacterRecord r
