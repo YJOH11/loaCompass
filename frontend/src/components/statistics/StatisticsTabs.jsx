@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TopPlayerCard from "./TopPlayerCard";
 import ServerPopulationChart from "./ServerPopulationChart";
 import TotalClassChart from "./TotalClassChart";
@@ -10,12 +10,17 @@ export default function StatisticsTabs({ title }) {
   const [activeTab, setActiveTab] = useState("player");
   const [showModal, setShowModal] = useState(false);
   const [showPanel, setShowPanel] = useState(false);
+  const [aiSummary, setAiSummary] = useState([]);
 
-  const aiSummary = [
-    "🔥 인기 서버: 카마인",
-    "📈 성장 서버: 카제로스",
-    "🧘 조용한 서버: 니나브",
-  ];
+  // Flask API에서 AI 요약 데이터 가져오기
+  useEffect(() => {
+    fetch("http://localhost:5000/api/ai-summary")
+      .then((res) => res.json())
+      .then((data) => setAiSummary(data))
+      .catch((err) => {
+        console.error("AI 분석 요약 데이터를 불러오는 데 실패했습니다:", err);
+      });
+  }, []);
 
   const tabList = [
     { id: "player", label: "로침반 최고 점수" },
