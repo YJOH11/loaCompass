@@ -1,6 +1,8 @@
 export default function AIAnalysisModal({ visible, onClose, items = [], onDetailClick }) {
   if (!visible) return null;
 
+  const safeItems = Array.isArray(items) ? items : [];
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
       <div className="bg-white w-[90%] max-w-md rounded-lg shadow-lg">
@@ -12,10 +14,10 @@ export default function AIAnalysisModal({ visible, onClose, items = [], onDetail
 
         {/* 본문 */}
         <div className="p-4 space-y-2 text-sm text-gray-800">
-          {items.length === 0 ? (
+          {safeItems.length === 0 ? (
             <p className="text-gray-400">분석 데이터를 불러오는 중...</p>
           ) : (
-            items.map((item, idx) => (
+            safeItems.map((item, idx) => (
               <div key={idx} className="flex items-start gap-2">
                 <span>•</span>
                 <span>{item}</span>

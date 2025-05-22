@@ -10,15 +10,30 @@ export default function StatisticsTabs({ title }) {
   const [activeTab, setActiveTab] = useState("player");
   const [showModal, setShowModal] = useState(false);
   const [showPanel, setShowPanel] = useState(false);
-  const [aiSummary, setAiSummary] = useState([]);
+  const [aiSummaryShort, setAiSummaryShort] = useState([]);
+  const [aiSummaryFull, setAiSummaryFull] = useState([]);
+  const [forecastSummary, setForecastSummary] = useState([]);
 
-  // Flask API에서 AI 요약 데이터 가져오기
+  // 1. AI 요약 데이터
   useEffect(() => {
+    fetch("http://localhost:5000/api/ai-summary?mode=short")
+      .then(res => res.json())
+      .then(setAiSummaryShort)
+      .catch(err => console.error("요약 불러오기 실패:", err));
+
     fetch("http://localhost:5000/api/ai-summary")
+      .then(res => res.json())
+      .then(setAiSummaryFull)
+      .catch(err => console.error("전체 불러오기 실패:", err));
+  }, []);
+
+  // 2. AI 예측 데이터
+  useEffect(() => {
+    fetch("http://localhost:5000/api/forecast/top-growth")
       .then((res) => res.json())
-      .then((data) => setAiSummary(data))
+      .then((data) => setForecastSummary(data))
       .catch((err) => {
-        console.error("AI 분석 요약 데이터를 불러오는 데 실패했습니다:", err);
+        console.error("AI 예측 데이터를 불러오는 데 실패했습니다:", err);
       });
   }, []);
 
@@ -28,6 +43,8 @@ export default function StatisticsTabs({ title }) {
     { id: "class", label: "직업별 분포" },
     { id: "level", label: "레벨별 분포" },
   ];
+
+  const combinedSummary = [...aiSummaryFull, "------------------------------", ...forecastSummary];
 
   return (
     <div className="w-full p-4">
@@ -68,7 +85,6 @@ export default function StatisticsTabs({ title }) {
         {activeTab === "level" && <TotalLevelChart />}
       </div>
 
-      {/* 중앙 팝업 모달 */}
       <AIAnalysisModal
         visible={showModal}
         onClose={() => setShowModal(false)}
@@ -76,14 +92,13 @@ export default function StatisticsTabs({ title }) {
           setShowModal(false);
           setShowPanel(true);
         }}
-        items={aiSummary}
+        items={aiSummaryShort}
       />
 
-      {/* 오른쪽 슬라이드 패널 */}
       <AISidePanel
         visible={showPanel}
         onClose={() => setShowPanel(false)}
-        items={aiSummary}
+        items={combinedSummary}
       />
     </div>
   );
