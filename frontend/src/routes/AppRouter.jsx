@@ -17,6 +17,8 @@ import Statistics from '../pages/Statistics';
 import ForgotPassword from '../pages/ForgotPassword';
 
 
+
+
 const AppRouter = () => {
     return (
         <Router>
