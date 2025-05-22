@@ -70,15 +70,12 @@ export default function CharacterSearchPage() {
 
   return (
     <div className="min-h-screen bg-white text-black dark:bg-gray-900 dark:text-white p-6">
-      {(!hasSearched || (!characterData && !isLoading)) && (
-          <CharacterSearchInput
-              favorites={favorites}
-              setFavorites={setFavorites}
-              onFavoriteToggle={handleFavoriteToggle}
-          />
 
 
-      )}
+
+
+
+
 
       {isLoading ? (
         <p className="text-center text-gray-500 dark:text-gray-400">잠시만 기다려주세요</p>
