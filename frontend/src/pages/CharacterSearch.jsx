@@ -89,10 +89,12 @@ export default function CharacterSearchPage() {
             <div className="flex w-full max-w-[1280px] gap-6">
               <div className="min-w-[260px] max-w-[260px] bg-gray-100 dark:bg-gray-800 rounded-lg p-6 shadow">
                 <CharacterProfileCard
+                    key={characterData.profile.CharacterName} // ★ 변경되면 다시 그려짐
                     profile={characterData.profile}
                     favorites={favorites}
-                    onFavoriteToggle={handleFavoriteToggle} // ✅ 이거 추가
+                    onFavoriteToggle={handleFavoriteToggle}
                 />
+
               </div>
               <div className="flex-1">
                 <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-4 shadow">
