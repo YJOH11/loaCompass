@@ -50,10 +50,20 @@ export default function CharacterSearchInput({ favorites = [], setFavorites, onF
     };
 
     const handleRemove = (term) => {
-        const updated = history.filter((h) => h !== term);
-        localStorage.setItem("searchHistory", JSON.stringify(updated));
-        setHistory(updated);
+        // 검색 기록 제거
+        const updatedHistory = history.filter((h) => h !== term);
+        localStorage.setItem("searchHistory", JSON.stringify(updatedHistory));
+        setHistory(updatedHistory);
+
+        // 즐겨찾기에 포함돼 있다면 같이 제거
+        if (favorites.includes(term)) {
+            if (typeof onFavoriteToggle === "function") {
+                onFavoriteToggle(term, false); // 즐겨찾기 해제
+            }
+        }
     };
+
+
 
     const toggleFavorite = (term, e) => {
         e.stopPropagation();
@@ -141,13 +151,15 @@ export default function CharacterSearchInput({ favorites = [], setFavorites, onF
                             <button
                                 type="button"
                                 onClick={(e) => {
-                                    e.stopPropagation(); // ✅ 줄 클릭 막음
+                                    e.stopPropagation();
                                     handleRemove(term);
                                 }}
                                 className="text-gray-400 hover:text-red-400 ml-2"
                             >
                                 ×
                             </button>
+
+
                         </div>
                     ))}
 
