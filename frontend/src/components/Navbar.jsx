@@ -63,6 +63,20 @@ const Navbar = () => {
         navigate('/');
     };
 
+    const [favorites, setFavorites] = useState(() => {
+        const stored = localStorage.getItem("favoriteHistory");
+        return stored ? JSON.parse(stored) : [];
+    });
+
+    const handleFavoriteToggle = (name, isNowFavorite) => {
+        const updated = isNowFavorite
+            ? [name, ...favorites.filter(n => n !== name)]
+            : favorites.filter(n => n !== name);
+        setFavorites(updated);
+        localStorage.setItem("favoriteHistory", JSON.stringify(updated));
+    };
+
+
     return (
         <nav className="w-full bg-white dark:bg-gray-900 text-black dark:text-white px-6 md:px-12">
             {/* 첫 번째 줄 */}
@@ -78,7 +92,10 @@ const Navbar = () => {
                 </div>
 
                 <div className="flex-1 mx-6">
-                    <CharacterSearchInput />
+                    <CharacterSearchInput
+                        favorites={favorites}
+                        onFavoriteToggle={handleFavoriteToggle} // ✅ 이거만 넘기면 됨
+                    />
                 </div>
 
                 <div className="flex items-center gap-2 mr-3">

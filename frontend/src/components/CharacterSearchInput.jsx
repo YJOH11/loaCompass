@@ -50,28 +50,29 @@ export default function CharacterSearchInput({ favorites = [], setFavorites, onF
     };
 
     const handleRemove = (term) => {
-        const updated = history.filter((h) => h !== term);
-        localStorage.setItem("searchHistory", JSON.stringify(updated));
-        setHistory(updated);
+        // 검색 기록 제거
+        const updatedHistory = history.filter((h) => h !== term);
+        localStorage.setItem("searchHistory", JSON.stringify(updatedHistory));
+        setHistory(updatedHistory);
+
+        // 즐겨찾기에 포함돼 있다면 같이 제거
+        if (favorites.includes(term)) {
+            if (typeof onFavoriteToggle === "function") {
+                onFavoriteToggle(term, false); // 즐겨찾기 해제
+            }
+        }
     };
+
+
 
     const toggleFavorite = (term, e) => {
         e.stopPropagation();
-        if (onFavoriteToggle) {
+        if (typeof onFavoriteToggle === "function") {
             const willFavorite = !favorites.includes(term);
             onFavoriteToggle(term, willFavorite);
-        } else {
-            // fallback
-            let updated;
-            if (favorites.includes(term)) {
-                updated = favorites.filter((t) => t !== term);
-            } else {
-                updated = [term, ...favorites];
-            }
-            localStorage.setItem("favoriteHistory", JSON.stringify(updated));
-            setFavorites(updated);
         }
     };
+
 
     const sortedHistory = [
         ...favorites,
@@ -80,28 +81,31 @@ export default function CharacterSearchInput({ favorites = [], setFavorites, onF
 
     return (
         <div className="relative w-full" ref={wrapperRef}>
-            <form onSubmit={handleSearch}>
+            <form onSubmit={handleSearch} className="relative w-full">
                 <input
                     type="text"
-                    placeholder="검색할 캐릭터명을 입력하세요..."
+                    placeholder="캐릭터명을 입력하세요"
                     value={keyword}
                     onChange={(e) => setKeyword(e.target.value)}
                     onFocus={() => setShowDropdown(true)}
-                    className="w-full py-2 pl-4 pr-10 rounded-md
-            bg-white dark:bg-gray-800
-            text-black dark:text-white
-            placeholder-gray-400
-            focus:outline-none focus:ring-2 focus:ring-indigo-500
-            border border-gray-300 dark:border-gray-700"
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            e.preventDefault(); // ✅ 중복 방지
+                            handleSearch(e);
+                        }
+                    }}
+                    className="w-full py-2 pl-4 pr-24 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-black dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
                 <button
                     type="submit"
-                    className="absolute right-2 top-1/2 -translate-y-1/2
-            text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-1.5 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-md transition"
                 >
-                    🔍
+                    검색
                 </button>
             </form>
+
+
+
 
             {showDropdown && sortedHistory.length > 0 && (
                 <div className="absolute top-full mt-1 w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow z-20">
@@ -147,13 +151,15 @@ export default function CharacterSearchInput({ favorites = [], setFavorites, onF
                             <button
                                 type="button"
                                 onClick={(e) => {
-                                    e.stopPropagation(); // ✅ 줄 클릭 막음
+                                    e.stopPropagation();
                                     handleRemove(term);
                                 }}
                                 className="text-gray-400 hover:text-red-400 ml-2"
                             >
                                 ×
                             </button>
+
+
                         </div>
                     ))}
 

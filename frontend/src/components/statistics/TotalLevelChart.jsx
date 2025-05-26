@@ -1,38 +1,39 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
-  BarChart, XAxis, YAxis, Tooltip, Legend, Bar, ResponsiveContainer,
-  PieChart, Pie, Cell
+  BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer,
+  PieChart, Pie, Cell, LabelList
 } from 'recharts';
 import {
   CHART_COLORS,
   LABEL_STYLE,
   TOOLTIP_STYLE,
   formatPercent
-} from "../../styles/chartStyles";
+} from '../../styles/chartStyles';
 
-export default function ServerPopulationChart() {
+export default function TotalLevelChart() {
   const [data, setData] = useState([]);
   const [viewMode, setViewMode] = useState("bar");
 
   useEffect(() => {
-    axios.get('/api/statistics/server-count')
+    axios.get('/api/statistics/total-level-distribution')
       .then(res => {
-        const sorted = [...res.data].sort((a, b) => b.count - a.count);
+        const raw = res.data;
+        const sorted = [...raw].sort((a, b) => b.count - a.count);
         setData(sorted);
       })
-      .catch(error => console.error('통계 데이터를 불러오는 중 오류:', error));
+      .catch(err => console.error(err));
   }, []);
 
   const total = data.reduce((sum, d) => sum + d.count, 0);
 
   return (
-    <div className="w-full h-[400px] mt-10 bg-white dark:bg-gray-900 text-black dark:text-white p-4 rounded shadow">
+    <div className="w-full h-[500px] mt-8 bg-white dark:bg-gray-900 text-black dark:text-white p-4 rounded shadow">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold text-gray-800 dark:text-white">서버별 인원 비율</h2>
+        <h2 className="text-xl font-bold text-gray-800 dark:text-white">레벨 분포</h2>
         <button
-          className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
           onClick={() => setViewMode(viewMode === 'bar' ? 'pie' : 'bar')}
+          className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700"
         >
           {viewMode === 'bar' ? 'Pie 보기' : 'Bar 보기'}
         </button>
@@ -40,9 +41,14 @@ export default function ServerPopulationChart() {
 
       <ResponsiveContainer width="100%" height="100%">
         {viewMode === 'bar' ? (
-          <BarChart data={data} margin={{ top: 10, right: 30, left: 30, bottom: 10 }}>
-            <XAxis dataKey="serverName" stroke="currentColor" />
-            <YAxis stroke="currentColor" />
+          <BarChart
+            data={data}
+            layout="vertical"
+            barSize={36}
+            margin={{ top: 10, right: 40, left: 100, bottom: 10 }}
+          >
+            <XAxis type="number" stroke="currentColor" />
+            <YAxis dataKey="levelRange" type="category" width={100} stroke="currentColor" />
             <Tooltip
               formatter={(value) => {
                 const percent = formatPercent(value, total);
@@ -50,12 +56,18 @@ export default function ServerPopulationChart() {
               }}
               contentStyle={{
                 ...TOOLTIP_STYLE,
-                backgroundColor: "#1f2937", // dark:bg-gray-800
-                color: "#fff",
+                backgroundColor: '#1f2937',
+                color: '#fff',
               }}
             />
             <Legend wrapperStyle={{ color: "currentColor" }} />
             <Bar dataKey="count" name="인원 수">
+              <LabelList
+                dataKey="count"
+                position="right"
+                content={({ value }) => `${value} (${formatPercent(value, total)})`}
+                style={LABEL_STYLE}
+              />
               {data.map((_, idx) => (
                 <Cell key={idx} fill={CHART_COLORS[idx % CHART_COLORS.length]} />
               ))}
@@ -66,7 +78,7 @@ export default function ServerPopulationChart() {
             <Pie
               data={data}
               dataKey="count"
-              nameKey="serverName"
+              nameKey="levelRange"
               cx="50%"
               cy="50%"
               outerRadius={120}
@@ -84,8 +96,8 @@ export default function ServerPopulationChart() {
               }}
               contentStyle={{
                 ...TOOLTIP_STYLE,
-                backgroundColor: "#1f2937",
-                color: "#fff"
+                backgroundColor: '#1f2937',
+                color: '#fff',
               }}
             />
             <Legend wrapperStyle={{ color: "currentColor" }} />
