@@ -14,13 +14,12 @@ def forecast_top_server_growth():
     conn.close()
 
     df_all['ds'] = pd.to_datetime(df_all['ds'])
-
     summary = []
 
     for server in df_all['server_name'].unique():
         df = df_all[df_all['server_name'] == server][['ds', 'y']]
         if len(df) < 5:
-            continue  # 기록 수 부족
+            continue
 
         model = Prophet()
         model.fit(df)
@@ -31,25 +30,25 @@ def forecast_top_server_growth():
         y_pred = forecast.iloc[-1]['yhat']
         growth = y_pred - y_last
 
-        # 🔒 증가량이 1 이상인 경우만 포함
-        if growth >= 1:
+        print(f"[DEBUG] {server}: current={y_last:.1f}, forecast={y_pred:.1f}, increase={growth:.1f}")
+
+        # 기준 완화: 0.5 이상 증가
+        if growth >= 0.5:
             summary.append({
                 'server': server,
-                'current': round(y_last),
-                'forecast': round(y_pred),
-                'increase': round(growth)
+                'current': y_last,
+                'forecast': y_pred,
+                'increase': growth
             })
 
-    # 증가 수 기준 정렬
     summary.sort(key=lambda x: x['increase'], reverse=True)
     top3 = summary[:3]
 
-    # 결과 포맷
     result = []
     if top3:
         result.append("📈 AI 예측 결과, 다음 주 인구가 가장 많이 증가할 것으로 예상되는 서버는:")
         for idx, row in enumerate(top3, start=1):
-            result.append(f"{idx}. {row['server']} (+{row['increase']}명 예상)")
+            result.append(f"{idx}. {row['server']} (+{row['increase']:.1f}명 예상)")
     else:
         result.append("⚠️ 예측할 수 있는 유의미한 인구 증가가 감지되지 않았습니다.")
 
