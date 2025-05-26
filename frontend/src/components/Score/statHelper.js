@@ -318,66 +318,71 @@ function applyEffectToStat(effect, myStat) {
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-export function applyAccessoryEffects({ basicEffect, refinementEffects }, myStat) {
+export function applyAccessoryEffects({ basicEffect, refinementEffects } = {}, myStat) {
   // 부동소수점 오류 방지용 정밀 계산 함수
-   const addWithPrecision = (target, value, label = "") => {
-      const result = Number((target + value).toFixed(2));
+  const addWithPrecision = (target, value, label = "") => {
+    const result = Number((target + value).toFixed(2));
+    return result;
+  };
 
-      return result;
-    };
   // 1) 힘, 민첩, 지능 중 하나에 해당하는 숫자를 찾아 myStat.STAT에 더함
-  const statMatch = basicEffect.match(/(힘|민첩|지능) \+(\d+)/);
-  if (statMatch) {
-    const value = Number(statMatch[2]);
-    myStat.STAT = addWithPrecision(myStat.STAT, value);
+  if (typeof basicEffect === 'string') {
+    const statMatch = basicEffect.match(/(힘|민첩|지능) \+(\d+)/);
+    if (statMatch) {
+      const value = Number(statMatch[2]);
+      myStat.STAT = addWithPrecision(myStat.STAT, value);
+    }
   }
 
-  // 2) refinementEffects 배열에서 필요한 옵션만 골라서 적용
-  refinementEffects.forEach(effect => {
-    const match = effect.match(/^(.+?) \+([\d.]+)(%?)/);
-    if (!match) return;
+  // 2) refinementEffects가 배열인지 확인 후 처리
+  if (Array.isArray(refinementEffects)) {
+    refinementEffects.forEach(effect => {
+      const match = effect.match(/^(.+?) \+([\d.]+)(%?)/);
+      if (!match) return;
 
-    const optionName = match[1].trim();
-    const value = parseFloat(match[2]);
-    const isPercent = match[3] === "%";
+      const optionName = match[1].trim();
+      const value = parseFloat(match[2]);
+      const isPercent = match[3] === "%";
 
-    switch (optionName) {
-      case "추가 피해":
-      case "적에게 주는 피해":
-        myStat.addDamagePer = addWithPrecision(myStat.addDamagePer, value);
-        break;
-      case "무기 공격력":
-        if (isPercent) {
-          myStat.WeaponAtkPer = addWithPrecision(myStat.WeaponAtkPer, value);
-        } else {
-          myStat.WeaponAtk = addWithPrecision(myStat.WeaponAtk, value);
-        }
-        break;
-      case "공격력":
-        if (isPercent) {
-          myStat.AtkPer = addWithPrecision(myStat.AtkPer, value);
-        } else {
-          myStat.Atk = addWithPrecision(myStat.Atk, value);
-        }
-        break;
-      case "치명타 적중률":
-        if (isPercent) {
-          myStat.criticalChancePer = addWithPrecision(myStat.criticalChancePer, value);
-        }
-        break;
-      case "치명타 피해":
-        if (isPercent) {
-          myStat.criticalDamagePer = addWithPrecision(myStat.criticalDamagePer, value);
-        }
-        break;
-      case "보스 피해":
-        if (isPercent) {
-          myStat.finalDamagePer = addWithPrecision(myStat.finalDamagePer, value);
-        }
-        break;
-    }
-  });
+      switch (optionName) {
+        case "추가 피해":
+        case "적에게 주는 피해":
+          myStat.addDamagePer = addWithPrecision(myStat.addDamagePer, value);
+          break;
+        case "무기 공격력":
+          if (isPercent) {
+            myStat.WeaponAtkPer = addWithPrecision(myStat.WeaponAtkPer, value);
+          } else {
+            myStat.WeaponAtk = addWithPrecision(myStat.WeaponAtk, value);
+          }
+          break;
+        case "공격력":
+          if (isPercent) {
+            myStat.AtkPer = addWithPrecision(myStat.AtkPer, value);
+          } else {
+            myStat.Atk = addWithPrecision(myStat.Atk, value);
+          }
+          break;
+        case "치명타 적중률":
+          if (isPercent) {
+            myStat.criticalChancePer = addWithPrecision(myStat.criticalChancePer, value);
+          }
+          break;
+        case "치명타 피해":
+          if (isPercent) {
+            myStat.criticalDamagePer = addWithPrecision(myStat.criticalDamagePer, value);
+          }
+          break;
+        case "보스 피해":
+          if (isPercent) {
+            myStat.finalDamagePer = addWithPrecision(myStat.finalDamagePer, value);
+          }
+          break;
+      }
+    });
+  }
 }
+
 
 
 
