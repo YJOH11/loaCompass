@@ -5,6 +5,7 @@ import CharacterSearchInput from "../components/CharacterSearchInput";
 import CharacterProfileCard from "../components/CharacterProfileCard";
 import GemList from "../components/Gem/GemList";
 import EquipmentAccessoryRow from "../components/Equipment/EquipmentAccessoryRow";
+import ScoreRow from "../components/score/ScoreRow";
 
 export default function CharacterSearchPage() {
   const { name: characterName } = useParams();
@@ -52,6 +53,7 @@ export default function CharacterSearchPage() {
     setFavorites(updated);
   };
 
+  const engravings = characterData?.profile?.engravings || [];
 
   const gears =
     characterData?.equipments?.filter((item) =>
@@ -62,6 +64,7 @@ export default function CharacterSearchPage() {
     characterData?.equipments?.filter((item) =>
       ["목걸이", "귀걸이", "반지"].includes(item.Type)
     ) || [];
+
 
   const abilityStone = characterData?.equipments?.find((item) => item.Type === "어빌리티 스톤");
   const bracelet = characterData?.equipments?.find((item) => item.Type === "팔찌");
@@ -93,6 +96,14 @@ export default function CharacterSearchPage() {
                     profile={characterData.profile}
                     favorites={favorites}
                     onFavoriteToggle={handleFavoriteToggle}
+                />
+                      
+                <ScoreRow
+                    items={gears}
+                    accessories={accessories}
+                    engravings={engravings}
+                    abilityStone={abilityStone}
+                    bracelet={bracelet}
                 />
 
               </div>
