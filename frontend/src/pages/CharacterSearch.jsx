@@ -105,6 +105,7 @@ export default function CharacterSearchPage() {
                     engravings={engravings}
                     abilityStone={abilityStone}
                     bracelet={bracelet}
+                    gems={characterData.gems}
                 />
               </div>
               <div className="flex-1">
