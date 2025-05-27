@@ -11,6 +11,7 @@ const Navbar = () => {
         { name: '순위', path: '/ranking' },
         { name: '통계', path: '/stats' },
         { name: '도구', path: '/tools' },
+        { name: '자유게시판', path: '/boards' },
     ];
 
     return (
