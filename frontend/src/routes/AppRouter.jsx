@@ -11,7 +11,6 @@ import BoardList from '../pages/BoardList';
 import BoardWrite from '../pages/BoardWrite';
 import BoardDetail from '../pages/BoardDetail';
 import BoardEdit from '../pages/BoardEdit';
-
 import DiscordCallback from "../pages/DiscordCallback.jsx";
 import Login from '../pages/Login';
 import Register from '../pages/Register';
