@@ -11,11 +11,15 @@ const BoardList = () => {
       .catch(err => console.error('게시글 목록 불러오기 실패:', err));
   }, []);
 
-  const formatDate = (dateStr) =>
-    new Intl.DateTimeFormat('ko-KR', {
-      year: 'numeric', month: '2-digit', day: '2-digit',
-      hour: '2-digit', minute: '2-digit'
-    }).format(new Date(dateStr));
+  const formatDate = (dateStr) => {
+    const date = new Date(dateStr);
+    return isNaN(date.getTime())
+      ? '유효하지 않음'
+      : new Intl.DateTimeFormat('ko-KR', {
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit'
+      }).format(date);
+  };
 
   return (
     <div className="p-4">
