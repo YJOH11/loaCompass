@@ -48,6 +48,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/user/**").permitAll()
                         .requestMatchers("/api/statistics/**").permitAll()
                         .requestMatchers("/api/admin/collect-random").permitAll()
+                        .requestMatchers("/api/boards/**").permitAll()
 
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
