@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import * as statHelper from "./statHelper";
 
 
-const ScoreRow = ({ items ,accessories,engravings,abilityStone,bracelet}) => {
+const ScoreRow = ({ items ,accessories,engravings,abilityStone,bracelet,gems}) => {
   const [myStat, setMyStat] = useState({
     STAT: 0,
     WeaponAtk: 0,
@@ -39,7 +39,7 @@ const ScoreRow = ({ items ,accessories,engravings,abilityStone,bracelet}) => {
           tempStat
         );
 
-
+            console.log(gems);
 
             // 초월 단계, 초월 레벨 정리
             const part = item.Type;
@@ -99,7 +99,7 @@ const ScoreRow = ({ items ,accessories,engravings,abilityStone,bracelet}) => {
 
 
 
-  const score = statHelper.calculateScore(myStat);
+  const score = statHelper.calculateScore(myStat,gems);
   return (
       <div className="score-row">
         <h3>🧮 내 점수</h3>

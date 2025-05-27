@@ -22,7 +22,7 @@ const baseStats = {
   하의: [25090,25933,26804,27705,28635,29597,30591,31618,32680,33777,34911,36083,37294,38601,39954,41354,42803,44303,45855,47462,49125,50846,52627,54471,56379,58357],
   장갑: [34836,36006,37216,38466,39758,41093,42473,43899,45373,46897,48471,50098,51780,53595,55473,57417,59429,61512,63667,65898,68206,70596,73069,75629,78278,81021],
   무기: [50362,52051,53796,55599,57463,59390,61381,63439,65566,67764,70036,72384,74811,77429,80139,82944,85847,88851,91961,95180,98511,101959,105527,109221,113044,117000],
-  에스더: [0,23000,28000,34500,37500,43500,123464,128479,134931,177946]
+  에스더: [0,23000,28000,34500,37500,43500,123464,158479,214931,277946]
 };
 
 // 상급 재련 수치 (최대 40단계까지 확장)
@@ -1042,7 +1042,24 @@ export function getTotalElixirLevelFromItems(items) {
   return items.reduce((sum, item) => sum + getTotalElixirLevel(item), 0);
 }
 
-export function calculateScore(myStat) {
+function calculateAverageGemLevel(gemList) {
+  const adjustedLevels = gemList.map(gem => {
+    const level = parseInt(gem.Name);
+    if (gem.gemType === '멸화' || gem.gemType === '홍염') {
+      return level - 1.7;
+    }
+    return level;
+  });
+
+  const total = adjustedLevels.reduce((sum, lvl) => sum + lvl, 0);
+  const average = total / adjustedLevels.length;
+  console.log(Number(average.toFixed(2))*160);
+  return Number(average.toFixed(2))*160;
+
+}
+
+
+export function calculateScore(myStat,gems) {
   const {
     STAT = 0,
     WeaponAtk = 0,
@@ -1070,11 +1087,11 @@ export function calculateScore(myStat) {
   const critDmgScore = criticalDamagePer * 5;
   const critChanceScore = criticalChancePer * 10;
   const mainStatScore = mainStat * 0.22;
-
+  const gemScore = calculateAverageGemLevel(gems);
   // 총합
   const totalScore = finalAtkScore + bossDamageScore + addDamageScore +
                      finalDamageScore + critDmgScore + critChanceScore +
-                     mainStatScore;
+                     mainStatScore + gemScore;
 
   return Math.round(totalScore * 100) / 100;
 }
