@@ -1,58 +1,90 @@
 package com.finalteam.loacompass.client;
 
 import com.finalteam.loacompass.dto.*;
+import com.finalteam.loacompass.util.CardParser;
 import com.finalteam.loacompass.util.GemTooltipParser;
 import com.finalteam.loacompass.util.TooltipParser;
+import com.finalteam.loacompass.util.EngravingParser;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
 @Component
-
 public class LostArkClient {
 
     private final WebClient lostArkWebClient;
 
-   public CharacterProfileDto getCharacterProfile(String nickname) {
-   ArmoryResponse response = lostArkWebClient.get()
-           .uri("/armories/characters/{name}", nickname)
-           .retrieve()
-           .bodyToMono(ArmoryResponse.class)
-           .block();
-   return response.getArmoryProfile();
-   }
+    // 캐릭터 프로필을 가져오는 메서드
+    public CharacterProfileDto getCharacterProfile(String nickname) {
+        ArmoryResponse response = lostArkWebClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/armories/characters/{name}")
+                        .build(nickname))
+                .retrieve()
+                .bodyToMono(ArmoryResponse.class)
+                .block();
+        return response.getArmoryProfile();
+    }
+
+    // 카드 세트 정보를 가져오는 메서드
+    public CardSetDto getCardSet(String nickname) {
+        try {
+            CardResponse cardResponse = lostArkWebClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/armories/characters/{name}/cards")
+                            .build(nickname))
+                    .retrieve()
+                    .bodyToMono(CardResponse.class)
+                    .block();
+
+            if (cardResponse == null || cardResponse.getEffects() == null) {
+                return null;
+            }
+
+            return CardParser.extractActiveCardSet(cardResponse);
+
+        } catch (Exception e) {
+            log.warn("❌ 카드 정보 요청 실패: {}", nickname);
+            return null;
+        }
+    }
 
     private boolean isGear(String type) {
         return List.of("무기", "투구", "상의", "하의", "장갑", "어깨").contains(type);
     }
+
     private boolean isAccessory(String type) {
         return List.of("목걸이", "귀걸이", "반지").contains(type);
     }
 
-    public List<EquipmentDto> getCharacterEquipment(String nickname) {
-        ArmoryResponse response = lostArkWebClient.get()
-                .uri("/armories/characters/{name}", nickname)
-                .retrieve()
-                .bodyToMono(ArmoryResponse.class)
-                .block();
+    private boolean isAbilityStone(String type) {
+        return "어빌리티 스톤".equals(type);
+    }
 
-        List<EquipmentDto> equipmentList = response.getArmoryEquipment();
+    private boolean isBracelet(String type) {
+        return "팔찌".equals(type);
+    }
 
+    private List<EquipmentDto> parseEquipments(List<EquipmentDto> equipmentList) {
         int totalTranscendence = 0;
 
         for (EquipmentDto dto : equipmentList) {
-            log.info("==== [{}] {} ====", dto.getType(), dto.getName());
-
-            TooltipParser.populateGeneralDetails(dto); // 장비/악세서리 공통 정보
+            TooltipParser.populateGeneralDetails(dto);
 
             if (isGear(dto.getType())) {
-                TooltipParser.populateEquipmentDetails(dto); // 강화, 초월, 엘릭서 등 장비 전용
+                TooltipParser.populateEquipmentDetails(dto);
+                if (dto.getTranscendencePoint() != null) {
+                    totalTranscendence += dto.getTranscendencePoint();
+                }
+            } else if (isAbilityStone(dto.getType())) {
+                TooltipParser.populateAbilityStoneDetails(dto);
+            } else if (isBracelet(dto.getType())) {
+                TooltipParser.populateBraceletDetails(dto);
             }
         }
 
@@ -60,46 +92,61 @@ public class LostArkClient {
     }
 
     public CharacterSummaryDto getCharacterSummary(String nickname) {
-        ArmoryResponse response = lostArkWebClient.get()
-                .uri("/armories/characters/{name}", nickname)
-                .retrieve()
-                .bodyToMono(ArmoryResponse.class)
-                .block();
+        try {
+            ArmoryResponse response = lostArkWebClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/armories/characters/{name}")
+                            .build(nickname))
+                    .retrieve()
+                    .bodyToMono(ArmoryResponse.class)
+                    .block();
 
-        CharacterSummaryDto summary = new CharacterSummaryDto();
-        summary.setProfile(response.getArmoryProfile());
+            if (response == null || response.getArmoryProfile() == null) {
+                return null;
+            }
 
-        // 장비
-        List<EquipmentDto> equipmentList = response.getArmoryEquipment();
-        int totalTranscendence = 0;
+            CharacterSummaryDto summary = new CharacterSummaryDto();
+            summary.setProfile(response.getArmoryProfile());
 
-        for (EquipmentDto dto : equipmentList) {
-            TooltipParser.populateGeneralDetails(dto);
-            if (isGear(dto.getType())) {
-                TooltipParser.populateEquipmentDetails(dto);
-                if (dto.getTranscendencePoint() != null) {
-                    totalTranscendence += dto.getTranscendencePoint();
+            List<EquipmentDto> equipmentList = parseEquipments(response.getArmoryEquipment());
+            summary.setEquipments(equipmentList);
+            summary.setTranscendenceTotal(calculateTotalTranscendence(equipmentList));
+
+            List<GemDto> gems = response.getArmoryGem() != null ? response.getArmoryGem().getGems() : null;
+            if (gems != null) {
+                for (GemDto gem : gems) {
+                    GemTooltipParser.populateGemDetails(gem);
                 }
+                summary.setGems(gems);
             }
-        }
-        summary.setEquipments(equipmentList);
-        summary.setTranscendenceTotal(totalTranscendence);
 
-        // 보석
-        List<GemDto> gems = response.getArmoryGem().getGems();
-        if (gems != null) {
-            for (GemDto gem : gems) {
-                System.out.println("raw Icon from dto: " + gem.getIcon());
-                GemTooltipParser.populateGemDetails(gem);
-                System.out.println("after parsing icon: " + gem.getIcon());
+            if (response.getArmoryEngraving() != null) {
+                List<EngravingDto> engravings = EngravingParser.parse(
+                        response.getArmoryEngraving().getArkPassiveEffects()
+                );
+                summary.getProfile().setEngravings(engravings);
             }
-            summary.setGems(gems);
-        }
 
-        return summary;
+            CardSetDto cardSet = getCardSet(nickname);
+            if (cardSet != null) {
+                summary.getProfile().setCardSet(cardSet);
+            }
+
+            return summary;
+
+        } catch (Exception e) {
+            log.warn(" 캐릭터 정보 요청 실패: {}", nickname, e);
+            return null;
+        }
     }
 
-
-
+    private int calculateTotalTranscendence(List<EquipmentDto> equipmentList) {
+        int totalTranscendence = 0;
+        for (EquipmentDto dto : equipmentList) {
+            if (dto.getTranscendencePoint() != null) {
+                totalTranscendence += dto.getTranscendencePoint();
+            }
+        }
+        return totalTranscendence;
+    }
 }
-

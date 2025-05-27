@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 export default function SassagaeCrawler() {
     const [keyword, setKeyword] = useState("");
     const [searchType, setSearchType] = useState("subject"); // subject(제목만) 또는 content(제목+본문)
-    const [maxConcurrent, setMaxConcurrent] = useState(5);
+    const [maxConcurrent, setMaxConcurrent] = useState(10);
     const [results, setResults] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -14,6 +14,7 @@ export default function SassagaeCrawler() {
     const handleSearch = async () => {
         if (!keyword || keyword.trim() === '') {
             alert('검색어를 입력하세요.');
+            setHasSearched(true);
             return;
         }
 
@@ -48,29 +49,41 @@ export default function SassagaeCrawler() {
         return match ? match[1] : "기타";
     };
 
-    return (
-        <div className="min-h-screen bg-white text-black dark:bg-gray-900 dark:text-white p-8">
-            <div className="flex items-center mb-8">
-                <h1 className="text-3xl font-bold">사사게 검색</h1>
-            </div>
+    const [hasSearched, setHasSearched] = useState(false);
 
-            <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-6 mb-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <label className="block text-sm font-medium mb-2">검색어</label>
+
+    return (
+        <div className="min-h-screen bg-white text-black dark:bg-gray-900 dark:text-white flex flex-col items-center justify-start py-16">
+            <div className="w-full max-w-3xl px-4">
+                <div className="text-center mb-12">
+                    <h1 className="text-4xl font-bold mb-2">사사게 게시판</h1>
+                   
+                </div>
+
+                <div className="mb-10">
+                    <div className="relative">
                         <input
                             type="text"
                             value={keyword}
                             onChange={(e) => setKeyword(e.target.value)}
-                            placeholder="검색어를 입력하세요"
-                            className="w-full p-2 rounded-lg bg-white text-black dark:bg-gray-700 dark:text-white border border-gray-300 dark:border-gray-600 focus:outline-none focus:border-blue-500"
+                            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                            placeholder="검색어를 입력해주세요"
+                            className="w-full p-4 pl-5 pr-12 rounded-full bg-gray-100 dark:bg-gray-800 text-black dark:text-white border-2 border-gray-300 dark:border-gray-700 focus:outline-none focus:border-blue-500 text-center text-lg"
                         />
+                        <button
+                            onClick={handleSearch}
+                            disabled={isLoading}
+                            className="absolute right-3 top-1/2 transform -translate-y-1/2 p-2 rounded-full bg-blue-600 hover:bg-blue-700 text-white"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </button>
                     </div>
 
-                    <div>
-                        <label className="block text-sm font-medium mb-2">검색 범위</label>
-                        <div className="flex gap-4">
-                            <label className="inline-flex items-center">
+                    <div className="mt-8 flex flex-col space-y-4">
+                        <div className="flex justify-center space-x-2">
+                            <label className="inline-flex items-center px-3 py-1 rounded-full bg-gray-200 dark:bg-gray-800 text-sm border border-gray-300 dark:border-gray-700">
                                 <input
                                     type="radio"
                                     value="subject"
@@ -80,7 +93,7 @@ export default function SassagaeCrawler() {
                                 />
                                 제목만
                             </label>
-                            <label className="inline-flex items-center">
+                            <label className="inline-flex items-center px-3 py-1 rounded-full bg-gray-200 dark:bg-gray-800 text-sm border border-gray-300 dark:border-gray-700">
                                 <input
                                     type="radio"
                                     value="content"
@@ -92,89 +105,70 @@ export default function SassagaeCrawler() {
                             </label>
                         </div>
                     </div>
-
-                    <div>
-                        <label className="block text-sm font-medium mb-2">동시 요청 수 (1~20)</label>
-                        <input
-                            type="number"
-                            min="1"
-                            max="20"
-                            value={maxConcurrent}
-                            onChange={(e) => setMaxConcurrent(Math.max(1, Math.min(20, parseInt(e.target.value || "5"))))}
-                            className="w-full p-2 rounded-lg bg-white text-black dark:bg-gray-700 dark:text-white border border-gray-300 dark:border-gray-600 focus:outline-none focus:border-blue-500"
-                        />
-                    </div>
                 </div>
-
-                <button
-                    onClick={handleSearch}
-                    disabled={isLoading}
-                    className="w-full p-2 mt-4 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:opacity-70 text-white"
-                >
-                    {isLoading ? "검색 중..." : "검색하기"}
-                </button>
 
                 {error && (
-                    <p className="mt-2 text-red-500 dark:text-red-400">{error}</p>
+                    <div className="text-center text-red-500 dark:text-red-400 mb-4">{error}</div>
+                )}
+
+                {isLoading && (
+                    <div className="text-center mb-8">
+                        <div className="inline-flex items-center px-4 py-2 text-black dark:text-white">
+                            <svg className="w-5 h-5 mr-3 animate-spin text-black dark:text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            검색중 입니다. 잠시만 기다려주세요/
+                        </div>
+                    </div>
+                )}
+
+                {results.length > 0 ? (
+                    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                        <div className="p-4 bg-gray-200 dark:bg-gray-700 border-b border-gray-300 dark:border-gray-600">
+                            <h3 className="font-semibold text-black dark:text-white">검색결과: {results.length}건</h3>
+                        </div>
+                        
+                        <div className="p-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                {results.map((post, index) => (
+                                    <div key={index} className="bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                                        <a href={post.link} target="_blank" rel="noopener noreferrer" className="block">
+                                            <div className="flex items-start p-4">
+                                                <div className="flex-shrink-0">
+                                                    <div className="w-10 h-10 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-gray-600 dark:text-gray-300">
+                                                        {post.author ? post.author.charAt(0) : '?'}
+                                                    </div>
+                                                </div>
+                                                <div className="ml-3 flex-1">
+                                                    <h3 className="text-base font-medium text-gray-900 dark:text-white mb-1 hover:text-blue-600 dark:hover:text-blue-400">
+                                                        {post.title}
+                                                    </h3>
+                                                    <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
+                                                        <span>{post.date}</span>
+                                                        <span className="mx-2">•</span>
+                                                        <span>조회 {post.views}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-xs flex justify-between text-gray-600 dark:text-gray-300 border-t border-gray-200 dark:border-gray-700">
+                                                <span>{post.server || extractServer(post.title)}</span>
+                                                <span>{post.author}</span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                ) : (
+                    !isLoading && hasSearched && (
+                        <div className="text-center text-gray-500 dark:text-gray-400 border border-gray-300 dark:border-gray-700 rounded-lg p-12">
+                            검색어를 입력하여 결과를 확인하세요
+                        </div>
+                    )
                 )}
             </div>
-
-            {isLoading && (
-                <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-6 mb-8 text-center">
-                    <div className="inline-flex items-center px-4 py-2 font-semibold leading-6 text-black dark:text-white transition duration-150 ease-in-out bg-blue-200 dark:bg-blue-600 rounded-md shadow cursor-wait">
-                        <svg className="w-5 h-5 mr-3 -ml-1 animate-spin text-black dark:text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        검색 중입니다. 잠시만 기다려 주세요...
-                    </div>
-                </div>
-            )}
-
-            {results.length > 0 ? (
-                <div className="bg-gray-100 dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-                    <div className="p-4 bg-gray-200 dark:bg-gray-700 border-b border-gray-300 dark:border-gray-600">
-                        <h3 className="font-semibold text-black dark:text-white">검색결과: {results.length}건</h3>
-                    </div>
-                    <table className="w-full">
-                        <thead>
-                        <tr className="bg-gray-200 dark:bg-gray-700">
-                            <th className="p-3 text-left text-black dark:text-white">제목</th>
-                            <th className="p-3 text-left text-black dark:text-white">서버</th>
-                            <th className="p-3 text-left text-black dark:text-white">작성자</th>
-                            <th className="p-3 text-left text-black dark:text-white">날짜</th>
-                            <th className="p-3 text-left text-black dark:text-white">조회수</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {results.map((post, index) => (
-                            <tr key={index} className="border-t border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
-                                <td className="p-3">
-                                    <a
-                                        href={post.link}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-blue-600 dark:text-blue-400 hover:underline"
-                                    >
-                                        {post.title}
-                                    </a>
-                                </td>
-                                <td className="p-3">{post.server || extractServer(post.title)}</td>
-                                <td className="p-3">{post.author}</td>
-                                <td className="p-3">{post.date}</td>
-                                <td className="p-3">{post.views}</td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
-                </div>
-            ) : (
-                !isLoading && (
-                    <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-8 text-center text-gray-500 dark:text-gray-400">
-                        검색 결과가 표시됩니다.
-                    </div>
-                )
-            )}
         </div>
     );
 }
