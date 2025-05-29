@@ -18,10 +18,9 @@ import Register from '../pages/Register';
 import MyPage from '../pages/MyPage';
 import Statistics from '../pages/Statistics';
 import ForgotPassword from '../pages/ForgotPassword';
+import CharacterSimulation from '../pages/CharacterSimulation';
 import AIAssistant from '../pages/AIAssistant';
 import Navbar from '../components/Navbar';
-
-
 
 
 const AppRouter = () => {
@@ -30,6 +29,7 @@ const AppRouter = () => {
             <Navbar />
             <Routes>    
                 <Route path="/character/:name" element={<CharacterSearch />} />
+                <Route path="/character/:name/simulation" element={<CharacterSimulation />} />
                 <Route path="/" element={<Home />} />
                 <Route path="/sassagae" element={<SassagaeCrawler />} />
                 <Route path="/about" element={<About />} />
@@ -46,7 +46,6 @@ const AppRouter = () => {
                 <Route path="/statistics" element={<Statistics />} />
                 <Route path="/ai-assistant" element={<AIAssistant />} />
                 <Route path="*" element={<NotFound />} />
-                
 
             </Routes>
         </BrowserRouter>

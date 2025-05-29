@@ -76,7 +76,7 @@ export default function AccessoryCard({ item }) {
 
     return (
       <div className="relative w-12 h-3 mt-1 bg-gray-300 rounded-full overflow-hidden">
-        <div className="w-full bg-gray-300 dark:bg-gray-600 h-1.5 rounded overflow-hidden">
+        <div className="w-full bg-gray-300 dark:bg-gray-600 h-3 rounded overflow-hidden">
           <div className={`absolute top-0 left-0 h-full ${color}`} style={{ width: `${percent}%` }} />
         </div>
         <div className="absolute inset-0 text-[10px] text-white font-bold flex items-center justify-center">
