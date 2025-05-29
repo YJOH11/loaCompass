@@ -18,11 +18,17 @@ import Register from '../pages/Register';
 import MyPage from '../pages/MyPage';
 import Statistics from '../pages/Statistics';
 import ForgotPassword from '../pages/ForgotPassword';
+import CharacterSimulation from '../pages/CharacterSimulation';
 import AIAssistant from '../pages/AIAssistant';
+
+import Navbar from '../components/Navbar';
+
+
 
 const AppRouter = () => {
     return (
         <BrowserRouter>
+
             <Routes>
                 <Route element={<Layout />}>
                     <Route path="/" element={<Home />} />
