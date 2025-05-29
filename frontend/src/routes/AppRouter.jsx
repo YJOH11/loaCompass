@@ -17,7 +17,7 @@ import Register from '../pages/Register';
 import MyPage from '../pages/MyPage';
 import Statistics from '../pages/Statistics';
 import ForgotPassword from '../pages/ForgotPassword';
-
+import AIAssistant from '../pages/AIAssistant';
 
 
 
@@ -41,6 +41,7 @@ const AppRouter = () => {
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/mypage" element={<MyPage />} />
                 <Route path="/statistics" element={<Statistics />} />
+                <Route path="/ai-assistant" element={<AIAssistant />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
             <Footer />
