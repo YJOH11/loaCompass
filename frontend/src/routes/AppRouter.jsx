@@ -19,12 +19,14 @@ import MyPage from '../pages/MyPage';
 import Statistics from '../pages/Statistics';
 import ForgotPassword from '../pages/ForgotPassword';
 import AIAssistant from '../pages/AIAssistant';
+import Navbar from '../components/Navbar';
+
 
 
 
 const AppRouter = () => {
     return (
-        <Router>
+        <BrowserRouter>
             <Navbar />
             <Routes>    
                 <Route path="/character/:name" element={<CharacterSearch />} />
@@ -44,6 +46,7 @@ const AppRouter = () => {
                 <Route path="/statistics" element={<Statistics />} />
                 <Route path="/ai-assistant" element={<AIAssistant />} />
                 <Route path="*" element={<NotFound />} />
+                
 
             </Routes>
         </BrowserRouter>
