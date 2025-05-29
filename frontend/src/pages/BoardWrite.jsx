@@ -44,7 +44,7 @@ const BoardWrite = () => {
 
   return (
     <div className="max-w-xl mx-auto p-6">
-      <h2 className="text-2xl font-bold mb-4">✍️ 게시글 작성</h2>
+      <h2 className="text-2xl font-bold mb-4">게시글 작성</h2>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
           type="text"
