@@ -98,7 +98,7 @@ export default function CharacterSearchInput({ favorites = [], setFavorites, onF
                 />
                 <button
                     type="submit"
-                    className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-1.5 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-md transition"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-1.5 text-sm font-semibold text-white bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-600 dark:hover:bg-indigo-700 rounded-md transition"
                 >
                     검색
                 </button>
