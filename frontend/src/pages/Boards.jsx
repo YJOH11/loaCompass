@@ -14,12 +14,12 @@ const Boards = () => {
   return (
     <div className="max-w-3xl mx-auto p-4">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">📋 게시판</h1>
+        <h1 className="text-2xl font-bold">자유 게시판</h1>
         <a
           href="/boards/write"
           className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
         >
-          ✏️ 글쓰기
+          글쓰기
         </a>
       </div>
 
