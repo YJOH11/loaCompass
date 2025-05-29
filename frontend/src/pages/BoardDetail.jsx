@@ -9,273 +9,142 @@ const BoardDetail = () => {
   const [board, setBoard] = useState(null);
   const [liked, setLiked] = useState(false);
 
+  // ✅ 댓글 관련 상태
   const [comments, setComments] = useState([]);
   const [commentInput, setCommentInput] = useState('');
-  const [editingCommentId, setEditingCommentId] = useState(null);
-  const [editingContent, setEditingContent] = useState('');
 
+  // 게시글 불러오기
   useEffect(() => {
     axios.get(`http://localhost:8080/api/boards/${id}`)
-      .then(res => {
-        setBoard(res.data);
-        setLiked(res.data.liked);
-      })
-      .catch(err => console.error(err));
+        .then(res => {
+          setBoard(res.data);
+          setLiked(res.data.liked);
+        })
+        .catch(err => console.error(err));
   }, [id]);
 
+  // 댓글 불러오기
   const fetchComments = () => {
     axios.get(`http://localhost:8080/api/comments/board/${id}`)
-      .then(res => setComments(res.data))
-      .catch(err => console.error(err));
+        .then(res => setComments(res.data))
+        .catch(err => console.error(err));
   };
 
   useEffect(() => {
     fetchComments();
   }, [id]);
 
-  const toggleLike = () => {
-    axios.post(`http://localhost:8080/api/boards/${id}/like`)
-      .then(res => setLiked(res.data.liked))
-      .catch(err => console.error(err));
-  };
-
-  const handleDelete = () => {
-    if (window.confirm('게시글을 삭제하시겠습니까?')) {
-      axios.delete(`http://localhost:8080/api/boards/${id}`)
-        .then(() => navigate('/boards'))
-        .catch(err => console.error(err));
-    }
-  };
-
   const handleCommentSubmit = (e) => {
     e.preventDefault();
-    if (commentInput.trim() === '') return alert('댓글 내용을 입력하세요.');
+    if (commentInput.trim() === '') return;
 
-    axios.post(`http://localhost:8080/api/comments`, {
+    axios.post('http://localhost:8080/api/comments', {
       content: commentInput,
-      boardId: id
+      boardId: id,
     })
-      .then(() => {
-        setCommentInput('');
-        fetchComments();
-      })
-      .catch(err => console.error(err));
-  };
-
-  const toggleCommentLike = (commentId) => {
-    axios.post(`http://localhost:8080/api/comments/${commentId}/like`)
-      .then(() => fetchComments())
-      .catch(err => console.error(err));
-  };
-
-  const handleCommentDelete = (commentId) => {
-    if (window.confirm('댓글을 삭제하시겠습니까?')) {
-      axios.delete(`http://localhost:8080/api/comments/${commentId}`)
-        .then(() => fetchComments())
+        .then(() => {
+          setCommentInput('');
+          fetchComments();
+        })
         .catch(err => console.error(err));
-    }
   };
 
-  const startEditing = (comment) => {
-    setEditingCommentId(comment.id);
-    setEditingContent(comment.content);
-  };
-
-  const cancelEditing = () => {
-    setEditingCommentId(null);
-    setEditingContent('');
-  };
-
-  const saveEditing = (commentId) => {
-    if (editingContent.trim() === '') return alert('댓글 내용을 입력하세요.');
-
-    axios.put(`http://localhost:8080/api/comments/${commentId}`, {
-      content: editingContent
-    })
-      .then(() => {
-        setEditingCommentId(null);
-        setEditingContent('');
-        fetchComments();
-      })
-      .catch(err => console.error(err));
-  };
-
-  if (!board) return <div>로딩중...</div>;
+  if (!board) return <div className="text-center mt-10">로딩중...</div>;
 
   return (
-    <div style={{ maxWidth: 700, margin: '20px auto', fontFamily: 'Arial, sans-serif', padding: 20, border: '1px solid #ddd', borderRadius: 8 }}>
-      <h2 style={{ borderBottom: '2px solid #333', paddingBottom: 10 }}>📋 {board.title}</h2>
-      <p style={{ whiteSpace: 'pre-wrap', fontSize: 16, lineHeight: 1.6 }}>{board.content}</p>
+      <div className="max-w-3xl mx-auto mt-10">
+        <div className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">
+          자유게시판
+        </div>
 
-      <div style={{ marginTop: 20 }}>
-        <button onClick={toggleLike} style={{
-          backgroundColor: liked ? '#e0245e' : '#eee',
-          color: liked ? '#fff' : '#333',
-          border: 'none',
-          padding: '8px 15px',
-          borderRadius: 5,
-          cursor: 'pointer',
-          marginRight: 10,
-          fontWeight: 'bold',
-          fontSize: 16,
-        }}>
-          {liked ? '❤️ 좋아요 취소' : '🤍 좋아요'}
-        </button>
+        {/* 게시글 박스 */}
+        <div className="p-6 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-700 rounded">
+          <h2 className="text-2xl font-bold border-b pb-2 mb-3">{board.title}</h2>
 
-        <button onClick={() => navigate(`/boards/${id}/edit`)} style={{
-          backgroundColor: '#007bff',
-          color: '#fff',
-          border: 'none',
-          padding: '8px 15px',
-          borderRadius: 5,
-          cursor: 'pointer',
-          marginRight: 10,
-          fontWeight: 'bold',
-          fontSize: 16,
-        }}>
-          ✍️ 수정
-        </button>
-
-        <button onClick={handleDelete} style={{
-          backgroundColor: '#dc3545',
-          color: '#fff',
-          border: 'none',
-          padding: '8px 15px',
-          borderRadius: 5,
-          cursor: 'pointer',
-          fontWeight: 'bold',
-          fontSize: 16,
-        }}>
-          🗑️ 삭제
-        </button>
-      </div>
-
-      <hr style={{ margin: '30px 0' }} />
-
-      <div>
-        <h3>💬 댓글</h3>
-
-        <form onSubmit={handleCommentSubmit} style={{ marginBottom: 20 }}>
-          <textarea
-            value={commentInput}
-            onChange={e => setCommentInput(e.target.value)}
-            placeholder="댓글을 입력하세요..."
-            rows={3}
-            style={{ width: '100%', padding: 10, fontSize: 14, borderRadius: 5, border: '1px solid #ccc' }}
-          />
-          <button type="submit" style={{
-            marginTop: 8,
-            padding: '8px 15px',
-            fontWeight: 'bold',
-            backgroundColor: '#28a745',
-            border: 'none',
-            color: 'white',
-            borderRadius: 5,
-            cursor: 'pointer'
-          }}>
-            댓글 등록
-          </button>
-        </form>
-
-        {comments.length === 0 && <p>댓글이 없습니다.</p>}
-
-        {comments.map(comment => (
-          <div key={comment.id} style={{ borderBottom: '1px solid #eee', padding: '10px 0' }}>
-            {editingCommentId === comment.id ? (
-              <>
-                <textarea
-                  value={editingContent}
-                  onChange={e => setEditingContent(e.target.value)}
-                  rows={3}
-                  style={{ width: '100%', padding: 10, fontSize: 14, borderRadius: 5, border: '1px solid #ccc' }}
-                />
-                <div style={{ marginTop: 6 }}>
-                  <button onClick={() => saveEditing(comment.id)} style={{
-                    backgroundColor: '#007bff',
-                    color: '#fff',
-                    border: 'none',
-                    padding: '5px 10px',
-                    borderRadius: 5,
-                    cursor: 'pointer',
-                    marginRight: 10,
-                    fontWeight: 'bold',
-                  }}>
-                    저장
-                  </button>
-                  <button onClick={cancelEditing} style={{
-                    backgroundColor: '#6c757d',
-                    color: '#fff',
-                    border: 'none',
-                    padding: '5px 10px',
-                    borderRadius: 5,
-                    cursor: 'pointer',
-                    fontWeight: 'bold',
-                  }}>
-                    취소
-                  </button>
-                </div>
-              </>
-            ) : (
-              <>
-                <p style={{ whiteSpace: 'pre-wrap', fontSize: 14, lineHeight: 1.4 }}>{comment.content}</p>
-                <div style={{ fontSize: 12, color: '#555', marginTop: 4 }}>
-                  <span style={{ marginRight: 10 }}>작성자: {comment.author}</span>
-                  <span style={{ marginRight: 10 }}>
-                    작성일: {comment.createdAt
-                      ? new Date(comment.createdAt).toLocaleString()
-                      : '작성일 없음'}
-                  </span>
-                </div>
-                <div style={{ marginTop: 6 }}>
-                  <button onClick={() => toggleCommentLike(comment.id)} style={{
-                    backgroundColor: comment.liked ? '#e0245e' : '#eee',
-                    color: comment.liked ? '#fff' : '#333',
-                    border: 'none',
-                    padding: '4px 10px',
-                    borderRadius: 5,
-                    cursor: 'pointer',
-                    marginRight: 10,
-                    fontWeight: 'bold',
-                    fontSize: 14,
-                  }}>
-                    {comment.liked ? '❤️ 좋아요 취소' : '🤍 좋아요'}
-                  </button>
-
-                  <button onClick={() => startEditing(comment)} style={{
-                    backgroundColor: '#007bff',
-                    color: '#fff',
-                    border: 'none',
-                    padding: '4px 10px',
-                    borderRadius: 5,
-                    cursor: 'pointer',
-                    marginRight: 10,
-                    fontWeight: 'bold',
-                    fontSize: 14,
-                  }}>
-                    ✍️ 수정
-                  </button>
-
-                  <button onClick={() => handleCommentDelete(comment.id)} style={{
-                    backgroundColor: '#dc3545',
-                    color: '#fff',
-                    border: 'none',
-                    padding: '4px 10px',
-                    borderRadius: 5,
-                    cursor: 'pointer',
-                    fontWeight: 'bold',
-                    fontSize: 14,
-                  }}>
-                    🗑️ 삭제
-                  </button>
-                </div>
-              </>
-            )}
+          <div className="text-sm text-gray-600 dark:text-gray-400 mb-4 flex justify-between">
+            <div>작성자: <span className="font-semibold">{board.author || '익명'}</span></div>
+            <div>
+              {board.createdAt ? new Date(board.createdAt).toLocaleString() : '작성일 없음'} | 조회수: {board.views ?? 0}
+            </div>
           </div>
-        ))}
+
+          <div className="text-base leading-relaxed whitespace-pre-wrap mb-8">
+            {board.content}
+          </div>
+
+          <div className="space-x-2">
+            <button
+                onClick={() => {
+                  axios.post(`http://localhost:8080/api/boards/${id}/like`)
+                      .then(res => setLiked(res.data.liked));
+                }}
+                className={`px-4 py-2 rounded font-bold text-sm ${
+                    liked ? 'bg-pink-600 text-white' : 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-white'
+                }`}
+            >
+              {liked ? '추천 취소' : '추천'}
+            </button>
+
+            <button
+                onClick={() => navigate(`/boards/${id}/edit`)}
+                className="px-4 py-2 rounded bg-blue-600 text-white font-bold text-sm"
+            >
+              수정
+            </button>
+
+            <button
+                onClick={() => {
+                  if (window.confirm('게시글을 삭제하시겠습니까?')) {
+                    axios.delete(`http://localhost:8080/api/boards/${id}`)
+                        .then(() => navigate('/boards'));
+                  }
+                }}
+                className="px-4 py-2 rounded bg-red-600 text-white font-bold text-sm"
+            >
+              삭제
+            </button>
+          </div>
+        </div>
+
+        {/* ✅ 댓글 영역 */}
+        <div className="mt-8 p-6 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded">
+          <h3 className="text-lg font-semibold mb-4">댓글</h3>
+
+          {/* 댓글 입력 */}
+          <form onSubmit={handleCommentSubmit} className="mb-4">
+          <textarea
+              className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-900 text-gray-800 dark:text-white"
+              rows="3"
+              placeholder="댓글을 입력하세요..."
+              value={commentInput}
+              onChange={(e) => setCommentInput(e.target.value)}
+          />
+            <button
+                type="submit"
+                className="mt-2 px-4 py-2 bg-green-600 text-white font-bold rounded hover:bg-green-700"
+            >
+              댓글 등록
+            </button>
+          </form>
+
+          {/* 댓글 목록 */}
+          {comments.length === 0 ? (
+              <p className="text-sm text-gray-500 dark:text-gray-400">댓글이 없습니다.</p>
+          ) : (
+              <ul className="space-y-4">
+                {comments.map((comment) => (
+                    <li key={comment.id} className="border-t pt-2 text-sm text-gray-800 dark:text-gray-200">
+                      <div className="mb-1 whitespace-pre-wrap">{comment.content}</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                        작성자: {comment.author || '익명'} | {new Date(comment.createdAt).toLocaleString()}
+                      </div>
+                    </li>
+                ))}
+              </ul>
+          )}
+        </div>
       </div>
-    </div>
   );
 };
 
 export default BoardDetail;
-
