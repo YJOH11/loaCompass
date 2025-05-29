@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -17,6 +18,7 @@ public class CharacterRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "character_name", nullable = false)
     private String characterName;
 
     private String serverName;
@@ -25,7 +27,8 @@ public class CharacterRecord {
 
     private float itemLevel;
 
-    private LocalDate recordedAt;  // 검색된 날짜
+    @Column(name = "recorded_at")
+    private LocalDateTime recordedAt;  // 검색된 날짜
 
 
 

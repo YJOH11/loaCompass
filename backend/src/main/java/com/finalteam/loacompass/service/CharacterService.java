@@ -8,7 +8,7 @@ import com.finalteam.loacompass.population.repository.CharacterRecordRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -21,23 +21,7 @@ public class CharacterService {
         CharacterSummaryDto dto = lostArkClient.getCharacterSummary(nickname);
         if (dto == null || dto.getProfile() == null) return null;
 
-        float itemLevel = parseItemLevel(dto.getProfile().getItemAvgLevel());
-        LocalDate today = LocalDate.now();
-
-        boolean exists = characterRecordRepository.existsByCharacterNameAndRecordedAt(nickname, today);
-        if (!exists && itemLevel >= 1640f) {
-            CharacterRecord record = CharacterRecord.builder()
-                    .characterName(dto.getProfile().getCharacterName())
-                    .serverName(dto.getProfile().getServerName())
-                    .characterClass(dto.getProfile().getCharacterClassName())
-                    .itemLevel(itemLevel)
-                    .recordedAt(today)
-                    .source(RecordSourceType.SEARCHED)
-                    .build();
-
-            characterRecordRepository.save(record);
-        }
-
+        insertIfNotExists(dto, RecordSourceType.SEARCHED);
         return dto;
     }
 
@@ -48,22 +32,29 @@ public class CharacterService {
         float itemLevel = parseItemLevel(dto.getProfile().getItemAvgLevel());
         if (itemLevel < 1640f) return null;
 
-        LocalDate today = LocalDate.now();
-        boolean exists = characterRecordRepository.existsByCharacterNameAndRecordedAt(nickname, today);
-        if (!exists) {
+        insertIfNotExists(dto, RecordSourceType.AUTO);
+        return dto;
+    }
+
+    private void insertIfNotExists(CharacterSummaryDto dto, RecordSourceType source) {
+        String nickname = dto.getProfile().getCharacterName();
+        String server = dto.getProfile().getServerName();
+        String clazz = dto.getProfile().getCharacterClassName();
+        float itemLevel = parseItemLevel(dto.getProfile().getItemAvgLevel());
+
+        boolean exists = characterRecordRepository.existsExactRecord(nickname, itemLevel, server, clazz);
+        if (!exists && itemLevel >= 1640f) {
             CharacterRecord record = CharacterRecord.builder()
-                    .characterName(dto.getProfile().getCharacterName())
-                    .serverName(dto.getProfile().getServerName())
-                    .characterClass(dto.getProfile().getCharacterClassName())
+                    .characterName(nickname)
+                    .serverName(server)
+                    .characterClass(clazz)
                     .itemLevel(itemLevel)
-                    .recordedAt(today)
-                    .source(RecordSourceType.AUTO)
+                    .recordedAt(LocalDateTime.now())
+                    .source(source)
                     .build();
 
             characterRecordRepository.save(record);
         }
-
-        return dto;
     }
 
     private float parseItemLevel(String levelStr) {

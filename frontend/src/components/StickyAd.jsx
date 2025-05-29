@@ -10,7 +10,7 @@ export default function StickyAd({ position = "left" }) {
     useEffect(() => {
         const handleScroll = () => {
             const scrollY = window.scrollY;
-            const maxY = document.body.scrollHeight - window.innerHeight - 200;
+            const maxY = document.documentElement.scrollHeight - window.innerHeight - 200;
             const safeY = Math.min(scrollY + 120, maxY);
             setTargetY(safeY);
         };
