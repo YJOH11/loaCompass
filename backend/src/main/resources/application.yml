@@ -33,6 +33,8 @@ discord:
   redirect-uri: ${DISCORD_REDIRECT_URI}
 
 
+
+
 # JWT 설정
 jwt:
   secret: finalteam_loacompass_secret_key_very_long_at_least_256_bits_please_change_in_production
