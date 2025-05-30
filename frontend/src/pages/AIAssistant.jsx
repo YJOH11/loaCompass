@@ -1,157 +1,153 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useEffect, useRef, useState } from "react";
+import { askGemini } from "@/services/gemini";
+import ChatMessage from "@/components/ChatMessage";
 
-const AIAssistant = () => {
+export default function ChatMain() {
     const [messages, setMessages] = useState([]);
-    const [input, setInput] = useState('');
+    const [input, setInput] = useState("");
     const [isLoading, setIsLoading] = useState(false);
-    const chatContainerRef = useRef(null);
+    const [selectedCategory, setSelectedCategory] = useState(null);
+    const chatContainerRef = useRef();
 
-    // 채팅창 자동 스크롤
-    useEffect(() => {
-        if (chatContainerRef.current) {
-            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-        }
-    }, [messages]);
+    const questionMap = {
+        "게임 공략": [
+            "레이드 공략 방법",
+            "클래스별 스킬 빌드",
+            "효율적인 육성 루트",
+        ],
+        "경제 활동": [
+            "골드 파밍 방법",
+            "거래소 시세 분석",
+            "재화 효율적 사용법",
+        ],
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!input.trim()) return;
 
-        const userMessage = input.trim();
-        setInput('');
-        
-        // 사용자 메시지 추가
-        setMessages(prev => [...prev, { type: 'user', content: userMessage }]);
+        const userMessage = { type: "user", content: input };
+        setMessages((prev) => [...prev, userMessage]);
+        setInput("");
         setIsLoading(true);
 
-        try {
-            const res = await fetch("http://localhost:8080/api/ai", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                credentials: 'include',
-                body: JSON.stringify({ message: userMessage }),
-            });
+        const reply = await askGemini([...messages, userMessage]);
+        const botMessage = { type: "assistant", content: reply };
 
-            if (!res.ok) {
-                throw new Error(`HTTP error! status: ${res.status}`);
-            }
-            
-            const data = await res.json();
-            
-            // AI 응답 추가
-            setMessages(prev => [...prev, { type: 'assistant', content: data.response }]);
-        } catch (error) {
-            console.error('AI 응답 에러:', error);
-            setMessages(prev => [...prev, { 
-                type: 'assistant', 
-                content: '죄송합니다. 일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.' 
-            }]);
-        }
-
+        setMessages((prev) => [...prev, botMessage]);
         setIsLoading(false);
     };
 
-    return (
-        <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-8">
-            <div className="max-w-4xl mx-auto px-4">
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
-                    {/* 헤더 */}
-                    <div className="bg-indigo-600 p-4">
-                        <h1 className="text-xl font-bold text-white flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                                <path d="M3 12v3c0 1.657 3.134 3 7 3s7-1.343 7-3v-3c0 1.657-3.134 3-7 3s-7-1.343-7-3z" />
-                                <path d="M3 7v3c0 1.657 3.134 3 7 3s7-1.343 7-3V7c0 1.657-3.134 3-7 3S3 8.657 3 7z" />
-                                <path d="M17 5c0 1.657-3.134 3-7 3S3 6.657 3 5s3.134-3 7-3 7 1.343 7 3z" />
-                            </svg>
-                            로아 AI 도우미
-                        </h1>
-                        <p className="text-indigo-200 mt-1">
-                            게임 관련 궁금한 점을 물어보세요!
-                        </p>
-                    </div>
+    const handleQuestionClick = (question) => {
+        setInput(question);
+        handleSubmit({ preventDefault: () => {} });
+    };
 
-                    {/* 채팅 영역 */}
-                    <div 
-                        ref={chatContainerRef}
-                        className="h-[500px] overflow-y-auto p-4 space-y-4"
-                    >
-                        {messages.map((message, index) => (
-                            <div
-                                key={index}
-                                className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
-                            >
-                                <div
-                                    className={`max-w-[70%] rounded-lg p-3 ${
-                                        message.type === 'user'
-                                            ? 'bg-indigo-600 text-white'
-                                            : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white'
-                                    }`}
+    useEffect(() => {
+        // 초기 메시지는 한 번만
+        if (messages.length > 0) return;
+
+        setMessages([
+            {
+                type: "assistant",
+                content: (
+                    <>
+                        안녕하세요! 아래 카테고리 중에서 궁금한 주제를 골라보세요:
+                        <div className="mt-2 space-y-2">
+                            {Object.keys(questionMap).map((cat) => (
+                                <button
+                                    key={cat}
+                                    onClick={() => setSelectedCategory(cat)}
+                                    className="block w-full text-left px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-indigo-100 dark:hover:bg-indigo-700 rounded"
                                 >
-                                    {message.content}
-                                </div>
-                            </div>
-                        ))}
-                        {isLoading && (
-                            <div className="flex justify-start">
-                                <div className="bg-gray-200 dark:bg-gray-700 rounded-lg p-3 flex items-center space-x-2">
-                                    <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" />
-                                    <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
-                                    <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }} />
-                                </div>
-                            </div>
-                        )}
-                    </div>
+                                    {cat}
+                                </button>
+                            ))}
+                        </div>
+                    </>
+                ),
+            },
+        ]);
+    }, []);
 
-                    {/* 입력 영역 */}
-                    <form onSubmit={handleSubmit} className="border-t dark:border-gray-700 p-4">
-                        <div className="flex space-x-4">
-                            <input
-                                type="text"
-                                value={input}
-                                onChange={(e) => setInput(e.target.value)}
-                                placeholder="질문을 입력하세요..."
-                                className="flex-1 rounded-lg border dark:border-gray-600 p-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                            />
-                            <button
-                                type="submit"
-                                disabled={isLoading}
-                                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50"
-                            >
-                                전송
-                            </button>
-                        </div>
-                    </form>
-                </div>
+    useEffect(() => {
+        if (!selectedCategory) return;
 
-                {/* 도움말 */}
-                <div className="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4">
-                    <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
-                        이런 것들을 물어보세요!
-                    </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        // 동일 카테고리 질문 메시지 중복 방지
+        const alreadyShown = messages.some(
+            (m) =>
+                typeof m.content === "object" &&
+                m.content?.props?.children?.[0]?.props?.children?.includes(`${selectedCategory} 관련 질문`)
+        );
+        if (alreadyShown) return;
+
+        setMessages((prev) => [
+            ...prev,
+            {
+                type: "assistant",
+                content: (
+                    <>
+                        <div className="mb-1 font-semibold">{selectedCategory} 관련 질문:</div>
                         <div className="space-y-2">
-                            <p className="text-gray-700 dark:text-gray-300">🎮 게임 공략</p>
-                            <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
-                                <li>• 레이드/던전 공략 방법</li>
-                                <li>• 클래스별 스킬 빌드</li>
-                                <li>• 효율적인 육성 루트</li>
-                            </ul>
+                            {questionMap[selectedCategory].map((q, i) => (
+                                <button
+                                    key={i}
+                                    onClick={() => handleQuestionClick(q)}
+                                    className="block w-full text-left px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-indigo-100 dark:hover:bg-indigo-700 rounded"
+                                >
+                                    {q}
+                                </button>
+                            ))}
                         </div>
-                        <div className="space-y-2">
-                            <p className="text-gray-700 dark:text-gray-300">💰 경제 활동</p>
-                            <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
-                                <li>• 골드 파밍 방법</li>
-                                <li>• 거래소 시세 분석</li>
-                                <li>• 재화 효율적 사용법</li>
-                            </ul>
-                        </div>
+                    </>
+                ),
+            },
+        ]);
+    }, [selectedCategory]);
+
+    useEffect(() => {
+        chatContainerRef.current?.scrollTo({
+            top: chatContainerRef.current.scrollHeight,
+            behavior: "smooth",
+        });
+    }, [messages]);
+
+    return (
+        <div className="relative flex flex-col h-full">
+            {/* 메시지 출력 영역 */}
+            <div ref={chatContainerRef} className="flex-1 overflow-y-auto px-4 py-6 space-y-4">
+                {messages.map((msg, i) => (
+                    <ChatMessage key={i} message={msg} />
+                ))}
+                {isLoading && (
+                    <div className="text-sm text-gray-400 dark:text-gray-500 animate-pulse">
+                        AI가 응답 중입니다...
                     </div>
-                </div>
+                )}
             </div>
+
+            {/* 전송 입력창 – 고정 아님, 푸터 위에 자연스레 */}
+            <form
+                onSubmit={handleSubmit}
+                className="w-full bg-white dark:bg-gray-900 px-4 py-3"
+            >
+                <div className="flex items-center gap-2">
+                    <input
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        className="flex-1 px-4 py-2 rounded-md border dark:border-gray-600 focus:outline-none bg-white dark:bg-gray-800 text-black dark:text-white"
+                        placeholder="AI에게 질문하기..."
+                    />
+                    <button
+                        type="submit"
+                        className="px-4 py-2 bg-indigo-600 text-white text-sm rounded-md hover:bg-indigo-700"
+                        disabled={isLoading}
+                    >
+                        전송
+                    </button>
+                </div>
+            </form>
         </div>
     );
-};
 
-export default AIAssistant; 
+}

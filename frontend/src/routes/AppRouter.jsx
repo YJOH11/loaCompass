@@ -28,7 +28,6 @@ import Navbar from '../components/Navbar';
 const AppRouter = () => {
     return (
         <BrowserRouter>
-
             <Routes>
                 <Route element={<Layout />}>
                     <Route path="/" element={<Home />} />

@@ -22,10 +22,11 @@ const WelcomeBanner = () => (
       <div className="max-w-3xl relative z-10">
         <div className="flex flex-col pl-6 border-l-4 border-amber-400 mb-8 mt-6">
           <h1 className="text-3xl md:text-4xl font-extrabold text-amber-400 tracking-wide leading-tight drop-shadow-[0_4px_8px_rgba(0,0,0,0.9)] mb-3">
-            로침반에 오신 것을<br/>환영합니다
+           아크라시아의 모험가님에게
           </h1>
           <p className="text-lg md:text-xl text-white font-medium leading-relaxed drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
-            아크라시아의 모험가여! 최신 업데이트, 이벤트 정보,<br/>그리고 다양한 로스트아크 게임 콘텐츠를 한 곳에서 만나보세요.
+          안녕하세요 모험가님, <br/>
+            로침반에서 최신 업데이트와 이벤트 정보,<br/>그리고 다양한 로스트아크 게임 콘텐츠를 한 곳에서 만나보세요.
           </p>
           
           {/* 버튼을 첫 줄 텍스트 너비에 맞춤 */}
