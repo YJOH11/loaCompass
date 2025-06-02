@@ -6,10 +6,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -18,6 +15,8 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/gemini")
+@CrossOrigin(origins = "http://localhost:5173") // React dev server 주소
+
 public class GeminiController {
 
     private final RestTemplate restTemplate = new RestTemplate();
@@ -31,7 +30,7 @@ public class GeminiController {
             return ResponseEntity.status(500).body(Map.of("error", "API 키가 설정되지 않았습니다."));
         }
 
-        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-pro-exp:generateContent?key=" + apiKey;
+        String url = "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=" + apiKey;
 
         Map<String, Object> content = Map.of(
                 "contents", List.of(
