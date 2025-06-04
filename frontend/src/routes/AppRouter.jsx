@@ -23,7 +23,7 @@ const AppRouter = () => {
             <Navbar />
             <Routes>
                 <Route path="/character/:name" element={<CharacterSearch />} />
-                <Route path="/character/:name/simulation" element={<CharacterSimulation />} />
+                <Route path="/character/simulation/:name" element={<CharacterSimulation />} />
                 <Route path="/" element={<Home />} />
                 <Route path="/sassagae" element={<SassagaeCrawler />} />
                 <Route path="/about" element={<About />} />

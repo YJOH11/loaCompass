@@ -6,8 +6,9 @@ import CharacterProfileCard from "../components/CharacterProfileCard";
 import GemList from "../components/Gem/GemList";
 import EquipmentAccessoryRow from "../components/Equipment/EquipmentAccessoryRow";
 import ScoreRow from "../components/score/ScoreRow";
+import SimulationRow from "../components/Simulation/SimulationRow";
 
-export default function CharacterSimulation() {
+export default function CharacterSearchPage() {
   const { name: characterName } = useParams();
   const [characterData, setCharacterData] = useState(null);
   const [hasSearched, setHasSearched] = useState(false);
@@ -121,14 +122,15 @@ export default function CharacterSimulation() {
                       <h2 className="text-lg font-semibold text-gray-800 dark:text-white">악세서리</h2>
                     </div>
                     <div className="flex flex-col gap-2">
+
                       {Array.from({ length: maxLen }).map((_, i) => (
-                        <EquipmentAccessoryRow
-                          key={i}
-                          equipment={gears[i] || null}
-                          accessory={accessories[i] || null}
-                          abilityStone={i === maxLen - 1 ? abilityStone : null}
-                          bracelet={i === maxLen - 1 ? bracelet : null}
-                        />
+                         <SimulationRow
+                            key={i}
+                            equipment={gears[i] || null}
+                            accessory={accessories[i] || null}
+                            abilityStone={i === maxLen - 1 ? abilityStone : null}
+                            bracelet={i === maxLen - 1 ? bracelet : null}
+                              />
                       ))}
                     </div>
                   </div>
@@ -143,3 +145,5 @@ export default function CharacterSimulation() {
     </div>
   );
 }
+
+
