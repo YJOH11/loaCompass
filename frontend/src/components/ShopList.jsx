@@ -66,8 +66,22 @@ function ShopList() {
     return (
         <div className="mb-8">
             {loading ? (
-                <div className="flex justify-center items-center h-20">
-                    <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-gray-900 dark:border-white"></div>
+                <div className="flex flex-col items-center justify-center space-y-4 py-8">
+                    <div className="relative">
+                        <div className="w-16 h-16 border-t-4 border-b-4 border-indigo-500 rounded-full animate-spin"></div>
+                        <div className="w-16 h-16 border-t-4 border-b-4 border-indigo-200 rounded-full animate-ping absolute top-0 opacity-30"></div>
+                    </div>
+                    <div className="text-center">
+                        <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-1">마리샵 로딩중</h3>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 animate-pulse">
+                            최신 상품 정보를 가져오고 있습니다...
+                        </p>
+                    </div>
+                    <div className="flex space-x-1">
+                        <div className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                        <div className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                        <div className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                    </div>
                 </div>
             ) : error ? (
                 <p className="text-center text-red-500">

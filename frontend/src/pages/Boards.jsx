@@ -12,30 +12,55 @@ const Boards = () => {
   }, []);
 
   return (
-    <div className="max-w-3xl mx-auto p-4">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">자유 게시판</h1>
+    <div className="min-h-screen bg-transparent">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <div className="flex justify-between items-center">
+              <h1 className="text-xl font-bold text-gray-900 dark:text-white">자유 게시판</h1>
         <a
           href="/boards/write"
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                className="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 transition-colors"
         >
           글쓰기
         </a>
+            </div>
       </div>
 
+          <div className="overflow-x-auto">
       {posts.length === 0 ? (
-        <p className="text-gray-500">작성된 게시글이 없습니다.</p>
-      ) : (
-        posts.map((post) => (
-          <div key={post.id} className="border p-4 rounded-lg shadow mb-4">
-            <h2 className="text-xl font-semibold">{post.title}</h2>
-            <p className="text-gray-700">{post.content}</p>
-            <div className="text-sm text-gray-500 mt-2">
-              작성자: {post.author} | 작성일: {new Date(post.createdAt).toLocaleString()}
-            </div>
+              <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                작성된 게시글이 없습니다.
+              </div>
+            ) : (
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead className="bg-gray-50 dark:bg-gray-700">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-16">번호</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">제목</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-32">글쓴이</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-32">등록일</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-20">조회</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700">
+                  {posts.map((post) => (
+                    <tr key={post.id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{post.id}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{post.title}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{post.author}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        {new Date(post.createdAt).toLocaleDateString()}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">0</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
-        ))
-      )}
+        </div>
+      </div>
     </div>
   );
 };
