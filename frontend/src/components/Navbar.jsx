@@ -63,139 +63,161 @@ const Navbar = () => {
         navigate('/');
     };
 
+    const [favorites, setFavorites] = useState(() => {
+        const stored = localStorage.getItem("favoriteHistory");
+        return stored ? JSON.parse(stored) : [];
+    });
+
+    const handleFavoriteToggle = (name, isNowFavorite) => {
+        const updated = isNowFavorite
+            ? [name, ...favorites.filter(n => n !== name)]
+            : favorites.filter(n => n !== name);
+        setFavorites(updated);
+        localStorage.setItem("favoriteHistory", JSON.stringify(updated));
+    };
+
+
     return (
-        <nav className="w-full bg-white dark:bg-gray-900 text-black dark:text-white px-6 md:px-12">
+        <nav className="w-full bg-white dark:bg-gray-900 text-black dark:text-white">
             {/* 첫 번째 줄 */}
-            <div className="flex items-center justify-between py-3 pl-20">
-                <div className="text-2xl font-bold">
-                    <Link to="/" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
-                        </svg>
-                        로침반
-                    </Link>
-                </div>
-
-                <div className="flex-1 mx-6">
-                    <CharacterSearchInput />
-                </div>
-
-                <div className="flex items-center gap-2 mr-3">
-                    <DarkToggle />
-                </div>
-
-                <div className="flex items-center gap-3">
-                    {user ? (
-                        <div className="flex items-center gap-3">
-                            <span className="text-sm font-medium text-gray-800 dark:text-white">
-                                {user.nickname || user.username}님
-                                {user.discriminator && `#${user.discriminator}`}
-                            </span>
-                            <Link 
-                                to="/mypage"
-                                className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-white bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-600 dark:hover:bg-indigo-700 border border-transparent rounded-md transition"
-                            >
-                                마이페이지
-                            </Link>
-                            <button 
-                                onClick={handleLogout}
-                                className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-white bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 border border-transparent rounded-md transition"
-                            >
-                                로그아웃
-                            </button>
+            <div className="max-w-9xl mx-auto px-8">
+                <div className="flex items-center justify-between py-3">
+                    {/* 로고와 검색바 그룹 */}
+                    <div className="flex items-center flex-1">
+                        <div className="flex-1 mx-1 pl-48">
+                            <div className="w-full flex items-center gap-6 mr-4">
+                                <div className="text-2xl font-bold whitespace-nowrap">
+                                    <Link to="/" className="flex items-center group transition-colors duration-200">
+                                        <div className="flex items-center">
+                                            <div className="relative w-7 h-7 mr-2">
+                                                <svg xmlns="http://www.w3.org/2000/svg" 
+                                                    className="w-full h-full text-indigo-600 dark:text-indigo-400 group-hover:text-indigo-500 dark:group-hover:text-indigo-300 transition-all duration-300" 
+                                                    viewBox="0 0 24 24" 
+                                                    fill="none" 
+                                                    stroke="currentColor" 
+                                                    strokeWidth="2" 
+                                                    strokeLinecap="round" 
+                                                    strokeLinejoin="round"
+                                                >
+                                                    {/* 외부 원 */}
+                                                    <circle className="opacity-20" cx="12" cy="12" r="10" />
+                                                    <circle className="opacity-40" cx="12" cy="12" r="9.5" />
+                                                    <circle className="opacity-60" cx="12" cy="12" r="9" />
+                                                    
+                                                    {/* 나침반 바늘 */}
+                                                    <path className="transform origin-center group-hover:rotate-[360deg] transition-transform duration-700" 
+                                                          d="M12 2l2 8-2 2-2-2z" 
+                                                          fill="currentColor"
+                                                    />
+                                                    <path className="transform origin-center group-hover:rotate-[360deg] transition-transform duration-700" 
+                                                          d="M12 22l-2-8 2-2 2 2z" 
+                                                          fill="currentColor"
+                                                    />
+                                                    
+                                                    {/* 중앙 포인트 */}
+                                                    <circle cx="12" cy="12" r="1.5" fill="currentColor" />
+                                                    
+                                                    {/* 방향 표시 */}
+                                                    <path className="opacity-70" d="M12 7l0.5-3" />
+                                                    <path className="opacity-70" d="M12 17l0.5 3" />
+                                                    <path className="opacity-70" d="M7 12l-3 0.5" />
+                                                    <path className="opacity-70" d="M17 12l3 0.5" />
+                                                </svg>
+                                            </div>
+                                            <span className="font-extrabold text-gray-800 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200">로침반</span>
+                                        </div>
+                                    </Link>
+                                </div>
+                                <CharacterSearchInput
+                                    favorites={favorites}
+                                    onFavoriteToggle={handleFavoriteToggle}
+                                />
+                            </div>
                         </div>
-                    ) : (
-                        <>
-                            <Link to="/login" className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-white bg-indigo-500 hover:bg-indigo-600 border border-transparent rounded-md transition">
-                                로그인
-                            </Link>
-                            <Link to="/register" className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-gray-800 dark:text-white bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-100 dark:hover:bg-gray-600">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                    <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6z" />
-                                    <path d="M16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z" />
-                                </svg>
-                                회원가입
-                            </Link>
-                        </>
-                    )}
+                    </div>
+
+                    {/* 버튼 그룹 */}
+                    <div className="flex items-center space-x-4">
+                        <DarkToggle />
+                        {user ? (
+                            <div className="flex items-center space-x-4">
+                                <span className="text-sm font-medium text-gray-800 dark:text-white">
+                                    {user.nickname || user.username}님
+                                    {user.discriminator && `#${user.discriminator}`}
+                                </span>
+                                <Link 
+                                    to="/mypage"
+                                    className="px-4 py-2 text-sm font-medium text-white bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-600 dark:hover:bg-indigo-700 border border-transparent rounded-md transition"
+                                >
+                                    마이페이지
+                                </Link>
+                                <button 
+                                    onClick={handleLogout}
+                                    className="px-4 py-2 text-sm font-medium text-white bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 border border-transparent rounded-md transition"
+                                >
+                                    로그아웃
+                                </button>
+                            </div>
+                        ) : (
+                            <div className="flex items-center space-x-4">
+                                <Link to="/login" className="px-4 py-2 text-sm font-medium text-white bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-600 dark:hover:bg-indigo-700 border border-transparent rounded-md transition">
+                                    로그인
+                                </Link>
+                                <Link to="/register" className="px-4 py-2 text-sm font-medium text-gray-800 dark:text-white bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-100 dark:hover:bg-gray-600 transition">
+                                    회원가입
+                                </Link>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
 
             {/* 두 번째 줄 - 탭 네비게이션 */}
-            <div className="w-screen relative left-1/2 right-1/2 -translate-x-1/2 bg-gray-200 text-gray-800 dark:bg-gray-800 dark:text-white shadow-sm">
-                <div className="flex w-full">
-                    {[
-                        { 
-                            to: '/', 
-                            label: '홈',
-                            icon: (
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-                                </svg>
-                            )
-                        },
-                        { 
-                            to: '/sassagae', 
-                            label: '사사게 게시판',
-                            icon: (
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
-                                </svg>
-                            )
-                        },
-                        { 
-                            to: '/guild', 
-                            label: '길드',
-                            icon: (
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                                    <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
-                                </svg>
-                            )
-                        },
-                        { 
-                            to: '/ranking', 
-                            label: '순위',
-                            icon: (
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                                    <path d="M5 4a1 1 0 00-2 0v7.268a2 2 0 000 3.464V16a1 1 0 102 0v-1.268a2 2 0 000-3.464V4zM11 4a1 1 0 10-2 0v1.268a2 2 0 000 3.464V16a1 1 0 102 0V8.732a2 2 0 000-3.464V4zM16 3a1 1 0 011 1v7.268a2 2 0 010 3.464V16a1 1 0 11-2 0v-1.268a2 2 0 010-3.464V4a1 1 0 011-1z" />
-                                </svg>
-                            )
-                        },
-                        { 
-                            to: '/statistics', 
-                            label: '통계',
-                            icon: (
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                                    <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
-                                </svg>
-                            )
-                        },
-                        { 
-                            to: '/tools', 
-                            label: '게시판',
-                            icon: (
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fillRule="evenodd" d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm3 1h10v1a1 1 0 01-1 1H6a1 1 0 01-1-1V6zm10 3H5v7h10V9z" clipRule="evenodd" />
-                                </svg>
-                            )
-                        }
-                    ].map((tab) => (
-                        <NavLink
-                            key={tab.to}
-                            to={tab.to}
-                            className={({ isActive }) =>
-                                `px-4 py-2 rounded-md text-sm font-medium flex items-center justify-center flex-1 ${
-                                    isActive
-                                        ? 'bg-gray-300 dark:bg-gray-900'
-                                        : 'hover:bg-gray-300 dark:hover:bg-gray-700'
-                                }`
+            <div className="w-full bg-gray-200 text-gray-800 dark:bg-gray-800 dark:text-white shadow-sm">
+                <div className="max-w-7xl mx-auto px-8">
+                    <div className="flex w-full">
+                        {[
+                            { 
+                                to: '/', 
+                                label: '홈'
+                            },
+                            { 
+                                to: '/sassagae', 
+                                label: '사사게 게시판'
+                            },
+                            { 
+                                to: '/statistics', 
+                                label: '통계'
+                            },
+                            { 
+                                to: '/ranking', 
+                                label: '순위'
+                            },
+                            { 
+                                to: '/boards', 
+                                label: '자유 게시판'
+                            },
+                            { 
+                                to: '/ai-assistant', 
+                                label: '로아 AI 도우미'
                             }
-                        >
-                            {tab.icon}
-                            {tab.label}
-                        </NavLink>
-                    ))}
+                        ].map((tab) => (
+                            <NavLink
+                                key={tab.to}
+                                to={tab.to}
+                                className={({ isActive }) =>
+                                    `px-4 py-2 rounded-md text-sm font-medium flex items-center justify-center flex-1 ${
+                                        isActive
+                                            ? 'bg-gray-300 dark:bg-gray-900'
+                                            : 'hover:bg-gray-300 dark:hover:bg-gray-700'
+                                    }`
+                                }
+                            >
+                                {tab.icon}
+                                {tab.label}
+                            </NavLink>
+                        ))}
+                    </div>
                 </div>
             </div>
 

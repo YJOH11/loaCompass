@@ -12,7 +12,7 @@ const Advertisement = () => {
                         href="https://www.coupang.com"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="block bg-blue-500 text-white py-1 px-2 rounded w-[80%] mx-auto"
+                        className="block bg-gradient-to-b from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white py-1 px-2 rounded w-[80%] mx-auto transition"
                     >
                         바로가기 &gt;
                     </a>
@@ -34,7 +34,7 @@ const Advertisement = () => {
                         href="https://www.coupang.com"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-blue-500 hover:underline"
+                        className="text-blue-600 hover:text-blue-500 transition"
                     >
                         주문하기 &gt;
                     </a>

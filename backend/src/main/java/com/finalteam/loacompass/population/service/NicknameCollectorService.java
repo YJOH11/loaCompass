@@ -7,8 +7,10 @@ import com.finalteam.loacompass.service.CharacterService;
 import com.finalteam.loacompass.util.NicknameGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
+import java.util.Random;
 
 @RequiredArgsConstructor
 @Service
@@ -16,15 +18,30 @@ public class NicknameCollectorService {
 
     private final CharacterService characterService;
     private final FailedNicknameRepository failedNicknameRepository;
+    private final RestTemplate restTemplate;
+    private final Random random = new Random();
 
     public void collectRandom(int count) {
         int safeCount = Math.min(count, 100);
 
         for (int i = 0; i < safeCount; i++) {
-            String nickname = NicknameGenerator.generatePatternedRandomLength();
+            String nickname;
 
-            //  이미 실패한 닉네임이면 skip
-            if (failedNicknameRepository.existsByNickname(nickname)) {
+            // 길이를 2~4 사이에서 무작위 선택 → 닉네임 길이 다양화
+            int ngramLength = 2 + random.nextInt(3); // 2 ~ 4
+
+            try {
+                String[] response = restTemplate.getForObject(
+                        "http://localhost:5000/api/nickname/ngram?count=1&length=" + ngramLength,
+                        String[].class
+                );
+                nickname = (response != null && response.length > 0) ? response[0] : null;
+            } catch (Exception e) {
+                System.out.println("Flask 호출 실패, fallback 사용 → " + e.getMessage());
+                nickname = NicknameGenerator.generateRealisticNickname();
+            }
+
+            if (nickname == null || failedNicknameRepository.existsByNickname(nickname)) {
                 continue;
             }
 
@@ -35,7 +52,7 @@ public class NicknameCollectorService {
                     System.out.println("!!!!!!! 저장 성공: " + nickname + " | 서버: " +
                             dto.getProfile().getServerName() + " | 레벨: " + dto.getProfile().getItemAvgLevel());
                 } else {
-                    //  실패 기록 저장
+                    // 실패 기록 저장
                     failedNicknameRepository.save(
                             FailedNickname.builder()
                                     .nickname(nickname)
