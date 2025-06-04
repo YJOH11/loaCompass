@@ -1,3 +1,5 @@
+import { useState, useRef } from "react";
+
 export default function AccessoryCard({ item }) {
   if (!item) return null;
 
@@ -86,58 +88,106 @@ export default function AccessoryCard({ item }) {
     );
   };
 
-  const renderEffectTags = (list) => {
-    if (!list?.length) return null;
+  const [selectedOptions, setSelectedOptions] = useState({}); // ⬅️ 선택값 저장용
 
-    const thresholds = [
-      { name: "추가 피해", high: 2.6, mid: 1.6, low: 0.6, isPercent: true },
-      { name: "적에게 주는 피해", high: 2.0, mid: 1.2, low: 0.55 },
-      { name: "공격력", high: 390, mid: 195, low: 80 },
-      { name: "무기 공격력", high: 960, mid: 480, low: 195 },
-      { name: "세레나데", high: 6, mid: 3.6, low: 1.6 },
-      { name: "신앙", high: 6, mid: 3.6, low: 1.6 },
-      { name: "조화 게이지 획득량", high: 6, mid: 3.6, low: 1.6 },
-      { name: "낙인력", high: 8, mid: 4.8, low: 2.15 },
-      { name: "무기 공격력", high: 3.0, mid: 1.8, low: 0.8, isPercent: true },
-      { name: "공격력", high: 1.55, mid: 0.95, low: 0.4, isPercent: true },
-      { name: "파티원 회복 효과", high: 3.5, mid: 2.1, low: 0.95 },
-      { name: "파티원 보호막 효과", high: 3.5, mid: 2.1, low: 0.95 },
-      { name: "치명타 적중률", high: 1.55, mid: 0.95, low: 0.4 },
-      { name: "치명타 피해", high: 4.0, mid: 2.4, low: 1.1 },
-      { name: "아군 공격력 강화 효과", high: 5.0, mid: 3.0, low: 1.35 },
-      { name: "아군 피해량 강화 효과", high: 7.5, mid: 4.5, low: 2.0 },
-    ];
+    const renderEffectTags = (list) => {
+      if (!list?.length) return null;
 
+      const thresholds = [
+        { name: "추가 피해", high: 2.6, mid: 1.6, low: 0.6, isPercent: true },
+        { name: "적에게 주는 피해", high: 2.0, mid: 1.2, low: 0.55 },
+        { name: "공격력", high: 390, mid: 195, low: 80 },
+        { name: "무기 공격력", high: 960, mid: 480, low: 195 },
+        { name: "세레나데", high: 6, mid: 3.6, low: 1.6 },
+        { name: "신앙", high: 6, mid: 3.6, low: 1.6 },
+        { name: "조화 게이지 획득량", high: 6, mid: 3.6, low: 1.6 },
+        { name: "낙인력", high: 8, mid: 4.8, low: 2.15 },
+        { name: "무기 공격력", high: 3.0, mid: 1.8, low: 0.8, isPercent: true },
+        { name: "공격력", high: 1.55, mid: 0.95, low: 0.4, isPercent: true },
+        { name: "파티원 회복 효과", high: 3.5, mid: 2.1, low: 0.95 },
+        { name: "파티원 보호막 효과", high: 3.5, mid: 2.1, low: 0.95 },
+        { name: "치명타 적중률", high: 1.55, mid: 0.95, low: 0.4 },
+        { name: "치명타 피해", high: 4.0, mid: 2.4, low: 1.1 },
+        { name: "아군 공격력 강화 효과", high: 5.0, mid: 3.0, low: 1.35 },
+        { name: "아군 피해량 강화 효과", high: 7.5, mid: 4.5, low: 2.0 },
+      ];
 
+      const baseOptions = [
+        "추가 피해 +2.60%",
+        "추가 피해 +1.60%",
+        "추가 피해 +0.60%",
+        "적에게 주는 피해 +2.00%",
+        "적에게 주는 피해 +1.20%",
+        "적에게 주는 피해 +0.55%",
+        "공격력 +1.55%",
+        "공격력 +0.95%",
+        "공격력 +0.40%",
+        "무기 공격력 +3.00%",
+        "무기 공격력 +1.80%",
+        "무기 공격력 +0.80%",
+        "치명타 피해 +4.00%",
+        "치명타 피해 +2.40%",
+        "치명타 피해 +1.10%",
+        "치명타 적중률 +1.55%",
+        "치명타 적중률 +0.95%",
+        "치명타 적중률 +0.40%",
+      ];
 
-    const getColorAndPrefix = (text) => {
-      for (const t of thresholds) {
-        if (text.includes(t.name)) {
-          const value = parseFloat((text.match(/([0-9.]+)/g) || []).pop());
-          if (isNaN(value)) break;
-          if (value >= t.high) return { color: "text-yellow-400", prefix: "상 " };
-          if (value >= t.mid) return { color: "text-purple-400", prefix: "중 " };
-          if (value >= t.low) return { color: "text-sky-400", prefix: "하 " };
+      const getColorAndPrefix = (text) => {
+        for (const t of thresholds) {
+          if (text.includes(t.name)) {
+            const value = parseFloat((text.match(/([0-9.]+)/g) || []).pop());
+            if (isNaN(value)) break;
+            if (value >= t.high) return { color: "text-yellow-400", prefix: "상 " };
+            if (value >= t.mid) return { color: "text-purple-400", prefix: "중 " };
+            if (value >= t.low) return { color: "text-sky-400", prefix: "하 " };
+          }
         }
-      }
-      return { color: "text-green-500", prefix: "무" };
-    };
+        return { color: "text-green-500", prefix: "무" };
+      };
 
-    return (
-      <div className="flex flex-col gap-1 mb-1">
-        {list.map((e, i) => {
-          if (e.includes("체력")) return null;
-          const { color, prefix } = getColorAndPrefix(e);
-          return (
-            <span key={i} className={`px-2 py-0.5 rounded text-xs w-fit ${color} inline-flex items-center gap-[0.15em]`}>
-              <span className="bg-black px-1 rounded text-[10px] font-semibold">{prefix}</span>
-              <span>{e}</span>
-            </span>
-          );
-        })}
-      </div>
-    );
-  };
+      return (
+        <div className="flex flex-col gap-1 mb-1">
+          {list.map((e, i) => {
+            if (e.includes("체력")) return null;
+
+            const selected = selectedOptions[i] || e;
+            const { color, prefix } = getColorAndPrefix(selected);
+
+            const options = baseOptions.includes(e)
+              ? baseOptions
+              : [...baseOptions, e];
+
+            return (
+              <span
+                key={i}
+                className={`px-2 py-0.5 rounded text-xs w-fit ${color} inline-flex items-center gap-[0.15em]`}
+              >
+                <span className="bg-black px-1 rounded text-[10px] font-semibold">
+                  {prefix}
+                </span>
+                <select
+                  value={selected}
+                  onChange={(e) =>
+                    setSelectedOptions((prev) => ({
+                      ...prev,
+                      [i]: e.target.value,
+                    }))
+                  }
+                  className="bg-transparent text-xs outline-none"
+                >
+                  {options.map((opt, idx) => (
+                    <option key={idx} value={opt} style={{ color: 'black' }}>
+                      {opt}
+                    </option>
+                  ))}
+                </select>
+              </span>
+            );
+          })}
+        </div>
+      );
+    };
 
  const braceletRenderEffectTags = (list) => {
    if (!list?.length) return null;

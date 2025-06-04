@@ -29,8 +29,10 @@ const AppRouter = () => {
     return (
         <BrowserRouter>
             <Routes>
+
                 <Route element={<Layout />}>
                     <Route path="/" element={<Home />} />
+                    <Route path="/character/simulation/:name" element={<CharacterSimulation />} />
                     <Route path="/character/:name" element={<CharacterSearch />} />
                     <Route path="/sassagae" element={<SassagaeCrawler />} />
                     <Route path="/about" element={<About />} />
@@ -47,7 +49,7 @@ const AppRouter = () => {
                     <Route path="/ai-assistant" element={<AIAssistant />} />
                     <Route path="*" element={<NotFound />} />
                 </Route>
-            </Routes>
+
         </BrowserRouter>
     );
 };
