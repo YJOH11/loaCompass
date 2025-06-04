@@ -7,6 +7,7 @@ import GemList from "../components/Gem/GemList";
 import EquipmentAccessoryRow from "../components/Equipment/EquipmentAccessoryRow";
 import ScoreRow from "../components/score/ScoreRow";
 
+
 export default function CharacterSearchPage() {
   const { name: characterName } = useParams();
   const [characterData, setCharacterData] = useState(null);
