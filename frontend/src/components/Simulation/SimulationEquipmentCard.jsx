@@ -1,81 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-export default function SimulationEquipmentCard({ item }) {
+
+export default function SimulationEquipmentCard({ item,onItemChange }) {
   if (!item) return null;
-const ELIXIR_EFFECTS = [
-  {
-    name: "공격력",
-    effect: "공격력",
-    values: [122, 253, 383, 575, 767],
-    slot: "공용",
-  },
-  {
-    name: "무기 공격력",
-    effect: "무기 공격력",
-    values: [236, 488, 740, 1110, 1480],
-    slot: "공용",
-  },
-  {
-    name: "힘",
-    effect: "특성 증가",
-    values: [864, 1782, 2700, 4050, 5400],
-    slot: "공용",
-  },
-  {
-      name: "민첩",
-      effect: "특성 증가",
-      values: [864, 1782, 2700, 4050, 5400],
-      slot: "공용",
-    },
-{
-    name: "지능",
-    effect: "특성 증가",
-    values: [864, 1782, 2700, 4050, 5400],
-    slot: "공용",
-  },
-  {
-    name: "회심 (질서)",
-    effect: "공격력",
-    values: [0.23, 0.47, 0.72, 1.08, 1.44],
-    slot: "투구",
-  },
-  {
-    name: "달인 (질서)",
-    effect: "공격력",
-    values: [0.23, 0.47, 0.72, 1.08, 1.44],
-    slot: "투구",
-  },
-  {
-    name: "회심 (혼돈)",
-    effect: "피해 증가",
-    values: [0.23, 0.47, 0.72, 1.08, 1.44],
-    slot: "장갑",
-  },
-  {
-    name: "달인 (혼돈)",
-    effect: "피해 증가",
-    values: [0.23, 0.47, 0.72, 1.08, 1.44],
-    slot: "장갑",
-  },
-  {
-    name: "보스 피해",
-    effect: "보스 피해",
-    values: [0.38, 0.79, 1.2, 1.8, 2.4],
-    slot: "견갑",
-  },
-  {
-    name: "추가 피해",
-    effect: "추가 피해",
-    values: [0.49, 1.02, 1.55, 2.32, 3.10],
-    slot: "하의",
-  },
-  {
-    name: "치명타 피해",
-    effect: "치명타 피해",
-    values: [1.12, 2.31, 3.5, 5.25, 7],
-    slot: "하의",
-  },
-];
+
+  const ELIXIR_EFFECTS = [
+    { name: "공격력", effect: "공격력", values: [122, 253, 383, 575, 767], slot: "공용" },
+    { name: "무기 공격력", effect: "무기 공격력", values: [236, 488, 740, 1110, 1480], slot: "공용" },
+    { name: "힘", effect: "특성 증가", values: [864, 1782, 2700, 4050, 5400], slot: "공용" },
+    { name: "민첩", effect: "특성 증가", values: [864, 1782, 2700, 4050, 5400], slot: "공용" },
+    { name: "지능", effect: "특성 증가", values: [864, 1782, 2700, 4050, 5400], slot: "공용" },
+    { name: "회심 (질서)", effect: "공격력", values: [0.23, 0.47, 0.72, 1.08, 1.44], slot: "투구" },
+    { name: "달인 (질서)", effect: "공격력", values: [0.23, 0.47, 0.72, 1.08, 1.44], slot: "투구" },
+    { name: "회심 (혼돈)", effect: "피해 증가", values: [0.23, 0.47, 0.72, 1.08, 1.44], slot: "장갑" },
+    { name: "달인 (혼돈)", effect: "피해 증가", values: [0.23, 0.47, 0.72, 1.08, 1.44], slot: "장갑" },
+    { name: "보스 피해", effect: "보스 피해", values: [0.38, 0.79, 1.2, 1.8, 2.4], slot: "견갑" },
+    { name: "추가 피해", effect: "추가 피해", values: [0.49, 1.02, 1.55, 2.32, 3.10], slot: "하의" },
+    { name: "치명타 피해", effect: "치명타 피해", values: [1.12, 2.31, 3.5, 5.25, 7], slot: "하의" },
+  ];
 
   const {
     Icon,
@@ -101,14 +43,17 @@ const ELIXIR_EFFECTS = [
     return match ? Number(match[1]) : 0;
   };
 
-  const [selectedOption, setSelectedOption] = useState('');
+  const [selectedElixirs, setSelectedElixirs] = useState(item.elixirOptions || [
+    { name: "", level: 0 },
+    { name: "", level: 0 },
+  ]);
+
   const [refinementLevel, setRefinementLevel] = useState(
     typeof propRefinementLevel === "number" ? propRefinementLevel : 0
   );
   const [nameNumber, setNameNumber] = useState(extractNumberFromName(Name));
   let { step: initialStep, level: initialLevel } = extractTranscendence(elixirName);
 
-  // 값이 유효하지 않으면 기본값으로 설정
   if (initialStep === 0 && initialLevel === 0) {
     initialStep = 7;
     initialLevel = 21;
@@ -120,8 +65,8 @@ const ELIXIR_EFFECTS = [
   const [showSelector, setShowSelector] = useState(false);
 
   const [elixirs, setElixirs] = useState(() =>
-    elixirOptions.length ? elixirOptions : [{ name: "", level: 0 }, { name: "", level: 0 }]
-  );
+      item.elixirOptions.length ? item.elixirOptions : [{ name: "", level: 0 }, { name: "", level: 0 }]
+    );
 
   const getQualityColor = (q) => {
     if (q === 100) return "bg-yellow-400";
@@ -139,11 +84,24 @@ const ELIXIR_EFFECTS = [
 
   const additionalDamage = Type === "무기" ? ((quality / 100) * 30).toFixed(1) : null;
 
+  // ✅ 변경된 item 콘솔 출력
+  useEffect(() => {
+    const updatedItem = {
+      ...item,
+      Name: `+${nameNumber} ${Name.replace(/^\+\d+\s*/, "")}`,
+      refinementLevel,
+      quality,
+      transcendence: `${transcendStep}단계 ${transcendLevel}`,
+      elixirOptions: elixirs,
+    };
+    onItemChange && onItemChange(updatedItem);
+
+  }, [nameNumber, refinementLevel, quality, transcendStep, transcendLevel, elixirs]);
+
   return (
     <div className="bg-white dark:bg-gray-800 p-3 rounded shadow w-full h-auto flex gap-3 items-start">
       <div className="flex flex-col items-center">
         <img src={Icon} alt={Name} className="w-12 h-12 object-contain shrink-0" />
-
         <div className="mt-1 relative">
           <div
             className="relative w-12 h-3 bg-gray-300 rounded-full overflow-hidden cursor-pointer"
@@ -159,7 +117,6 @@ const ELIXIR_EFFECTS = [
               </div>
             </div>
           </div>
-
           {showSelector && (
             <select
               className="absolute left-0 top-5 text-xs bg-white dark:bg-gray-700 text-black dark:text-white border rounded px-1 py-0.5 shadow z-10"
@@ -193,7 +150,7 @@ const ELIXIR_EFFECTS = [
               </option>
             ))}
           </select>
-          <span>{Name.replace(/^\+\d+\s*/, '')}</span> / 상급 재련:
+          <span>{Name.replace(/^\+\d+\s*/, "")}</span> / 상급 재련:
           <select
             value={refinementLevel}
             onChange={(e) => setRefinementLevel(Number(e.target.value))}
@@ -221,7 +178,6 @@ const ELIXIR_EFFECTS = [
               </option>
             ))}
           </select>
-
           <label>레벨:</label>
           <select
             value={transcendLevel}
@@ -274,18 +230,6 @@ const ELIXIR_EFFECTS = [
                     </option>
                   ))}
                 </select>
-
-                {/*
-                    {elixir.name && elixir.level > 0 && (
-                  <span>
-                    {(() => {
-                      const e = ELIXIR_EFFECTS.find((e) => e.name === elixir.name);
-                      return e ? `${e.effect}: ${e.values[elixir.level - 1]}${e.effect.includes("피해") ? "%" : ""}` : "";
-                    })()}
-                  </span>
-                )}
-                */}
-
               </div>
             ))}
           </div>

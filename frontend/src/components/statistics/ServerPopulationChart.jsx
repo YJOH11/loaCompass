@@ -14,6 +14,7 @@ import {
 export default function ServerPopulationChart() {
   const [data, setData] = useState([]);
   const [viewMode, setViewMode] = useState("bar");
+  const [selectedServer, setSelectedServer] = useState(null);
 
   useEffect(() => {
     axios.get('/api/statistics/server-count')
@@ -26,72 +27,149 @@ export default function ServerPopulationChart() {
 
   const total = data.reduce((sum, d) => sum + d.count, 0);
 
+  const handleBarClick = (entry) => {
+    setSelectedServer(selectedServer?.serverName === entry.serverName ? null : entry);
+  };
+
   return (
-    <div className="w-full h-[400px] mt-10 bg-white dark:bg-gray-900 text-black dark:text-white p-4 rounded shadow">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold text-gray-800 dark:text-white">서버별 인원 비율</h2>
-        <button
-          className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
-          onClick={() => setViewMode(viewMode === 'bar' ? 'pie' : 'bar')}
-        >
-          {viewMode === 'bar' ? 'Pie 보기' : 'Bar 보기'}
-        </button>
+    <div className="space-y-6">
+      {/* 차트 헤더 */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white">서버별 인원 비율</h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            전체 인원: {total.toLocaleString()}명
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+              viewMode === 'bar'
+                ? 'bg-indigo-600 text-white'
+                : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+            }`}
+            onClick={() => setViewMode('bar')}
+          >
+            Bar
+          </button>
+          <button
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+              viewMode === 'pie'
+                ? 'bg-indigo-600 text-white'
+                : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+            }`}
+            onClick={() => setViewMode('pie')}
+          >
+            Pie
+          </button>
+        </div>
       </div>
 
-      <ResponsiveContainer width="100%" height="100%">
-        {viewMode === 'bar' ? (
-          <BarChart data={data} margin={{ top: 10, right: 30, left: 30, bottom: 10 }}>
-            <XAxis dataKey="serverName" stroke="currentColor" />
-            <YAxis stroke="currentColor" />
-            <Tooltip
-              formatter={(value) => {
-                const percent = formatPercent(value, total);
-                return [`${value}명 (${percent})`, '인원'];
-              }}
-              contentStyle={{
-                ...TOOLTIP_STYLE,
-                backgroundColor: "#1f2937", // dark:bg-gray-800
-                color: "#fff",
-              }}
-            />
-            <Legend wrapperStyle={{ color: "currentColor" }} />
-            <Bar dataKey="count" name="인원 수">
-              {data.map((_, idx) => (
-                <Cell key={idx} fill={CHART_COLORS[idx % CHART_COLORS.length]} />
-              ))}
-            </Bar>
-          </BarChart>
-        ) : (
-          <PieChart>
-            <Pie
+      {/* 선택된 서버 정보 */}
+      {selectedServer && (
+        <div className="bg-indigo-50 dark:bg-indigo-900/30 rounded-lg p-4">
+          <h3 className="font-medium text-indigo-900 dark:text-indigo-200">
+            {selectedServer.serverName}
+          </h3>
+          <p className="text-sm text-indigo-700 dark:text-indigo-300 mt-1">
+            인원: {selectedServer.count.toLocaleString()}명 ({formatPercent(selectedServer.count, total)})
+          </p>
+        </div>
+      )}
+
+      {/* 차트 */}
+      <div className="h-[400px]">
+        <ResponsiveContainer width="100%" height="100%">
+          {viewMode === 'bar' ? (
+            <BarChart
               data={data}
-              dataKey="count"
-              nameKey="serverName"
-              cx="50%"
-              cy="50%"
-              outerRadius={120}
-              innerRadius={60}
-              label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(1)}%`}
+              margin={{ top: 20, right: 30, left: 30, bottom: 30 }}
+              onClick={(data) => data && handleBarClick(data.activePayload[0].payload)}
             >
-              {data.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
-              ))}
-            </Pie>
-            <Tooltip
-              formatter={(value) => {
-                const percent = formatPercent(value, total);
-                return [`${percent}`, '비율'];
-              }}
-              contentStyle={{
-                ...TOOLTIP_STYLE,
-                backgroundColor: "#1f2937",
-                color: "#fff"
-              }}
-            />
-            <Legend wrapperStyle={{ color: "currentColor" }} />
-          </PieChart>
-        )}
-      </ResponsiveContainer>
+              <XAxis
+                dataKey="serverName"
+                stroke="currentColor"
+                tick={{ fill: 'currentColor', fontSize: 12 }}
+                angle={-45}
+                textAnchor="end"
+                height={60}
+              />
+              <YAxis
+                stroke="currentColor"
+                tick={{ fill: 'currentColor', fontSize: 12 }}
+              />
+              <Tooltip
+                formatter={(value) => {
+                  const percent = formatPercent(value, total);
+                  return [`${value.toLocaleString()}명 (${percent})`, '인원'];
+                }}
+                contentStyle={{
+                  ...TOOLTIP_STYLE,
+                  backgroundColor: "#1f2937",
+                  color: "#fff",
+                  borderRadius: "0.5rem",
+                  border: "none",
+                }}
+              />
+              <Legend wrapperStyle={{ color: "currentColor" }} />
+              <Bar
+                dataKey="count"
+                name="인원 수"
+                radius={[4, 4, 0, 0]}
+              >
+                {data.map((entry, idx) => (
+                  <Cell
+                    key={idx}
+                    fill={CHART_COLORS[idx % CHART_COLORS.length]}
+                    opacity={selectedServer?.serverName === entry.serverName ? 1 : 0.7}
+                    className="transition-opacity duration-200"
+                  />
+                ))}
+              </Bar>
+            </BarChart>
+          ) : (
+            <PieChart>
+              <Pie
+                data={data}
+                dataKey="count"
+                nameKey="serverName"
+                cx="50%"
+                cy="50%"
+                outerRadius={140}
+                innerRadius={80}
+                paddingAngle={1}
+                label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(1)}%`}
+              >
+                {data.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={CHART_COLORS[index % CHART_COLORS.length]}
+                    opacity={selectedServer?.serverName === entry.serverName ? 1 : 0.7}
+                    className="transition-opacity duration-200"
+                  />
+                ))}
+              </Pie>
+              <Tooltip
+                formatter={(value) => {
+                  const percent = formatPercent(value, total);
+                  return [`${value.toLocaleString()}명 (${percent})`, '인원'];
+                }}
+                contentStyle={{
+                  ...TOOLTIP_STYLE,
+                  backgroundColor: "#1f2937",
+                  color: "#fff",
+                  borderRadius: "0.5rem",
+                  border: "none",
+                }}
+              />
+              <Legend
+                wrapperStyle={{ color: "currentColor" }}
+                onClick={(entry) => handleBarClick(entry)}
+              />
+            </PieChart>
+          )}
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 }

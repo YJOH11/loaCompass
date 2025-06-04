@@ -4,16 +4,16 @@ import axios from "axios";
 import CharacterSearchInput from "../components/CharacterSearchInput";
 import CharacterProfileCard from "../components/CharacterProfileCard";
 import GemList from "../components/Gem/GemList";
-import EquipmentAccessoryRow from "../components/Equipment/EquipmentAccessoryRow";
 import ScoreRow from "../components/score/ScoreRow";
 import SimulationRow from "../components/Simulation/SimulationRow";
 
-export default function CharacterSearchPage() {
+export default function CharacterSimulation() {
   const { name: characterName } = useParams();
   const [characterData, setCharacterData] = useState(null);
   const [hasSearched, setHasSearched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [simOptionsChanged, setSimOptionsChanged] = useState(0);
+  const [updatedItem, setUpdatedItem] = useState(null);
   const [favorites, setFavorites] = useState(() => {
     try {
       const stored = localStorage.getItem("favoriteHistory");
@@ -48,17 +48,23 @@ export default function CharacterSearchPage() {
 
   const handleFavoriteToggle = (name, isNowFavorite) => {
     const updated = isNowFavorite
-        ? [name, ...favorites.filter((n) => n !== name)]
-        : favorites.filter((n) => n !== name);
+      ? [name, ...favorites.filter((n) => n !== name)]
+      : favorites.filter((n) => n !== name);
     localStorage.setItem("favoriteHistory", JSON.stringify(updated));
     setFavorites(updated);
   };
 
+  const handleWeaponChange = (newItems) => {
+    setUpdatedItem(newItems);
+    setSimOptionsChanged((prev) => prev + 1);
+
+  };
+    console.log(updatedItem);
   const engravings = characterData?.profile?.engravings || [];
 
   const gears =
     characterData?.equipments?.filter((item) =>
-      ["무기", "투구", "상의", "하의", "장갑", "어깨"].includes(item.Type)
+      ["무기", "투구", "상의", "하의", "장갑", "견갑"].includes(item.Type)
     ) || [];
 
   const accessories =
@@ -66,22 +72,32 @@ export default function CharacterSearchPage() {
       ["목걸이", "귀걸이", "반지"].includes(item.Type)
     ) || [];
 
+  const displayItems = (() => {
+    if (!updatedItem || updatedItem.length === 0) return gears;
+
+    const updatedArray = Array.isArray(updatedItem) ? updatedItem : [updatedItem];
+
+    const updatedTypes = updatedArray.map((item) => item.Type);
+
+    return gears.map((gear) => {
+      const replacement = updatedArray.find((item) => item.Type === gear.Type);
+      return replacement || gear;
+    });
+  })();
 
   const abilityStone = characterData?.equipments?.find((item) => item.Type === "어빌리티 스톤");
   const bracelet = characterData?.equipments?.find((item) => item.Type === "팔찌");
   const maxLen = Math.max(gears.length, accessories.length);
-
-
+    console.log("+++++++++++++++++++++=");
+    console.log(displayItems);
   return (
     <div className="min-h-screen bg-white text-black dark:bg-gray-900 dark:text-white p-6">
       {(!hasSearched || (!characterData && !isLoading)) && (
-          <CharacterSearchInput
-              favorites={favorites}
-              setFavorites={setFavorites}
-              onFavoriteToggle={handleFavoriteToggle}
-          />
-
-
+        <CharacterSearchInput
+          favorites={favorites}
+          setFavorites={setFavorites}
+          onFavoriteToggle={handleFavoriteToggle}
+        />
       )}
 
       {isLoading ? (
@@ -96,17 +112,18 @@ export default function CharacterSearchPage() {
             <div className="flex w-full max-w-[1280px] gap-6">
               <div className="min-w-[260px] max-w-[260px] bg-gray-100 dark:bg-gray-800 rounded-lg p-6 shadow">
                 <CharacterProfileCard
-                    profile={characterData.profile}
-                    favorites={favorites}
-                    onFavoriteToggle={handleFavoriteToggle} // ✅ 이거 추가
+                  profile={characterData.profile}
+                  favorites={favorites}
+                  onFavoriteToggle={handleFavoriteToggle}
                 />
                 <ScoreRow
-                    items={gears}
-                    accessories={accessories}
-                    engravings={engravings}
-                    abilityStone={abilityStone}
-                    bracelet={bracelet}
-                    gems={characterData.gems}
+                  key={simOptionsChanged} // 강제 리렌더링
+                  items={displayItems}
+                  accessories={accessories}
+                  engravings={engravings}
+                  abilityStone={abilityStone}
+                  bracelet={bracelet}
+                  gems={characterData.gems}
                 />
               </div>
               <div className="flex-1">
@@ -122,15 +139,21 @@ export default function CharacterSearchPage() {
                       <h2 className="text-lg font-semibold text-gray-800 dark:text-white">악세서리</h2>
                     </div>
                     <div className="flex flex-col gap-2">
-
                       {Array.from({ length: maxLen }).map((_, i) => (
-                         <SimulationRow
-                            key={i}
-                            equipment={gears[i] || null}
-                            accessory={accessories[i] || null}
-                            abilityStone={i === maxLen - 1 ? abilityStone : null}
-                            bracelet={i === maxLen - 1 ? bracelet : null}
-                              />
+                        <SimulationRow
+                          key={i}
+                          equipment={gears[i] || null}
+                          accessory={accessories[i] || null}
+                          abilityStone={i === maxLen - 1 ? abilityStone : null}
+                          bracelet={i === maxLen - 1 ? bracelet : null}
+                          onItemChange={handleWeaponChange}
+                          onSimOptionChange={(newUpdatedItem) => {
+                            if (newUpdatedItem) {
+                              setUpdatedItem(newUpdatedItem);
+                            }
+                            setSimOptionsChanged((prev) => prev + 1);
+                          }}
+                        />
                       ))}
                     </div>
                   </div>
@@ -145,5 +168,3 @@ export default function CharacterSearchPage() {
     </div>
   );
 }
-
-

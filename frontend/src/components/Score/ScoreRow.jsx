@@ -15,8 +15,10 @@ const ScoreRow = ({ items ,accessories,engravings,abilityStone,bracelet,gems}) =
     criticalDamagePer: 0,
     mainStat: 2000,
   });
-
+  console.log("ddd");
+console.log(items);
   useEffect(() => {
+    // useEffect 안에서 items, accessories 등 모든 props 최신값을 사용
     const tempStat = {
       STAT: 0,
       WeaponAtk: 0,
@@ -31,7 +33,6 @@ const ScoreRow = ({ items ,accessories,engravings,abilityStone,bracelet,gems}) =
 
     if (Array.isArray(items)) {
       items.forEach(item => {
-
         statHelper.addEnhanceStats(
           item.Grade === "에스더" ? item.Grade : item.Type,
           item.Name,
@@ -39,67 +40,58 @@ const ScoreRow = ({ items ,accessories,engravings,abilityStone,bracelet,gems}) =
           tempStat
         );
 
-            console.log(gems);
+        const part = item.Type;
+        const transcendenceLevel = statHelper.getTranscendStageFromElixirNameLevel(item.elixirName);
+        const transcendenceStage = statHelper.getTranscendStageFromElixirName(item.elixirName);
 
-            // 초월 단계, 초월 레벨 정리
-            const part = item.Type;
-            const transcendenceLevel = statHelper.getTranscendStageFromElixirNameLevel(item.elixirName);
-            const transcendenceStage = statHelper.getTranscendStageFromElixirName(item.elixirName);
-            // elixirName에서 초월 스테이지 (ex: "7단계") 파싱 함수 필요
+        statHelper.addTranscendStats(part, transcendenceLevel, transcendenceStage, transcendenceLevel, tempStat);
+        statHelper.applyTranscendenceBonus(part, transcendenceLevel, transcendenceStage, transcendenceLevel, tempStat);
 
-            // 기본 스탯 계산
-            statHelper.addTranscendStats(part, transcendenceLevel, transcendenceStage, transcendenceLevel, tempStat);
-
-            // 보너스 스탯 계산
-            statHelper.applyTranscendenceBonus(part, transcendenceLevel, transcendenceStage, transcendenceLevel, tempStat);
-            const optionCount = item.elixirOptions ? item.elixirOptions.length : 0;
-            const loopCount = Math.min(2, optionCount);
-
-
-            // 올바르게 elixirOptions에 대해 반복
-            if (Array.isArray(item.elixirOptions)) {
-              item.elixirOptions.slice(0, 2).forEach(opt => {
-
-                statHelper.applyElixirEffect(
-                  opt.name,
-                  opt.level,
-                  statHelper.getTotalElixirLevelFromItems(items),
-                  tempStat
-                );
-              });
-            }
-
-
-      });
-
-    }
-    if (Array.isArray(accessories)) {
-
-        accessories.forEach(accessory => {
-
-            statHelper.applyAccessoryEffects(
-              { basicEffect: accessory.basicEffect, refinementEffects: accessory.refinementEffects },
+        if (Array.isArray(item.elixirOptions)) {
+          item.elixirOptions.slice(0, 2).forEach(opt => {
+            statHelper.applyElixirEffect(
+              opt.name,
+              opt.level,
+              statHelper.getTotalElixirLevelFromItems(items),
               tempStat
             );
-        });
+          });
+        }
+      });
+    }
+
+    if (Array.isArray(accessories)) {
+      accessories.forEach(accessory => {
+        statHelper.applyAccessoryEffects(
+          { basicEffect: accessory.basicEffect, refinementEffects: accessory.refinementEffects },
+          tempStat
+        );
+      });
     }
 
     if (Array.isArray(engravings)) {
-        engravings.forEach(engraving => {
-
-            statHelper.applyEngravingOption(engraving,tempStat);
-
-        });
+      engravings.forEach(engraving => {
+        statHelper.applyEngravingOption(engraving,tempStat);
+      });
     }
-    statHelper.applyAbilityStones(abilityStone.abilityStoneEngravings,tempStat);
 
-    statHelper.applyBraceletEffects(bracelet.braceletEffects,tempStat);
+    if(abilityStone) {
+      statHelper.applyAbilityStones(abilityStone.abilityStoneEngravings,tempStat);
+    }
+
+    if(bracelet) {
+      statHelper.applyBraceletEffects(bracelet.braceletEffects,tempStat);
+    }
+
     setMyStat(tempStat);
-  }, [items]);
+    console.log(tempStat);
+  }, [items, accessories, engravings, abilityStone, bracelet, gems]);
+
 
 
 
   const score = statHelper.calculateScore(myStat,gems);
+  console.log("점수: "+score);
   return (
       <div className="score-row">
         <h3>🧮 내 점수</h3>

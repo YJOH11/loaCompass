@@ -113,41 +113,46 @@ export default function ChatMain() {
     }, [messages]);
 
     return (
-        <div className="relative flex flex-col h-full">
-            {/* 메시지 출력 영역 */}
-            <div ref={chatContainerRef} className="flex-1 overflow-y-auto px-4 py-6 space-y-4">
-                {messages.map((msg, i) => (
-                    <ChatMessage key={i} message={msg} />
-                ))}
-                {isLoading && (
-                    <div className="text-sm text-gray-400 dark:text-gray-500 animate-pulse">
-                        AI가 응답 중입니다...
-                    </div>
-                )}
-            </div>
+        <div className="min-h-screen bg-transparent">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm h-[calc(100vh-8rem)]">
+                    <div className="relative flex flex-col h-full">
+                        {/* 메시지 출력 영역 */}
+                        <div ref={chatContainerRef} className="flex-1 overflow-y-auto px-4 py-6 space-y-4">
+                            {messages.map((msg, i) => (
+                                <ChatMessage key={i} message={msg} />
+                            ))}
+                            {isLoading && (
+                                <div className="text-sm text-gray-400 dark:text-gray-500 animate-pulse">
+                                    AI가 응답 중입니다...
+                                </div>
+                            )}
+                        </div>
 
-            {/* 전송 입력창 – 고정 아님, 푸터 위에 자연스레 */}
-            <form
-                onSubmit={handleSubmit}
-                className="w-full bg-white dark:bg-gray-900 px-4 py-3"
-            >
-                <div className="flex items-center gap-2">
-                    <input
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        className="flex-1 px-4 py-2 rounded-md border dark:border-gray-600 focus:outline-none bg-white dark:bg-gray-800 text-black dark:text-white"
-                        placeholder="AI에게 질문하기..."
-                    />
-                    <button
-                        type="submit"
-                        className="px-4 py-2 bg-indigo-600 text-white text-sm rounded-md hover:bg-indigo-700"
-                        disabled={isLoading}
-                    >
-                        전송
-                    </button>
+                        {/* 전송 입력창 */}
+                        <form
+                            onSubmit={handleSubmit}
+                            className="w-full bg-transparent px-4 py-3 border-t dark:border-gray-700"
+                        >
+                            <div className="flex items-center gap-2">
+                                <input
+                                    value={input}
+                                    onChange={(e) => setInput(e.target.value)}
+                                    className="flex-1 px-4 py-2 rounded-md border dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-800 text-black dark:text-white"
+                                    placeholder="AI에게 질문하기..."
+                                />
+                                <button
+                                    type="submit"
+                                    className="px-4 py-2 bg-indigo-600 text-white text-sm rounded-md hover:bg-indigo-700 transition-colors"
+                                    disabled={isLoading}
+                                >
+                                    전송
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-            </form>
+            </div>
         </div>
     );
-
 }
