@@ -1,6 +1,7 @@
 package com.finalteam.loacompass.population.repository;
 
 import com.finalteam.loacompass.population.entity.CharacterRecord;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,22 +12,13 @@ import java.util.Optional;
 
 public interface CharacterRecordRepository extends JpaRepository<CharacterRecord, Long> {
 
-    // 완전히 동일한 기록이 존재하는지 확인 (INSERT 전에 사용)
-    @Query("""
-        SELECT COUNT(r) > 0 FROM CharacterRecord r
-        WHERE r.characterName = :characterName
-        AND r.itemLevel = :itemLevel
-        AND r.serverName = :serverName
-        AND r.characterClass = :characterClass
-    """)
-    boolean existsExactRecord(
-            @Param("characterName") String characterName,
-            @Param("itemLevel") float itemLevel,
-            @Param("serverName") String serverName,
-            @Param("characterClass") String characterClass
+    boolean existsByCharacterNameAndItemLevelAndServerNameAndCharacterClass(
+            String characterName,
+            float itemLevel,
+            String serverName,
+            String characterClass
     );
 
-    // 오늘 기준 통계 (캐릭터 중복 제거)
     @Query("""
         SELECT r.serverName, COUNT(DISTINCT r.characterName)
         FROM CharacterRecord r
@@ -49,7 +41,6 @@ public interface CharacterRecordRepository extends JpaRepository<CharacterRecord
     @Query("SELECT r FROM CharacterRecord r WHERE DATE(r.recordedAt) = :date")
     List<CharacterRecord> findAllByRecordedAt(@Param("date") LocalDate date);
 
-    //  누적 기준 통계 (캐릭터 중복 제거)
     @Query("""
         SELECT r.serverName, COUNT(DISTINCT r.characterName)
         FROM CharacterRecord r
@@ -64,8 +55,14 @@ public interface CharacterRecordRepository extends JpaRepository<CharacterRecord
     """)
     List<Object[]> getTotalServerClassDistribution();
 
-    @Query("SELECT r FROM CharacterRecord r ORDER BY r.itemLevel DESC LIMIT 1")
-    Optional<CharacterRecord> findTopByOrderByItemLevelDesc();
+    @Query("""
+        SELECT r FROM CharacterRecord r
+        WHERE r.itemLevel = (
+            SELECT MAX(r2.itemLevel) FROM CharacterRecord r2
+        )
+        ORDER BY r.recordedAt DESC
+    """)
+    Optional<CharacterRecord> findLatestTopCharacter();
 
     @Query("""
         SELECT r.characterClass, COUNT(DISTINCT r.characterName)
@@ -92,4 +89,16 @@ public interface CharacterRecordRepository extends JpaRepository<CharacterRecord
     List<Object[]> getTotalLevelRangeDistribution();
 
     Optional<CharacterRecord> findByCharacterName(String characterName);
+
+    Optional<CharacterRecord> findTopByCharacterNameOrderByRecordedAtDesc(String characterName);
+
+    Optional<CharacterRecord> findTopByCharacterImageIsNotNullOrderByItemLevelDescRecordedAtDesc();
+
+    // Top N 유저 (이미지가 있는 경우)
+    @Query("""
+        SELECT r FROM CharacterRecord r
+        WHERE r.characterImage IS NOT NULL
+        ORDER BY r.itemLevel DESC, r.recordedAt DESC
+    """)
+    List<CharacterRecord> findTopCharactersWithImage(Pageable pageable);
 }

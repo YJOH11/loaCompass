@@ -6,10 +6,12 @@ import com.finalteam.loacompass.population.entity.CharacterRecord;
 import com.finalteam.loacompass.population.entity.RecordSourceType;
 import com.finalteam.loacompass.population.repository.CharacterRecordRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CharacterService {
@@ -42,18 +44,31 @@ public class CharacterService {
         String clazz = dto.getProfile().getCharacterClassName();
         float itemLevel = parseItemLevel(dto.getProfile().getItemAvgLevel());
 
-        boolean exists = characterRecordRepository.existsExactRecord(nickname, itemLevel, server, clazz);
+        boolean exists = characterRecordRepository.existsByCharacterNameAndItemLevelAndServerNameAndCharacterClass(
+                nickname, itemLevel, server, clazz
+        );
+
         if (!exists && itemLevel >= 1640f) {
-            CharacterRecord record = CharacterRecord.builder()
+            // 신규 저장
+            characterRecordRepository.save(CharacterRecord.builder()
                     .characterName(nickname)
                     .serverName(server)
                     .characterClass(clazz)
                     .itemLevel(itemLevel)
+                    .characterImage(dto.getProfile().getCharacterImage())
                     .recordedAt(LocalDateTime.now())
                     .source(source)
-                    .build();
-
-            characterRecordRepository.save(record);
+                    .build());
+            log.info(" 캐릭터 저장됨: {}", nickname);
+        } else if (exists) {
+            // 이미 저장돼 있지만 이미지가 누락된 경우 → 보충 업데이트
+            characterRecordRepository.findTopByCharacterNameOrderByRecordedAtDesc(nickname)
+                    .filter(r -> r.getCharacterImage() == null || r.getCharacterImage().isBlank())
+                    .ifPresent(r -> {
+                        r.setCharacterImage(dto.getProfile().getCharacterImage());
+                        characterRecordRepository.save(r);
+                        log.info("♻️ 캐릭터 이미지만 업데이트됨: {}", nickname);
+                    });
         }
     }
 
@@ -61,6 +76,7 @@ public class CharacterService {
         try {
             return Float.parseFloat(levelStr.replace(",", ""));
         } catch (NumberFormatException e) {
+            log.warn(" 아이템 레벨 파싱 실패: {}", levelStr);
             return 0f;
         }
     }

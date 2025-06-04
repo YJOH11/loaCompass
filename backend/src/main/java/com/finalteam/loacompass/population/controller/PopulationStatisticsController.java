@@ -16,10 +16,10 @@ public class PopulationStatisticsController {
 
     private final PopulationStatisticsService service;
 
-    // 누적 기준: 최고 아이템 레벨 유저 조회
-    @GetMapping("/top-player")
-    public TopCharacterDto getTopPlayer() {
-        return service.getTotalTopCharacter();
+    // 누적 기준: 최고 아이템 레벨 상위 5명 조회 (리스트 반환)
+    @GetMapping("/top-players")
+    public List<TopCharacterDto> getTopPlayers() {
+        return service.getTotalTopCharacters(5); // top 5명
     }
 
     // 누적 기준: 서버별 인구 수 집계

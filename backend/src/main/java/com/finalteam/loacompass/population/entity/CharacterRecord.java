@@ -30,7 +30,8 @@ public class CharacterRecord {
     @Column(name = "recorded_at")
     private LocalDateTime recordedAt;  // 검색된 날짜
 
-
+    @Column(name = "character_image")
+    private String characterImage;
 
     @Enumerated(EnumType.STRING)
     private RecordSourceType source;
