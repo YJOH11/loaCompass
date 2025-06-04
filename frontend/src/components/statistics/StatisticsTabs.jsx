@@ -82,13 +82,11 @@ export default function StatisticsTabs({ title }) {
       </div>
 
       {/* 차트 컨테이너 */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-        <div className="min-h-[500px]">
-          {activeTab === "player" && <TopPlayerCard />}
-          {activeTab === "population" && <ServerPopulationChart />}
-          {activeTab === "class" && <TotalClassChart />}
-          {activeTab === "level" && <TotalLevelChart />}
-        </div>
+      <div className="min-h-[500px]">
+        {activeTab === "player" && <TopPlayerCard />}
+        {activeTab === "population" && <ServerPopulationChart />}
+        {activeTab === "class" && <TotalClassChart />}
+        {activeTab === "level" && <TotalLevelChart />}
       </div>
 
       <AIAnalysisModal
