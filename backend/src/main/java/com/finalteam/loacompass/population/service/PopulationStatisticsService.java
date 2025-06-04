@@ -1,20 +1,14 @@
 package com.finalteam.loacompass.population.service;
 
-import com.finalteam.loacompass.population.dto.LevelRangeDto;
-import com.finalteam.loacompass.population.dto.ServerClassDistributionDto;
-import com.finalteam.loacompass.population.dto.ServerPopulationDto;
-import com.finalteam.loacompass.population.dto.TopCharacterDto;
-import com.finalteam.loacompass.population.dto.ClassDistributionDto;
+import com.finalteam.loacompass.population.dto.*;
 import com.finalteam.loacompass.population.entity.CharacterRecord;
 import com.finalteam.loacompass.population.repository.CharacterRecordRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,10 +16,6 @@ import java.util.stream.Collectors;
 public class PopulationStatisticsService {
 
     private final CharacterRecordRepository repository;
-
-
-
-
 
     public List<ServerPopulationDto> getTodayServerPopulation() {
         LocalDate today = LocalDate.now();
@@ -89,16 +79,17 @@ public class PopulationStatisticsService {
                 .toList();
     }
 
-    public TopCharacterDto getTotalTopCharacter() {
-        CharacterRecord record = repository.findTopByOrderByItemLevelDesc()
-                .orElseThrow(() -> new NoSuchElementException("저장된 캐릭터가 없습니다."));
-
-        return new TopCharacterDto(
-                record.getCharacterName(),
-                record.getItemLevel(),
-                record.getCharacterClass(),
-                record.getServerName()
-        );
+    // Top 5 유저 리스트 반환
+    public List<TopCharacterDto> getTotalTopCharacters(int count) {
+        return repository.findTopCharactersWithImage(PageRequest.of(0, count)).stream()
+                .map(record -> new TopCharacterDto(
+                        record.getCharacterName(),
+                        record.getItemLevel(),
+                        record.getCharacterClass(),
+                        record.getServerName(),
+                        record.getCharacterImage()
+                ))
+                .toList();
     }
 
     public List<ClassDistributionDto> getTotalClassDistribution() {
