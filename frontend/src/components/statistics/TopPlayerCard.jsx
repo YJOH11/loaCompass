@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaTrophy, FaShareAlt, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { Link } from "react-router-dom"; // 상단에 추가
 
 export default function TopPlayerCarousel() {
   const [players, setPlayers] = useState([]);
@@ -64,8 +65,9 @@ export default function TopPlayerCarousel() {
                 {/* 타이틀 */}
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-xl font-bold text-purple-700 dark:text-purple-300 flex items-center gap-2">
-                    <FaTrophy className="text-yellow-500" />
-                    로침반 최고 점수 유저
+                     <span className="ml-2 text-xs bg-yellow-400 text-white px-2 py-1 rounded-full">
+                        TOP {index + 1}
+                      </span>
                   </h3>
                   <button onClick={handleShare} title="링크 복사" className="text-gray-400 hover:text-gray-700">
                     <FaShareAlt size={16} />
@@ -82,10 +84,14 @@ export default function TopPlayerCarousel() {
 
                   <div className="text-center text-gray-800 dark:text-gray-200 space-y-1">
                     <div className="font-semibold text-lg">
-                      닉네임: {p.characterName}
-                      <span className="ml-2 text-xs bg-yellow-400 text-white px-2 py-1 rounded-full">
-                        TOP {index + 1}
-                      </span>
+
+                        <Link
+                            to={`/character/${p.characterName}`}
+                            className="font-semibold text-lg text-blue-600 hover:underline"
+                        >
+                            {p.characterName}
+                        </Link>
+
                     </div>
                     <div>아이템 레벨: {p.itemLevel}</div>
                     <div>직업: {p.characterClass}</div>
