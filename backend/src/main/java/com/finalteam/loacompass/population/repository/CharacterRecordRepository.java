@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -101,4 +102,20 @@ public interface CharacterRecordRepository extends JpaRepository<CharacterRecord
         ORDER BY r.itemLevel DESC, r.recordedAt DESC
     """)
     List<CharacterRecord> findTopCharactersWithImage(Pageable pageable);
-}
+
+    @Query(value = """
+    SELECT cr.*
+    FROM character_record cr
+    JOIN (
+        SELECT character_name, MAX(recorded_at) AS latest_time
+        FROM character_record
+        GROUP BY character_name
+    ) latest
+    ON cr.character_name = latest.character_name
+    AND cr.recorded_at = latest.latest_time
+    ORDER BY cr.item_level DESC
+    LIMIT 50
+    """, nativeQuery = true)
+    List<CharacterRecord> findTop50LatestRecords();
+
+    }
