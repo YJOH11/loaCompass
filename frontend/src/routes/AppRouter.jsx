@@ -22,6 +22,8 @@ import CharacterSimulation from '../pages/CharacterSimulation';
 import AIAssistant from '../pages/AIAssistant';
 import Ranking from '../pages/Ranking';
 import ClearSubmitPage from '../pages/ClearSubmitPage';
+import ClearRecordListPage from '../pages/ClearRecordListPage';
+import ClearMainPage from '../pages/ClearMainPage';
 
 import Navbar from '../components/Navbar';
 
@@ -50,6 +52,8 @@ const AppRouter = () => {
                     <Route path="/ai-assistant" element={<AIAssistant />} />
                     <Route path="/ranking" element={<Ranking />} />
                     <Route path="/clear/submit" element={<ClearSubmitPage />} />
+                    <Route path="/clear/list" element={<ClearRecordListPage />} />
+                    <Route path="/clear" element={<ClearMainPage />} />
                     <Route path="*" element={<NotFound />} />
                 </Route>
             </Routes>
