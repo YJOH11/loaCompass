@@ -63,12 +63,12 @@ def generate_population_summary_short():
     if df['date'].isnull().all():
         return ["⚠️ 날짜 정보가 유효하지 않습니다."]
 
-    # ✅ 1. 누적 기준 인구 1위 서버
+    #  1. 누적 기준 인구 1위 서버
     cumulative_df = df.groupby("server_name")["character_name"].nunique().reset_index(name="count")
     top_total = cumulative_df.sort_values(by="count", ascending=False).iloc[0]
     summary.append(f"🔥 {top_total['server_name']}은 현재 저장된 캐릭터 데이터 기준으로 가장 인구가 많은 서버입니다. (총 {top_total['count']}명)")
 
-    # ✅ 2. 증감률 비교
+    #  2. 증감률 비교
     count_df = df.groupby(["server_name", "date"])["character_name"].nunique().reset_index(name="count")
 
     rates = []

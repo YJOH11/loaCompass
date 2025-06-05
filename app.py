@@ -1,6 +1,9 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from analysis.config import get_connection
 import asyncio
+import pandas as pd
+from prophet import Prophet
 
 # 크롤러 / 분석기
 from scraper.inven_search import fetch_page, get_total_pages, fetch_all_pages, fetch_all_contents, search_posts
@@ -102,6 +105,55 @@ def get_ngram_nickname():
 
     result = [generate_nickname(model, length) for _ in range(count)]
     return jsonify(result)
+
+# ===== 상승세 직업 =====
+
+@app.route("/api/forecast/job-growth", methods=["GET"])
+def forecast_job_growth():
+    conn = get_connection()
+    query = """
+        SELECT character_class, DATE(recorded_at) AS ds, AVG(item_level) AS y
+        FROM character_record
+        GROUP BY character_class, DATE(recorded_at)
+    """
+    df_all = pd.read_sql(query, conn)
+    conn.close()
+
+    df_all['ds'] = pd.to_datetime(df_all['ds'])
+
+    summary = []
+    for job in df_all['character_class'].unique():
+        df = df_all[df_all['character_class'] == job][['ds', 'y']]
+        if len(df) < 5:
+            continue
+
+        try:
+            model = Prophet()
+            model.fit(df)
+            future = model.make_future_dataframe(periods=7)
+            forecast = model.predict(future)
+
+            y_last = df.iloc[-1]['y']
+            y_pred = forecast.iloc[-1]['yhat']
+            growth = y_pred - y_last
+
+            summary.append({
+                'character_class': job,
+                'current_avg': round(y_last, 2),
+                'forecast_avg': round(y_pred, 2),
+                'increase': round(growth, 2)
+            })
+
+        except Exception as e:
+            print(f"[ERROR] Failed to forecast for {job}: {e}")
+            continue
+
+    # 양수 증가만 필터링
+    summary = [s for s in summary if s['increase'] > 0]
+    summary.sort(key=lambda x: x['increase'], reverse=True)
+    top5 = summary[:5]
+
+    return jsonify(top5)
 
 # ===== 서버 실행 =====
 if __name__ == '__main__':

@@ -8,7 +8,7 @@ export default function AIAnalysisModal({ visible, onClose, items = [], onDetail
       <div className="bg-white w-[90%] max-w-md rounded-lg shadow-lg">
         {/* 헤더 */}
         <div className="flex justify-between items-center px-4 py-3 border-b">
-          <h3 className="text-lg font-semibold text-gray-800">🧠 AI 분석 요약</h3>
+          <h3 className="text-lg font-semibold text-gray-800">🧠 분석 요약</h3>
           <button onClick={onClose} className="text-gray-500 hover:text-gray-700 text-xl">×</button>
         </div>
 
