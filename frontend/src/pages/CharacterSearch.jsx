@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { Link } from 'react-router-dom';
 import axios from "axios";
 import CharacterSearchInput from "../components/CharacterSearchInput";
 import CharacterProfileCard from "../components/CharacterProfileCard";
@@ -65,11 +66,9 @@ export default function CharacterSearchPage() {
       ["목걸이", "귀걸이", "반지"].includes(item.Type)
     ) || [];
 
-
   const abilityStone = characterData?.equipments?.find((item) => item.Type === "어빌리티 스톤");
   const bracelet = characterData?.equipments?.find((item) => item.Type === "팔찌");
-  const maxLen = Math.max(gears.length, accessories.length);
-
+  const maxLen = 7;
 
   return (
     <div className="min-h-screen bg-white text-black dark:bg-gray-900 dark:text-white p-6">
@@ -111,7 +110,17 @@ export default function CharacterSearchPage() {
               <div className="flex-1">
                 <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-4 shadow">
                   <div className="mb-6">
-                    <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">보석</h2>
+                   <div className="flex items-center justify-between mb-2">
+                     <h2 className="text-lg font-semibold text-gray-800 dark:text-white">보석</h2>
+                     <Link
+                       to={`/character/simulation/${characterName}`}
+                       className="inline-block px-4 py-2 bg-blue-500 text-white rounded"
+                     >
+                       시뮬레이션으로 이동
+                     </Link>
+
+                   </div>
+
                     <GemList gems={characterData.gems} layout="inline" />
                   </div>
 
@@ -126,10 +135,13 @@ export default function CharacterSearchPage() {
                           key={i}
                           equipment={gears[i] || null}
                           accessory={accessories[i] || null}
-                          abilityStone={i === maxLen - 1 ? abilityStone : null}
+                          abilityStone={i === maxLen - 2 ? abilityStone : null}
                           bracelet={i === maxLen - 1 ? bracelet : null}
+                          engravings={i === maxLen - 1 ? engravings : null}
+
                         />
                       ))}
+
                     </div>
                   </div>
                 </div>

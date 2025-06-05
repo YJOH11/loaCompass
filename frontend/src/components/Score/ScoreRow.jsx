@@ -15,8 +15,6 @@ const ScoreRow = ({ items ,accessories,engravings,abilityStone,bracelet,gems}) =
     criticalDamagePer: 0,
     mainStat: 2000,
   });
-  console.log("ddd");
-console.log(items);
   useEffect(() => {
     // useEffect 안에서 items, accessories 등 모든 props 최신값을 사용
     const tempStat = {
@@ -84,14 +82,14 @@ console.log(items);
     }
 
     setMyStat(tempStat);
-    console.log(tempStat);
+
   }, [items, accessories, engravings, abilityStone, bracelet, gems]);
 
 
 
 
   const score = statHelper.calculateScore(myStat,gems);
-  console.log("점수: "+score);
+  
   return (
       <div className="score-row">
         <h3>🧮 내 점수</h3>
