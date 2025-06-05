@@ -46,7 +46,7 @@ def forecast_top_server_growth():
 
     result = []
     if top3:
-        result.append("📈 AI 예측 결과, 다음 주 인구가 가장 많이 증가할 것으로 예상되는 서버는:")
+        result.append("📈 다음 주 인구가 가장 많이 증가할 것으로 예상되는 서버는:")
         for idx, row in enumerate(top3, start=1):
             result.append(f"{idx}. {row['server']} (+{row['increase']:.1f}명 예상)")
     else:

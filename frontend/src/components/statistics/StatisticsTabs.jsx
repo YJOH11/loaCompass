@@ -13,8 +13,10 @@ export default function StatisticsTabs({ title }) {
   const [aiSummaryShort, setAiSummaryShort] = useState([]);
   const [aiSummaryFull, setAiSummaryFull] = useState([]);
   const [forecastSummary, setForecastSummary] = useState([]);
+  const [jobGrowthSummary, setJobGrowthSummary] = useState([]); 
+  const today = new Date().toISOString().split("T")[0]; // "2025-06-04" 형식
 
-  // 1. AI 요약 데이터
+  // 1. 요약 데이터
   useEffect(() => {
     fetch("http://localhost:5000/api/ai-summary?mode=short")
       .then(res => res.json())
@@ -27,15 +29,33 @@ export default function StatisticsTabs({ title }) {
       .catch(err => console.error("전체 불러오기 실패:", err));
   }, []);
 
-  // 2. AI 예측 데이터
+  // 2. 서버 예측
   useEffect(() => {
     fetch("http://localhost:5000/api/forecast/top-growth")
-      .then((res) => res.json())
-      .then((data) => setForecastSummary(data))
-      .catch((err) => {
-        console.error("AI 예측 데이터를 불러오는 데 실패했습니다:", err);
-      });
+      .then(res => res.json())
+      .then(setForecastSummary)
+      .catch(err => console.error("예측 데이터를 불러오는 데 실패했습니다:", err));
   }, []);
+
+  // 3. 직업 성장 예측
+  useEffect(() => {
+    fetch("http://localhost:5000/api/forecast/job-growth")
+      .then(res => res.json())
+      .then(setJobGrowthSummary)
+      .catch(err => console.error("직업 성장 예측 실패:", err));
+  }, []);
+
+  //  전체 슬라이드 내용 결합
+  const combinedSummary = [
+    ...aiSummaryFull,
+    "------------------------------",
+    ...forecastSummary,
+    "------------------------------",
+    "🧠 다음 주 평균 레벨이 가장 크게 상승할 것으로 예상되는 직업은:",
+    ...jobGrowthSummary.map((job, idx) =>
+      `${idx + 1}. ${job.character_class} (+${job.increase} 예상)`
+    ),
+  ];
 
   const tabList = [
     { id: "player", label: "로침반 최고 점수", icon: "🏆" },
@@ -43,8 +63,6 @@ export default function StatisticsTabs({ title }) {
     { id: "class", label: "직업별 분포", icon: "⚔️" },
     { id: "level", label: "레벨별 분포", icon: "📈" },
   ];
-
-  const combinedSummary = [...aiSummaryFull, "------------------------------", ...forecastSummary];
 
   return (
     <div className="w-full bg-transparent">
@@ -57,10 +75,10 @@ export default function StatisticsTabs({ title }) {
             className="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors duration-200 ease-in-out"
           >
             <span className="mr-2">🧠</span>
-            AI 분석
+            통계 분석
           </button>
         </div>
-        
+
         {/* 탭 네비게이션 */}
         <div className="flex flex-wrap gap-2">
           {tabList.map((tab) => (
@@ -89,6 +107,7 @@ export default function StatisticsTabs({ title }) {
         {activeTab === "level" && <TotalLevelChart />}
       </div>
 
+      {/* 분석 팝업/패널 */}
       <AIAnalysisModal
         visible={showModal}
         onClose={() => setShowModal(false)}
@@ -99,11 +118,19 @@ export default function StatisticsTabs({ title }) {
         items={aiSummaryShort}
       />
 
-      <AISidePanel
-        visible={showPanel}
-        onClose={() => setShowPanel(false)}
-        items={combinedSummary}
-      />
+    <AISidePanel
+      visible={showPanel}
+      onClose={() => setShowPanel(false)}
+      analysisDate={`${today} 기준`} // 기준일 자동 전달
+      itemsByTopic={{
+        summary: aiSummaryFull,
+        server: forecastSummary,
+        job: [
+          "🧠 분석에 따르면, 다음 주 평균 레벨이 가장 크게 상승할 것으로 예상되는 직업은:",
+          ...jobGrowthSummary.map((j, i) => `${i + 1}. ${j.character_class} (+${j.increase} 예상)`),
+        ],
+      }}
+    />
     </div>
   );
 }
