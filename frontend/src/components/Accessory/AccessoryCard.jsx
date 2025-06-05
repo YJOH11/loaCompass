@@ -7,6 +7,7 @@ export default function AccessoryCard({ item }) {
     abilityStoneEngravings, braceletEffects,
   } = item;
 
+
   const mainStats = ["힘", "민첩", "지능"];
   const excludeKeywords = ["깨달음", "체력"];
 
@@ -316,10 +317,6 @@ export default function AccessoryCard({ item }) {
       </div>
       <div className="flex-1 text-xs text-green-500 whitespace-pre-wrap leading-snug overflow-hidden">
         {Type !== "팔찌" && renderEffectTags(refinementEffects)}
-        {Type === "팔찌" && braceletRenderEffectTags(filteredBracelet)}
-        <div className=" text-black dark:text-white px-2 py-0.5 rounded text-xs">
-            {Type === "어빌리티 스톤" && abilityStoneEngravings}
-        </div>
       </div>
     </div>
 

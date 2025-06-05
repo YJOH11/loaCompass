@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 
-export default function SimulationEquipmentCard({ item,onItemChange }) {
+export default function SimulationEquipmentCard({ item,onEquipmentChanges}) {
   if (!item) return null;
 
   const ELIXIR_EFFECTS = [
@@ -94,7 +94,7 @@ export default function SimulationEquipmentCard({ item,onItemChange }) {
       transcendence: `${transcendStep}단계 ${transcendLevel}`,
       elixirOptions: elixirs,
     };
-    onItemChange && onItemChange(updatedItem);
+    onEquipmentChanges && onEquipmentChanges(updatedItem);
 
   }, [nameNumber, refinementLevel, quality, transcendStep, transcendLevel, elixirs]);
 

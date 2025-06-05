@@ -1,13 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import EquipmentCard from "./SimulationEquipmentCard";
 import AccessoryCard from "./SimulationAccessoryCard";
+import EngravingsCard from "./SimulationEngravingsCard";
 
-function SimulationRow({equipment, accessory, abilityStone, bracelet,onItemChange}) {
+function SimulationRow({equipment, accessory, abilityStone, bracelet,onAccessoryChanges,engravings,onEquipmentChanges}) {
   const [selectedOption, setSelectedOption] = useState('');
-  const handleWeaponChange = (updatedItem) => {
-    onItemChange && onItemChange(updatedItem);
+  const onEquipmentChange = (updatedItem) => {
+
+    onEquipmentChanges && onEquipmentChanges(updatedItem);
 
   };
+  const onAccessoryChange = (updatedItem) => {
+      onAccessoryChanges && onAccessoryChanges(updatedItem);
+
+    };
+console.log(abilityStone);
+
 
   const handleChange = (event) => {
     setSelectedOption(event.target.value);
@@ -19,12 +27,13 @@ function SimulationRow({equipment, accessory, abilityStone, bracelet,onItemChang
             <div className="flex w-full gap-4">
               {/* 장비 */}
               <div className="w-1/2">
-                 {equipment && <EquipmentCard item={equipment} onItemChange={handleWeaponChange} />}
+                 {equipment && <EquipmentCard item={equipment} onEquipmentChanges={onEquipmentChange} />}
+                 {engravings && <EngravingsCard item={engravings} />}
               </div>
 
               {/* 악세 + 팔찌 + 능력 스톤 수직 정렬 */}
               <div className="w-1/2 space-y-2">
-                  {accessory && <AccessoryCard item={accessory} />}
+                  {accessory && <AccessoryCard item={accessory}  onAccessoryChanges={onAccessoryChange}/>}
                   {bracelet && <AccessoryCard item={bracelet} />}
                   {abilityStone && <AccessoryCard item={abilityStone} />}
               </div>

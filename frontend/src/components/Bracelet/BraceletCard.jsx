@@ -1,6 +1,4 @@
-import { useState, useEffect } from "react";
-
-export default function AccessoryCard({ item ,onAccessoryChanges}) {
+export default function AccessoryCard({ item }) {
   if (!item) return null;
 
   const {
@@ -8,83 +6,33 @@ export default function AccessoryCard({ item ,onAccessoryChanges}) {
     refinementEffects, arcPassiveEffect,
     abilityStoneEngravings, braceletEffects,
   } = item;
-  const ENGRAVING_NAMES = [
-    "원한", "질량 증가", "기습의 대가", "마나 효율 증가", "아드레날린",
-    "저주받은 인형", "예리한 둔기", "결투의대가", "돌격대장", "정밀단도",
-    "슈퍼차지", "타격의 대가", "안정된상태", "바리케이드", "속전속결", "에테르 포식자"
-  ];
-  const ENGRAVING_LEVELS = [0, 1, 2, 3, 4];
-
 
   const mainStats = ["힘", "민첩", "지능"];
   const excludeKeywords = ["깨달음", "체력"];
 
-  const [selectedOptions, setSelectedOptions] = useState({});
-const [engravingSelections, setEngravingSelections] = useState(() => {
-  if (
-    Type === "어빌리티 스톤" &&
-    Array.isArray(abilityStoneEngravings) &&
-    abilityStoneEngravings.length > 0
-  ) {
-    return abilityStoneEngravings.map((str) => {
-      const match = str.match(/\[(.+?)\]\s*Lv\.(\d+)/);
-      if (match) {
-        const [, name, level] = match;
-        return {
-          name,
-          level: parseInt(level, 10)
-        };
-      }
-      return { name: ENGRAVING_NAMES[0], level: 0 };
-    });
-  }
-
-  // 기본값: 빈 세공 3개
-  return [
-    { name: ENGRAVING_NAMES[0], level: 0 },
-    { name: ENGRAVING_NAMES[0], level: 0 },
-    { name: ENGRAVING_NAMES[0], level: 0 },
-  ];
-});
-
-
-
-
-
- useEffect(() => {
-   const updatedItem = {
-     ...item,
-     refinementEffects: refinementEffects?.map((effect, i) =>
-       selectedOptions[i] ?? effect
-     ),
-    abilityStoneEngravings: engravingSelections,
-   };
-
-   if (onAccessoryChanges) {
-     onAccessoryChanges(updatedItem);
-   }
-   console.log("Accessory changed:", updatedItem);
- }, [selectedOptions],[engravingSelections]);
-
-
-
   const parseEffects = (text, skipMainStats = false) => {
     if (!text) return [];
 
+    // 1. 문장 단위로 분리 (마침표, 괄호, 줄바꿈 등 포함)
     const sentences = text
-      .split(/[\.\n]+/)
+      .split(/[\.\n]+/) // 마침표, 줄바꿈 기준으로 분리
       .map(s => s.trim())
       .filter(s => s.length > 0);
 
-    const hasMainStat = (str) => mainStats.some(stat => str.includes(stat));
-    const hasExclude = (str) => excludeKeywords.some(kw => str.includes(kw));
+    // 2. mainStats 와 excludeKeywords 체크 함수
+    const hasMainStat = (str) =>
+      mainStats.some(stat => str.includes(stat));
+    const hasExclude = (str) =>
+      excludeKeywords.some(kw => str.includes(kw));
 
+    // 3. 필터링 및 반환
     return sentences.filter(s => {
       if (hasExclude(s)) return false;
       if (skipMainStats && hasMainStat(s)) return false;
       return true;
     });
   };
+
 
   const renderEffectSpans = (lines) =>
     lines.map((line, i) => (
@@ -95,76 +43,6 @@ const [engravingSelections, setEngravingSelections] = useState(() => {
         {line}
       </span>
     ));
-useEffect(() => {
-  if (onAccessoryChanges) {
-    onAccessoryChanges({
-      ...item,
-      abilityStoneEngravings: engravingSelections,
-    });
-  }
-}, [engravingSelections]);
-
-const renderAbilityStoneSelectors = () => (
-  <div className="flex gap-1 flex-wrap mt-2">
-    {engravingSelections.map((engraving, idx) => {
-      const isFixed = idx === 2;
-      return (
-        <div
-          key={idx}
-          className={`flex flex-col items-center justify-center px-1 py-1 rounded border ${
-            isFixed
-              ? 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600'
-              : 'bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600'
-          } w-[110px] text-xs`}
-        >
-          {isFixed ? (
-            <div className="text-gray-800 dark:text-gray-200 text-[11px]">
-              {engraving.name} Lv.{engraving.level}
-            </div>
-          ) : (
-            <>
-              <select
-                value={engraving.name}
-                onChange={(e) => {
-                  const newName = e.target.value;
-                  setEngravingSelections((prev) =>
-                    prev.map((item, i) =>
-                      i === idx ? { ...item, name: newName } : item
-                    )
-                  );
-                }}
-                className="mb-0.5 w-full px-1 py-0.5 rounded border text-[11px] bg-white dark:bg-gray-700"
-              >
-                {ENGRAVING_NAMES.map((name) => (
-                  <option key={name} value={name}>{name}</option>
-                ))}
-              </select>
-              <select
-                value={engraving.level}
-                onChange={(e) => {
-                  const newLevel = parseInt(e.target.value, 10);
-                  setEngravingSelections((prev) =>
-                    prev.map((item, i) =>
-                      i === idx ? { ...item, level: newLevel } : item
-                    )
-                  );
-                }}
-                className="w-full px-1 py-0.5 rounded border text-[11px] bg-white dark:bg-gray-700"
-              >
-                {ENGRAVING_LEVELS.map((level) => (
-                  <option key={level} value={level}>Lv.{level}</option>
-                ))}
-              </select>
-            </>
-          )}
-        </div>
-      );
-    })}
-  </div>
-);
-
-
-
 
   const extractMainStatValue = (text) => {
     const regex = /([^\s]+) \+(\d+(\.\d+)?)/g;
@@ -230,26 +108,7 @@ const renderAbilityStoneSelectors = () => (
       { name: "아군 피해량 강화 효과", high: 7.5, mid: 4.5, low: 2.0 },
     ];
 
-    const baseOptions = [
-      "추가 피해 +2.60%",
-      "추가 피해 +1.60%",
-      "추가 피해 +0.60%",
-      "적에게 주는 피해 +2.00%",
-      "적에게 주는 피해 +1.20%",
-      "적에게 주는 피해 +0.55%",
-      "공격력 +1.55%",
-      "공격력 +0.95%",
-      "공격력 +0.40%",
-      "무기 공격력 +3.00%",
-      "무기 공격력 +1.80%",
-      "무기 공격력 +0.80%",
-      "치명타 피해 +4.00%",
-      "치명타 피해 +2.40%",
-      "치명타 피해 +1.10%",
-      "치명타 적중률 +1.55%",
-      "치명타 적중률 +0.95%",
-      "치명타 적중률 +0.40%",
-    ];
+
 
     const getColorAndPrefix = (text) => {
       for (const t of thresholds) {
@@ -268,36 +127,11 @@ const renderAbilityStoneSelectors = () => (
       <div className="flex flex-col gap-1 mb-1">
         {list.map((e, i) => {
           if (e.includes("체력")) return null;
-
-          const selected = selectedOptions[i] || e;
-          const { color, prefix } = getColorAndPrefix(selected);
-
-          const options = baseOptions.includes(e) ? baseOptions : [...baseOptions, e];
-
+          const { color, prefix } = getColorAndPrefix(e);
           return (
-            <span
-              key={i}
-              className={`px-2 py-0.5 rounded text-xs w-fit ${color} inline-flex items-center gap-[0.15em]`}
-            >
-              <span className="bg-black px-1 rounded text-[10px] font-semibold">
-                {prefix}
-              </span>
-              <select
-                value={selected}
-                onChange={(e) =>
-                  setSelectedOptions((prev) => ({
-                    ...prev,
-                    [i]: e.target.value,
-                  }))
-                }
-                className="bg-transparent text-xs outline-none"
-              >
-                {options.map((opt, idx) => (
-                  <option key={idx} value={opt} style={{ color: 'black' }}>
-                    {opt}
-                  </option>
-                ))}
-              </select>
+            <span key={i} className={`px-2 py-0.5 rounded text-xs w-fit ${color} inline-flex items-center gap-[0.15em]`}>
+              <span className="bg-black px-1 rounded text-[10px] font-semibold">{prefix}</span>
+              <span>{e}</span>
             </span>
           );
         })}
@@ -481,15 +315,7 @@ const renderAbilityStoneSelectors = () => (
         {getStatPercentBar()}
       </div>
       <div className="flex-1 text-xs text-green-500 whitespace-pre-wrap leading-snug overflow-hidden">
-        {Type !== "팔찌" && renderEffectTags(refinementEffects)}
         {Type === "팔찌" && braceletRenderEffectTags(filteredBracelet)}
-        <div className=" text-black dark:text-white px-2 py-0.5 rounded text-xs">
-
-        {/* 어빌리티스톤 각인 셀렉트박스 추가 */}
-
-        {Type === '어빌리티 스톤' && renderAbilityStoneSelectors()}
-
-        </div>
       </div>
     </div>
 

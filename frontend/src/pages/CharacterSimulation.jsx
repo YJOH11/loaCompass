@@ -8,12 +8,15 @@ import ScoreRow from "../components/score/ScoreRow";
 import SimulationRow from "../components/Simulation/SimulationRow";
 
 export default function CharacterSimulation() {
+
   const { name: characterName } = useParams();
   const [characterData, setCharacterData] = useState(null);
   const [hasSearched, setHasSearched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [simOptionsChanged, setSimOptionsChanged] = useState(0);
   const [updatedItem, setUpdatedItem] = useState(null);
+  const [updatedAbilityStone, setUpdatedAbilityStone] = useState(null);
+  const [updatedAccessory, setUpdatedAccessory] = useState(null);
   const [favorites, setFavorites] = useState(() => {
     try {
       const stored = localStorage.getItem("favoriteHistory");
@@ -54,17 +57,32 @@ export default function CharacterSimulation() {
     setFavorites(updated);
   };
 
-  const handleWeaponChange = (newItems) => {
+  const handleEquipmentChange = (newItems) => {
     setUpdatedItem(newItems);
     setSimOptionsChanged((prev) => prev + 1);
 
   };
-    console.log(updatedItem);
+  const handleAccessoryChange = (newItems) => {
+
+
+        if(newItems.Type == "목걸이"&&"귀걸이"&&"반지"){
+            console.log("여기");
+            setUpdatedAccessory(newItems);
+
+        }else if(newItems.Type == "어빌리티 스톤"){
+            setUpdatedAccessory(newItems);
+        }
+
+        setSimOptionsChanged((prev) => prev + 1);
+
+
+  };
+
   const engravings = characterData?.profile?.engravings || [];
 
   const gears =
     characterData?.equipments?.filter((item) =>
-      ["무기", "투구", "상의", "하의", "장갑", "견갑"].includes(item.Type)
+      ["무기", "투구", "상의", "하의", "장갑", "어깨"].includes(item.Type)
     ) || [];
 
   const accessories =
@@ -74,7 +92,6 @@ export default function CharacterSimulation() {
 
   const displayItems = (() => {
     if (!updatedItem || updatedItem.length === 0) return gears;
-
     const updatedArray = Array.isArray(updatedItem) ? updatedItem : [updatedItem];
 
     const updatedTypes = updatedArray.map((item) => item.Type);
@@ -85,11 +102,33 @@ export default function CharacterSimulation() {
     });
   })();
 
+const displayAccessorys = (() => {
+      if (!updatedAccessory || updatedAccessory.length === 0) return accessories;
+    const updatedArray = Array.isArray(updatedAccessory) ? updatedAccessory : [updatedAccessory];
+
+    const updatedTypes = updatedArray.map((item) => item.Type);
+
+    return accessories.map((accessories) => {
+      const replacement = updatedArray.find((item) => item.Type === accessories.Type);
+      return replacement || accessories;
+    });
+  })();
+  const displayAbilityStone = (() => {
+        if (!updatedAccessory || updatedAccessory.length === 0) return accessories;
+      const updatedArray = Array.isArray(updatedAccessory) ? updatedAccessory : [updatedAccessory];
+
+      const updatedTypes = updatedArray.map((item) => item.Type);
+
+      return accessories.map((accessories) => {
+        const replacement = updatedArray.find((item) => item.Type === accessories.Type);
+        return replacement || accessories;
+      });
+    })();
+
   const abilityStone = characterData?.equipments?.find((item) => item.Type === "어빌리티 스톤");
   const bracelet = characterData?.equipments?.find((item) => item.Type === "팔찌");
-  const maxLen = Math.max(gears.length, accessories.length);
-    console.log("+++++++++++++++++++++=");
-    console.log(displayItems);
+  const maxLen = 7;
+
   return (
     <div className="min-h-screen bg-white text-black dark:bg-gray-900 dark:text-white p-6">
       {(!hasSearched || (!characterData && !isLoading)) && (
@@ -119,9 +158,9 @@ export default function CharacterSimulation() {
                 <ScoreRow
                   key={simOptionsChanged} // 강제 리렌더링
                   items={displayItems}
-                  accessories={accessories}
+                  accessories={displayAccessorys}
                   engravings={engravings}
-                  abilityStone={abilityStone}
+                  abilityStone={displayAbilityStone}
                   bracelet={bracelet}
                   gems={characterData.gems}
                 />
@@ -144,15 +183,12 @@ export default function CharacterSimulation() {
                           key={i}
                           equipment={gears[i] || null}
                           accessory={accessories[i] || null}
-                          abilityStone={i === maxLen - 1 ? abilityStone : null}
+                          engravings={i === maxLen - 1 ? engravings : null}
+                          abilityStone={i === maxLen - 2 ? abilityStone : null}
                           bracelet={i === maxLen - 1 ? bracelet : null}
-                          onItemChange={handleWeaponChange}
-                          onSimOptionChange={(newUpdatedItem) => {
-                            if (newUpdatedItem) {
-                              setUpdatedItem(newUpdatedItem);
-                            }
-                            setSimOptionsChanged((prev) => prev + 1);
-                          }}
+                          onEquipmentChanges={handleEquipmentChange}
+                          onAccessoryChanges={handleAccessoryChange}
+
                         />
                       ))}
                     </div>
