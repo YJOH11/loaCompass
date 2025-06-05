@@ -14,6 +14,7 @@ export default function StatisticsTabs({ title }) {
   const [aiSummaryFull, setAiSummaryFull] = useState([]);
   const [forecastSummary, setForecastSummary] = useState([]);
   const [jobGrowthSummary, setJobGrowthSummary] = useState([]); 
+  const today = new Date().toISOString().split("T")[0]; // "2025-06-04" 형식
 
   // 1. 요약 데이터
   useEffect(() => {
@@ -117,18 +118,19 @@ export default function StatisticsTabs({ title }) {
         items={aiSummaryShort}
       />
 
-      <AISidePanel
-        visible={showPanel}
-        onClose={() => setShowPanel(false)}
-        itemsByTopic={{
-          summary: aiSummaryFull,
-          server: forecastSummary,
-          job: [
-            "🧠 분석에 따르면, 다음 주 평균 레벨이 가장 크게 상승할 것으로 예상되는 직업은:",
-            ...jobGrowthSummary.map((j, i) => `${i + 1}. ${j.character_class} (+${j.increase} 예상)`),
-          ],
-        }}
-      />
+    <AISidePanel
+      visible={showPanel}
+      onClose={() => setShowPanel(false)}
+      analysisDate={`${today} 기준`} // 기준일 자동 전달
+      itemsByTopic={{
+        summary: aiSummaryFull,
+        server: forecastSummary,
+        job: [
+          "🧠 분석에 따르면, 다음 주 평균 레벨이 가장 크게 상승할 것으로 예상되는 직업은:",
+          ...jobGrowthSummary.map((j, i) => `${i + 1}. ${j.character_class} (+${j.increase} 예상)`),
+        ],
+      }}
+    />
     </div>
   );
 }
