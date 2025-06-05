@@ -5,8 +5,9 @@ const ClearSubmitForm = () => {
   const [boss, setBoss] = useState('');
   const [difficulty, setDifficulty] = useState('');
   const [clearTime, setClearTime] = useState('');
-  const [party1, setParty1] = useState([{ job: '', level: '' }]);
-  const [party2, setParty2] = useState([{ job: '', level: '' }]);
+  const [guildName, setGuildName] = useState('');
+  const [party1, setParty1] = useState([{ nickname: '', job: '', level: '' }]);
+  const [party2, setParty2] = useState([{ nickname: '', job: '', level: '' }]);
   const [screenshot, setScreenshot] = useState(null);
 
   const handlePartyChange = (partySetter, party, index, field, value) => {
@@ -17,7 +18,7 @@ const ClearSubmitForm = () => {
 
   const addPartyMember = (partySetter, party) => {
     if (party.length < 4) {
-      partySetter([...party, { job: '', level: '' }]);
+      partySetter([...party, { nickname: '', job: '', level: '' }]);
     } else {
       alert("각 파티는 최대 4명까지만 입력 가능합니다.");
     }
@@ -26,34 +27,48 @@ const ClearSubmitForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const form = new FormData();
-    form.append('boss', boss);
-    form.append('difficulty', difficulty);
-    form.append('clearTime', clearTime);
-    form.append('screenshot', screenshot);
+    const data = {
+      boss,
+      difficulty,
+      clearTime,
+      guildName,
+      party1,
+      party2,
+    };
 
-    party1.forEach((p, i) => {
-      form.append(`party1[${i}][job]`, p.job);
-      form.append(`party1[${i}][level]`, p.level);
-    });
-    party2.forEach((p, i) => {
-      form.append(`party2[${i}][job]`, p.job);
-      form.append(`party2[${i}][level]`, p.level);
-    });
+    const form = new FormData();
+    form.append("data", new Blob([JSON.stringify(data)], { type: "application/json" }));
+
+    if (screenshot) {
+      form.append("screenshot", screenshot);
+    }
 
     try {
-      await axios.post('/api/clear-records', form, {
-        headers: { 'Content-Type': 'multipart/form-data' }
+      await axios.post("/api/clear-records", form, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
-      alert('제출 완료!');
+      alert("제출 완료!");
     } catch (err) {
-      alert('제출 실패');
+      alert("제출 실패");
     }
   };
+
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 p-6 bg-white rounded-lg shadow-md max-w-2xl mx-auto">
       <h2 className="text-xl font-bold">레이드 클리어 인증</h2>
+
+      {/* 공대 이름 */}
+      <div>
+        <label className="block mb-1 font-semibold">공대 이름 (선택)</label>
+        <input
+          type="text"
+          value={guildName}
+          onChange={e => setGuildName(e.target.value)}
+          placeholder="예: 포포단물팟"
+          className="border border-gray-300 rounded px-2 py-1 w-full"
+        />
+      </div>
 
       {/* 레이드 관문 선택 */}
       <div>
@@ -121,20 +136,23 @@ const ClearSubmitForm = () => {
           <div key={`p1-${idx}`} className="flex space-x-2 mb-2">
             <input
               type="text"
+              placeholder="닉네임"
+              value={member.nickname}
+              onChange={e => handlePartyChange(setParty1, party1, idx, 'nickname', e.target.value)}
+              className="border border-gray-300 rounded px-2 py-1 w-full"
+            />
+            <input
+              type="text"
               placeholder="직업"
               value={member.job}
-              onChange={e =>
-                handlePartyChange(setParty1, party1, idx, 'job', e.target.value)
-              }
+              onChange={e => handlePartyChange(setParty1, party1, idx, 'job', e.target.value)}
               className="border border-gray-300 rounded px-2 py-1 w-full"
             />
             <input
               type="number"
               placeholder="아이템레벨"
               value={member.level}
-              onChange={e =>
-                handlePartyChange(setParty1, party1, idx, 'level', e.target.value)
-              }
+              onChange={e => handlePartyChange(setParty1, party1, idx, 'level', e.target.value)}
               className="border border-gray-300 rounded px-2 py-1 w-full"
             />
           </div>
@@ -155,20 +173,23 @@ const ClearSubmitForm = () => {
           <div key={`p2-${idx}`} className="flex space-x-2 mb-2">
             <input
               type="text"
+              placeholder="닉네임"
+              value={member.nickname}
+              onChange={e => handlePartyChange(setParty2, party2, idx, 'nickname', e.target.value)}
+              className="border border-gray-300 rounded px-2 py-1 w-full"
+            />
+            <input
+              type="text"
               placeholder="직업"
               value={member.job}
-              onChange={e =>
-                handlePartyChange(setParty2, party2, idx, 'job', e.target.value)
-              }
+              onChange={e => handlePartyChange(setParty2, party2, idx, 'job', e.target.value)}
               className="border border-gray-300 rounded px-2 py-1 w-full"
             />
             <input
               type="number"
               placeholder="아이템레벨"
               value={member.level}
-              onChange={e =>
-                handlePartyChange(setParty2, party2, idx, 'level', e.target.value)
-              }
+              onChange={e => handlePartyChange(setParty2, party2, idx, 'level', e.target.value)}
               className="border border-gray-300 rounded px-2 py-1 w-full"
             />
           </div>

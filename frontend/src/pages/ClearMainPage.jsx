@@ -20,6 +20,28 @@ const bossImages = {
   '모르둠 3관문': '/images/mordum.jpg',
 };
 
+const sampleTopParty = {
+  teamName: '포포단물팟',
+  clearTime: '08:41',
+  team1: [
+    { nickname: '슬레이어짱', job: '버서커', itemLevel: 1610 },
+    { nickname: '기공이', job: '기공사', itemLevel: 1600 },
+    { nickname: '신성한빛', job: '홀리나이트', itemLevel: 1590 },
+    { nickname: '폭파왕', job: '블래스터', itemLevel: 1602 },
+  ],
+  team2: [
+    { nickname: '총쏘는누나', job: '건슬링어', itemLevel: 1605 },
+    { nickname: '마법소녀', job: '소서리스', itemLevel: 1608 },
+    { nickname: '창술신', job: '창술사', itemLevel: 1611 },
+    { nickname: '힐해드림', job: '바드', itemLevel: 1603 },
+  ],
+};
+
+const recommendedTiers = {
+  tier1: ['바드', '홀리나이트'],
+  tier2: ['디스트로이어', '블래스터']
+};
+
 const ClearMainPage = () => {
   const [selectedAct, setSelectedAct] = useState('서막');
   const [selectedGate, setSelectedGate] = useState('에키드나 1관문');
@@ -27,8 +49,6 @@ const ClearMainPage = () => {
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white flex flex-col items-center">
-
-      {/* 상단 탭 */}
       <div className="flex justify-center gap-4 py-4 border-b border-gray-200 dark:border-gray-700 w-full bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-white z-10">
         {Object.keys(raidData).map((act) => (
           <button
@@ -46,7 +66,6 @@ const ClearMainPage = () => {
         ))}
       </div>
 
-      {/* 배경 이미지 위 오버레이 */}
       <div className="relative w-full max-w-[1280px]">
         <img
           src={bossImages[selectedGate] || '/images/default.jpg'}
@@ -54,7 +73,6 @@ const ClearMainPage = () => {
           className="w-full object-contain"
         />
 
-        {/* 관문 버튼 오버레이 */}
         <div className="absolute top-4 right-4 flex gap-2">
           {raidData[selectedAct].map((gate) => (
             <button
@@ -69,24 +87,46 @@ const ClearMainPage = () => {
           ))}
         </div>
 
-        {/* 우측 상단 정보 박스 */}
         <div className="absolute top-20 right-4 bg-white dark:bg-black bg-opacity-90 dark:bg-opacity-70 text-gray-900 dark:text-white p-4 rounded shadow-lg w-96">
-          <h2 className="text-xl font-bold mb-3">{selectedGate}</h2>
+          <h2 className="text-xl font-bold mb-1">{selectedGate}</h2>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+            1위 공대: <span className="font-semibold text-indigo-500">{sampleTopParty.teamName}</span>
+            <span className="ml-2 text-xs">(클리어 타임: {sampleTopParty.clearTime})</span>
+          </p>
+
           <div className="mb-3">
-            <p className="text-sm font-semibold mb-1">※ 1위 공대 정보 (클리어 타임 기준)</p>
+            <p className="text-sm font-semibold mb-1">※ 파티 구성</p>
             <div className="flex gap-6 text-sm">
               <div>
                 <h4 className="font-semibold">1파티</h4>
                 <ul className="list-disc ml-4">
-                  <li>버서커 (1610)</li>
-                  <li>기공사 (1600)</li>
+                  {sampleTopParty.team1.map((member, idx) => (
+                    <li key={idx}>
+                      <span
+                        onClick={() => navigate(`/character/${encodeURIComponent(member.nickname)}`)}
+                        className="text-indigo-400 hover:underline cursor-pointer"
+                      >
+                        {member.nickname}
+                      </span>
+                      &nbsp;({member.job}, {member.itemLevel})
+                    </li>
+                  ))}
                 </ul>
               </div>
               <div>
                 <h4 className="font-semibold">2파티</h4>
                 <ul className="list-disc ml-4">
-                  <li>건슬링어 (1605)</li>
-                  <li>소서리스 (1608)</li>
+                  {sampleTopParty.team2.map((member, idx) => (
+                    <li key={idx}>
+                      <span
+                        onClick={() => navigate(`/character/${encodeURIComponent(member.nickname)}`)}
+                        className="text-indigo-400 hover:underline cursor-pointer"
+                      >
+                        {member.nickname}
+                      </span>
+                      &nbsp;({member.job}, {member.itemLevel})
+                    </li>
+                  ))}
                 </ul>
               </div>
             </div>
@@ -95,8 +135,16 @@ const ClearMainPage = () => {
           <div className="mb-4">
             <p className="text-sm font-semibold mb-1">※ 추천 직업 티어</p>
             <div className="flex flex-wrap gap-2">
-              <div className="bg-yellow-400 text-black px-2 py-1 rounded text-xs">1티어: 바드</div>
-              <div className="bg-gray-400 text-black px-2 py-1 rounded text-xs">2티어: 디스트로이어</div>
+              {recommendedTiers.tier1.map((job, idx) => (
+                <div key={idx} className="bg-yellow-400 text-black px-2 py-1 rounded text-xs">
+                  1티어: {job}
+                </div>
+              ))}
+              {recommendedTiers.tier2.map((job, idx) => (
+                <div key={idx} className="bg-gray-400 text-black px-2 py-1 rounded text-xs">
+                  2티어: {job}
+                </div>
+              ))}
             </div>
           </div>
 
@@ -116,7 +164,6 @@ const ClearMainPage = () => {
           </div>
         </div>
 
-        {/* 하단 - 기대보상 스타일 영역 */}
         <div className="absolute bottom-0 left-0 right-0 bg-gray-200 dark:bg-black bg-opacity-80 text-center py-3 text-gray-800 dark:text-white">
           <span className="text-sm font-semibold">직업 티어 분석 기반 통계 제공 예정</span>
         </div>

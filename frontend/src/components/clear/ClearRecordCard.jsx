@@ -5,8 +5,9 @@ const ClearRecordCard = ({ record }) => {
     boss,
     difficulty,
     clearTime,
-    createdAt,
-    screenshotUrl,
+    guildName,        
+    submittedAt,       
+    screenshotPath,   
     party1,
     party2
   } = record;
@@ -21,8 +22,17 @@ const ClearRecordCard = ({ record }) => {
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-      <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{boss} ({difficulty})</h2>
-      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">클리어 타임: {clearTime}</p>
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+        {boss} ({difficulty})
+      </h2>
+      {guildName && (
+        <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
+          공대 이름: {guildName}
+        </p>
+      )}
+      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+        클리어 타임: {clearTime}
+      </p>
       <div className="flex gap-4 text-sm mb-2">
         <div>
           <strong>1파티</strong>
@@ -33,14 +43,16 @@ const ClearRecordCard = ({ record }) => {
           {renderParty(party2)}
         </div>
       </div>
-      {screenshotUrl && (
+      {screenshotPath && (
         <img
-          src={screenshotUrl}
+          src={screenshotPath}
           alt="인증 스크린샷"
           className="w-full h-auto max-h-60 object-contain rounded"
         />
       )}
-      <p className="text-xs text-gray-400 mt-2">제출일: {new Date(createdAt).toLocaleString()}</p>
+      <p className="text-xs text-gray-400 mt-2">
+        제출일: {new Date(submittedAt).toLocaleString()}
+      </p>
     </div>
   );
 };
