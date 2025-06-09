@@ -308,18 +308,40 @@ export default function AccessoryCard({ item ,abilityStone}) {
     : [];
 
 
-  return (
-    <div className="bg-white dark:bg-gray-800 p-3 rounded shadow w-full min-h-[100px] flex gap-3 items-start">
-      <div className="flex flex-col items-center">
-        <img src={Icon} alt="icon" className="w-12 h-12 object-contain shrink-0" />
-        {getStatPercentBar()}
-      </div>
-        <div className="flex-1 text-xs text-green-500 whitespace-pre-wrap leading-snug overflow-hidden">
-        <div className=" text-black dark:text-white px-2 py-0.5 rounded text-xs">
-            {Type === "어빌리티 스톤" && abilityStoneEngravings}
-        </div>
-      </div>
-    </div>
+ return (
+   <div className="bg-white dark:bg-gray-800 p-3 rounded shadow w-full min-h-[100px] flex gap-3 items-start">
+     <div className="flex flex-col items-center">
+       <img src={Icon} alt="icon" className="w-12 h-12 object-contain shrink-0" />
+       {getStatPercentBar()}
+     </div>
 
-  );
+     <div className="flex-1 text-xs whitespace-pre-wrap leading-snug overflow-hidden">
+       {Type === "어빌리티 스톤" ? (
+         <div className="flex flex-col gap-1">
+           {(Array.isArray(abilityStoneEngravings)
+             ? abilityStoneEngravings
+             : typeof abilityStoneEngravings === "string"
+             ? abilityStoneEngravings.split("\n").map((line) => line.trim()).filter(Boolean)
+             : []
+           ).map((line, index) => {
+             const isMinus = line.includes("감소");
+             const color = isMinus ? "text-red-500" : "text-blue-600";
+             const icon = isMinus ? "⬇️" : "⬆️";
+             return (
+               <div key={index} className="flex items-center gap-1 px-1">
+                 <span className="text-sm">{icon}</span>
+                 <span className={`text-sm font-medium ${color}`}>{line}</span>
+               </div>
+             );
+           })}
+         </div>
+       ) : (
+         <div className="text-black dark:text-white px-2 py-0.5 rounded text-xs text-green-500">
+           {EffectContent}
+         </div>
+       )}
+     </div>
+   </div>
+ );
+
 }
