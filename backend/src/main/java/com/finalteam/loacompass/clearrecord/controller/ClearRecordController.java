@@ -2,6 +2,7 @@ package com.finalteam.loacompass.clearrecord.controller;
 
 import com.finalteam.loacompass.clearrecord.dto.ClearRecordDto;
 import com.finalteam.loacompass.clearrecord.dto.ClearRecordRequest;
+import com.finalteam.loacompass.clearrecord.dto.JobTierDto;
 import com.finalteam.loacompass.clearrecord.service.ClearRecordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -43,5 +44,13 @@ public class ClearRecordController {
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build(); // or custom message
         }
+    }
+
+    @GetMapping("/tier")
+    public ResponseEntity<?> getTierByBoss(@RequestParam(required = false) String boss) {
+        if (boss == null || boss.isBlank()) {
+            return ResponseEntity.badRequest().body("boss 파라미터는 필수입니다.");
+        }
+        return ResponseEntity.ok(clearRecordService.getJobTierByBoss(boss));
     }
 }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import JobTierDisplay from '../components/clear/JobTierDisplay';
 
 const raidData = {
   '서막': ['에키드나 1관문', '에키드나 2관문'],
@@ -21,24 +22,26 @@ const bossImages = {
   '모르둠 3관문': '/images/mordum.jpg',
 };
 
-const recommendedTiers = {
-  tier1: ['바드', '홀리나이트'],
-  tier2: ['디스트로이어', '블래스터']
-};
-
 const ClearMainPage = () => {
   const [selectedAct, setSelectedAct] = useState('서막');
   const [selectedGate, setSelectedGate] = useState('에키드나 1관문');
   const [topRecord, setTopRecord] = useState(null);
+  const [jobTiers, setJobTiers] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!selectedGate) return;
-    axios
-      .get(`/api/clear-records/top?boss=${encodeURIComponent(selectedGate)}`)
+    axios.get(`/api/clear-records/top?boss=${encodeURIComponent(selectedGate)}`)
       .then((res) => setTopRecord(res.data))
       .catch(() => setTopRecord(null));
+
+    axios.get(`/api/clear-records/tier?boss=${encodeURIComponent(selectedGate)}`)
+      .then(res => setJobTiers(res.data))
+      .catch(() => setJobTiers([]));
   }, [selectedGate]);
+
+  const tier1 = jobTiers.slice(0, 2);
+  const tier2 = jobTiers.slice(2, 5);
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white flex flex-col items-center">
@@ -50,9 +53,8 @@ const ClearMainPage = () => {
               setSelectedAct(act);
               setSelectedGate(raidData[act][0]);
             }}
-            className={`px-4 py-2 font-semibold rounded transition ${
-              selectedAct === act ? 'bg-indigo-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white'
-            }`}
+            className={`px-4 py-2 font-semibold rounded transition ${selectedAct === act ? 'bg-indigo-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white'
+              }`}
           >
             {act}
           </button>
@@ -71,9 +73,8 @@ const ClearMainPage = () => {
             <button
               key={gate}
               onClick={() => setSelectedGate(gate)}
-              className={`px-3 py-1.5 rounded-full text-sm transition ${
-                selectedGate === gate ? 'bg-indigo-600 text-white' : 'bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-white'
-              }`}
+              className={`px-3 py-1.5 rounded-full text-sm transition ${selectedGate === gate ? 'bg-indigo-600 text-white' : 'bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-white'
+                }`}
             >
               {gate}
             </button>
@@ -122,14 +123,14 @@ const ClearMainPage = () => {
           <div className="mb-4">
             <p className="text-sm font-semibold mb-1">※ 추천 직업 티어</p>
             <div className="flex flex-wrap gap-2">
-              {recommendedTiers.tier1.map((job, idx) => (
+              {tier1.map((t, idx) => (
                 <div key={idx} className="bg-yellow-400 text-black px-2 py-1 rounded text-xs">
-                  1티어: {job}
+                  1티어: {t.job}
                 </div>
               ))}
-              {recommendedTiers.tier2.map((job, idx) => (
+              {tier2.map((t, idx) => (
                 <div key={idx} className="bg-gray-400 text-black px-2 py-1 rounded text-xs">
-                  2티어: {job}
+                  2티어: {t.job}
                 </div>
               ))}
             </div>
@@ -151,8 +152,8 @@ const ClearMainPage = () => {
           </div>
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0 bg-gray-200 dark:bg-black bg-opacity-80 text-center py-3 text-gray-800 dark:text-white">
-          <span className="text-sm font-semibold">직업 티어 분석 기반 통계 제공 예정</span>
+        <div className="w-full px-4 py-3 bg-white/70 dark:bg-black/50 backdrop-blur-sm z-10 overflow-visible relative">
+          <JobTierDisplay jobTiers={jobTiers} />
         </div>
       </div>
     </div>

@@ -36,7 +36,7 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> {
-                }) // WebConfig의 CORS 설정을 사용하도록 변경
+                }) 
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/gemini").permitAll()
 
@@ -56,6 +56,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/rankings/**").permitAll()
                         .requestMatchers("/api/clear-records", "/api/clear-records/**").permitAll()
                         .requestMatchers("/top/**").permitAll()
+
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
