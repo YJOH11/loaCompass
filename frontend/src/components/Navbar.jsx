@@ -201,9 +201,7 @@ const Navbar = () => {
                                 to: '/ai-assistant',
                                 label: '로아 AI 도우미'
                             },
-
-                            { to: '/clear/submit', label: '제출(임시)' },
-                            { to: '/clear/list', label: '클리어기록(임시)' },
+        
             
                         ].map((tab) => (
                             <NavLink

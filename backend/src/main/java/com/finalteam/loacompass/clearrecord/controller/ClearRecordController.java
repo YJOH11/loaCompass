@@ -32,4 +32,16 @@ public class ClearRecordController {
         return ResponseEntity.ok(list);
     }
 
+    @GetMapping("/top")
+    public ResponseEntity<?> getTopClearRecord(@RequestParam String boss) {
+        if (boss == null || boss.isBlank()) {
+            return ResponseEntity.badRequest().body("boss 파라미터는 필수입니다.");
+        }
+
+        try {
+            return ResponseEntity.ok(clearRecordService.getTopClearRecord(boss));
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build(); // or custom message
+        }
+    }
 }

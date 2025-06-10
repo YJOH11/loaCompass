@@ -62,4 +62,9 @@ public class ClearRecordService {
                 .map(ClearRecordDto::fromEntity)
                 .collect(Collectors.toList());
     }
+    public ClearRecordDto getTopClearRecord(String boss) {
+        return clearRecordRepository.findTopByBossOrderByClearTimeAsc(boss)
+                .map(ClearRecordDto::fromEntity)
+                .orElseThrow(() -> new RuntimeException("기록 없음"));
+    }
 }

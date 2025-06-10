@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const raidData = {
@@ -20,23 +21,6 @@ const bossImages = {
   '모르둠 3관문': '/images/mordum.jpg',
 };
 
-const sampleTopParty = {
-  teamName: '포포단물팟',
-  clearTime: '08:41',
-  team1: [
-    { nickname: '슬레이어짱', job: '버서커', itemLevel: 1610 },
-    { nickname: '기공이', job: '기공사', itemLevel: 1600 },
-    { nickname: '신성한빛', job: '홀리나이트', itemLevel: 1590 },
-    { nickname: '폭파왕', job: '블래스터', itemLevel: 1602 },
-  ],
-  team2: [
-    { nickname: '총쏘는누나', job: '건슬링어', itemLevel: 1605 },
-    { nickname: '마법소녀', job: '소서리스', itemLevel: 1608 },
-    { nickname: '창술신', job: '창술사', itemLevel: 1611 },
-    { nickname: '힐해드림', job: '바드', itemLevel: 1603 },
-  ],
-};
-
 const recommendedTiers = {
   tier1: ['바드', '홀리나이트'],
   tier2: ['디스트로이어', '블래스터']
@@ -45,7 +29,16 @@ const recommendedTiers = {
 const ClearMainPage = () => {
   const [selectedAct, setSelectedAct] = useState('서막');
   const [selectedGate, setSelectedGate] = useState('에키드나 1관문');
+  const [topRecord, setTopRecord] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!selectedGate) return;
+    axios
+      .get(`/api/clear-records/top?boss=${encodeURIComponent(selectedGate)}`)
+      .then((res) => setTopRecord(res.data))
+      .catch(() => setTopRecord(null));
+  }, [selectedGate]);
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white flex flex-col items-center">
@@ -90,47 +83,41 @@ const ClearMainPage = () => {
         <div className="absolute top-20 right-4 bg-white dark:bg-black bg-opacity-90 dark:bg-opacity-70 text-gray-900 dark:text-white p-4 rounded shadow-lg w-96">
           <h2 className="text-xl font-bold mb-1">{selectedGate}</h2>
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-            1위 공대: <span className="font-semibold text-indigo-500">{sampleTopParty.teamName}</span>
-            <span className="ml-2 text-xs">(클리어 타임: {sampleTopParty.clearTime})</span>
+            {topRecord ? (
+              <>
+                1위 공대: <span className="font-semibold text-indigo-500">{topRecord.guildName || '이름 없음'}</span>
+                <span className="ml-2 text-xs">(클리어 타임: {topRecord.clearTime})</span>
+              </>
+            ) : (
+              <span className="text-red-500">아직 클리어 기록이 없습니다.</span>
+            )}
           </p>
 
-          <div className="mb-3">
-            <p className="text-sm font-semibold mb-1">※ 파티 구성</p>
-            <div className="flex gap-6 text-sm">
-              <div>
-                <h4 className="font-semibold">1파티</h4>
-                <ul className="list-disc ml-4">
-                  {sampleTopParty.team1.map((member, idx) => (
-                    <li key={idx}>
-                      <span
-                        onClick={() => navigate(`/character/${encodeURIComponent(member.nickname)}`)}
-                        className="text-indigo-400 hover:underline cursor-pointer"
-                      >
-                        {member.nickname}
-                      </span>
-                      &nbsp;({member.job}, {member.itemLevel})
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-semibold">2파티</h4>
-                <ul className="list-disc ml-4">
-                  {sampleTopParty.team2.map((member, idx) => (
-                    <li key={idx}>
-                      <span
-                        onClick={() => navigate(`/character/${encodeURIComponent(member.nickname)}`)}
-                        className="text-indigo-400 hover:underline cursor-pointer"
-                      >
-                        {member.nickname}
-                      </span>
-                      &nbsp;({member.job}, {member.itemLevel})
-                    </li>
-                  ))}
-                </ul>
+          {topRecord && (
+            <div className="mb-3">
+              <p className="text-sm font-semibold mb-1">※ 파티 구성</p>
+              <div className="flex gap-6 text-sm">
+                {[1, 2].map((partyNum) => (
+                  <div key={partyNum}>
+                    <h4 className="font-semibold">{partyNum}파티</h4>
+                    <ul className="list-disc ml-4">
+                      {topRecord[`party${partyNum}`].map((m, idx) => (
+                        <li key={idx}>
+                          <span
+                            onClick={() => navigate(`/character/${encodeURIComponent(m.characterName)}`)}
+                            className="text-indigo-400 hover:underline cursor-pointer"
+                          >
+                            {m.characterName}
+                          </span>
+                          &nbsp;({m.job}, {m.level})
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
               </div>
             </div>
-          </div>
+          )}
 
           <div className="mb-4">
             <p className="text-sm font-semibold mb-1">※ 추천 직업 티어</p>
