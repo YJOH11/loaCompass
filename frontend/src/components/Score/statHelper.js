@@ -1056,9 +1056,9 @@ export function getTotalElixirLevelFromItems(items) {
   return items.reduce((sum, item) => sum + getTotalElixirLevel(item), 0);
 }
 
+
 function calculateAverageGemLevel(gemList) {
   if (!Array.isArray(gemList)) return 0; // 또는 적절한 기본값
-
   const adjustedLevels = gemList.map(gem => {
     const level = parseInt(gem.Name);
     if (gem.gemType === '멸화' || gem.gemType === '홍염') {

@@ -38,6 +38,8 @@ public class SecurityConfig {
                 .cors(cors -> {
                 }) // WebConfig의 CORS 설정을 사용하도록 변경
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/gemini").permitAll()
+
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/crawling/**").permitAll()
                         .requestMatchers("/api/events/**").permitAll()
@@ -50,6 +52,10 @@ public class SecurityConfig {
                         .requestMatchers("/api/admin/collect-random").permitAll()
                         .requestMatchers("/api/ocr").permitAll()
                         .requestMatchers("/api/ocr/**").permitAll()
+                        .requestMatchers("/api/boards/**").permitAll()
+                        .requestMatchers("/api/rankings/**").permitAll()
+                        .requestMatchers("/api/clear-records", "/api/clear-records/**").permitAll()
+                        .requestMatchers("/top/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())

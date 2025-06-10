@@ -2,43 +2,33 @@ import React from 'react';
 
 const Advertisement = () => {
     return (
-        <div className="mb-6">
-            <div className="bg-white rounded-md shadow-md overflow-hidden text-center text-sm w-full max-w-[160px]">
-                {/* 헤더 */}
-                <div className="p-2">
-                    <div className="text-red-600 font-bold">거품없는 가격</div>
-                    <div className="font-bold mb-2">쿠팡 특가</div>
-                    <a
-                        href="https://www.coupang.com"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="block bg-blue-500 text-white py-1 px-2 rounded w-[80%] mx-auto"
-                    >
-                        바로가기 &gt;
-                    </a>
-                </div>
+        <div className="w-full max-w-[220px] bg-white shadow-lg rounded-xl overflow-hidden text-center text-sm border border-gray-200">
+            {/* 상단 광고 표시 */}
+            <div className="bg-gradient-to-r from-red-500 to-red-600 text-white font-bold py-1">
+                📢 광고
+            </div>
 
-                {/* 이미지 */}
-                <div className="border-t border-gray-200 p-2 flex justify-center items-center">
-                    <img
-                        src="/세탁기.png"
-                        alt="광고"
-                        className="max-w-[140px] w-full h-auto object-contain"
-                    />
-                </div>
+            {/* 본문 콘텐츠 */}
+            <div className="p-4 space-y-2">
+                <p className="font-semibold text-gray-800 text-base">
+                    지금 내 캐릭터를 홍보하세요!
+                </p>
+                <p className="text-gray-600 text-xs">
+                    이 영역은 실제 광고 홍보용으로 사용됩니다.
+                </p>
+                <a
+                    href="https://your-promotion-link.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block bg-blue-600 hover:bg-blue-500 text-white py-1 px-3 rounded text-sm transition"
+                >
+                    자세히 보기 &gt;
+                </a>
+            </div>
 
-                {/* 푸터 */}
-                <div className="border-t border-gray-200 p-2 flex justify-between items-center text-xs">
-                    <span>광고</span>
-                    <a
-                        href="https://www.coupang.com"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-500 hover:underline"
-                    >
-                        주문하기 &gt;
-                    </a>
-                </div>
+            {/* 푸터 (선택 사항) */}
+            <div className="bg-gray-50 text-gray-400 text-xs py-2 border-t">
+                광고 배너 영역
             </div>
         </div>
     );

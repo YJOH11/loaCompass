@@ -10,4 +10,5 @@ public class TopCharacterDto {
     private float itemLevel;
     private String characterClass;
     private String serverName;
+    private String characterImage;
 }
