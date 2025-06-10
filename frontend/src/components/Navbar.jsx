@@ -15,7 +15,7 @@ const Navbar = () => {
         const storedUser = localStorage.getItem('user');
         // 디스코드 로그인 확인
         const discordUser = localStorage.getItem('discordUser');
-        
+
         if (storedUser) {
             setUser(JSON.parse(storedUser));
         } else if (discordUser) {
@@ -43,7 +43,7 @@ const Navbar = () => {
         const handleStorageChange = () => {
             loadUserFromStorage();
         };
-        
+
         window.addEventListener('storage', handleStorageChange);
         return () => {
             window.removeEventListener('storage', handleStorageChange);
@@ -55,10 +55,10 @@ const Navbar = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         localStorage.removeItem('discordUser'); // 디스코드 사용자 정보도 삭제
-        
+
         // 로컬 스토리지 이벤트 강제 발생 (다른 탭/창에서 변경 감지)
         window.dispatchEvent(new Event('storage'));
-        
+
         setUser(null);
         navigate('/');
     };
@@ -90,33 +90,33 @@ const Navbar = () => {
                                     <Link to="/" className="flex items-center group transition-colors duration-200">
                                         <div className="flex items-center">
                                             <div className="relative w-7 h-7 mr-2">
-                                                <svg xmlns="http://www.w3.org/2000/svg" 
-                                                    className="w-full h-full text-indigo-600 dark:text-indigo-400 group-hover:text-indigo-500 dark:group-hover:text-indigo-300 transition-all duration-300" 
-                                                    viewBox="0 0 24 24" 
-                                                    fill="none" 
-                                                    stroke="currentColor" 
-                                                    strokeWidth="2" 
-                                                    strokeLinecap="round" 
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                    className="w-full h-full text-indigo-600 dark:text-indigo-400 group-hover:text-indigo-500 dark:group-hover:text-indigo-300 transition-all duration-300"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    strokeWidth="2"
+                                                    strokeLinecap="round"
                                                     strokeLinejoin="round"
                                                 >
                                                     {/* 외부 원 */}
                                                     <circle className="opacity-20" cx="12" cy="12" r="10" />
                                                     <circle className="opacity-40" cx="12" cy="12" r="9.5" />
                                                     <circle className="opacity-60" cx="12" cy="12" r="9" />
-                                                    
+
                                                     {/* 나침반 바늘 */}
-                                                    <path className="transform origin-center group-hover:rotate-[360deg] transition-transform duration-700" 
-                                                          d="M12 2l2 8-2 2-2-2z" 
-                                                          fill="currentColor"
+                                                    <path className="transform origin-center group-hover:rotate-[360deg] transition-transform duration-700"
+                                                        d="M12 2l2 8-2 2-2-2z"
+                                                        fill="currentColor"
                                                     />
-                                                    <path className="transform origin-center group-hover:rotate-[360deg] transition-transform duration-700" 
-                                                          d="M12 22l-2-8 2-2 2 2z" 
-                                                          fill="currentColor"
+                                                    <path className="transform origin-center group-hover:rotate-[360deg] transition-transform duration-700"
+                                                        d="M12 22l-2-8 2-2 2 2z"
+                                                        fill="currentColor"
                                                     />
-                                                    
+
                                                     {/* 중앙 포인트 */}
                                                     <circle cx="12" cy="12" r="1.5" fill="currentColor" />
-                                                    
+
                                                     {/* 방향 표시 */}
                                                     <path className="opacity-70" d="M12 7l0.5-3" />
                                                     <path className="opacity-70" d="M12 17l0.5 3" />
@@ -145,13 +145,13 @@ const Navbar = () => {
                                     {user.nickname || user.username}님
                                     {user.discriminator && `#${user.discriminator}`}
                                 </span>
-                                <Link 
+                                <Link
                                     to="/mypage"
                                     className="px-4 py-2 text-sm font-medium text-white bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-600 dark:hover:bg-indigo-700 border border-transparent rounded-md transition"
                                 >
                                     마이페이지
                                 </Link>
-                                <button 
+                                <button
                                     onClick={handleLogout}
                                     className="px-4 py-2 text-sm font-medium text-white bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 border border-transparent rounded-md transition"
                                 >
@@ -177,35 +177,36 @@ const Navbar = () => {
                 <div className="max-w-7xl mx-auto px-8">
                     <div className="flex w-full">
                         {[
-                            { 
-                                to: '/', 
+                            {
+                                to: '/',
                                 label: '홈'
                             },
-                            { 
-                                to: '/sassagae', 
+                            {
+                                to: '/sassagae',
                                 label: '사사게 게시판'
                             },
-                            { 
-                                to: '/statistics', 
+                            {
+                                to: '/statistics',
                                 label: '통계'
                             },
-                            { 
-                                to: '/ranking', 
+                            {
+                                to: '/ranking',
                                 label: '순위'
                             },
-                            { 
-                                to: '/boards', 
+                            {
+                                to: '/boards',
                                 label: '자유 게시판'
+
                             }
+
                         ].map((tab) => (
                             <NavLink
                                 key={tab.to}
                                 to={tab.to}
                                 className={({ isActive }) =>
-                                    `px-4 py-2 rounded-md text-sm font-medium flex items-center justify-center flex-1 ${
-                                        isActive
-                                            ? 'bg-gray-300 dark:bg-gray-900'
-                                            : 'hover:bg-gray-300 dark:hover:bg-gray-700'
+                                    `px-4 py-2 rounded-md text-sm font-medium flex items-center justify-center flex-1 ${isActive
+                                        ? 'bg-gray-300 dark:bg-gray-900'
+                                        : 'hover:bg-gray-300 dark:hover:bg-gray-700'
                                     }`
                                 }
                             >

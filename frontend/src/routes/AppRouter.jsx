@@ -20,6 +20,9 @@ import Statistics from '../pages/Statistics';
 import ForgotPassword from '../pages/ForgotPassword';
 import CharacterSimulation from '../pages/CharacterSimulation';
 import Ranking from '../pages/Ranking';
+import ClearSubmitPage from '../pages/ClearSubmitPage';
+import ClearRecordListPage from '../pages/ClearRecordListPage';
+import ClearMainPage from '../pages/ClearMainPage';
 
 
 
@@ -45,6 +48,9 @@ const AppRouter = () => {
                     <Route path="/statistics" element={<Statistics />} />
                     {/*<Route path="/ai-assistant" element={<AIAssistant />} />*/}
                     <Route path="/ranking" element={<Ranking />} />
+                    <Route path="/clear/submit" element={<ClearSubmitPage />} />
+                    <Route path="/clear/list" element={<ClearRecordListPage />} />
+                    <Route path="/clear" element={<ClearMainPage />} />
                     <Route path="*" element={<NotFound />} />
                 </Route>
             </Routes>
