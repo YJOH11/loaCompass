@@ -52,7 +52,7 @@ const BoardWrite = () => {
           value={form.title}
           onChange={handleChange}
           placeholder="제목"
-          className="border p-2"
+          className="border border-gray-300 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded px-2 py-1 w-full"
           required
         />
         <textarea
@@ -60,7 +60,7 @@ const BoardWrite = () => {
           value={form.content}
           onChange={handleChange}
           placeholder="내용"
-          className="border p-2 h-40"
+          className="border border-gray-300 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded px-2 py-1 w-full"
           required
         />
         <input
@@ -69,7 +69,7 @@ const BoardWrite = () => {
           value={form.author}
           onChange={handleChange}
           placeholder="작성자"
-          className="border p-2"
+          className="border border-gray-300 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded px-2 py-1 w-full"
           required
         />
         <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded">

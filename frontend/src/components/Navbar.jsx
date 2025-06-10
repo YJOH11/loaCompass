@@ -141,15 +141,12 @@ const Navbar = () => {
                         <DarkToggle />
                         {user ? (
                             <div className="flex items-center space-x-4">
-                                <span className="text-sm font-medium text-gray-800 dark:text-white">
-                                    {user.nickname || user.username}님
-                                    {user.discriminator && `#${user.discriminator}`}
-                                </span>
                                 <Link
                                     to="/mypage"
                                     className="px-4 py-2 text-sm font-medium text-white bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-600 dark:hover:bg-indigo-700 border border-transparent rounded-md transition"
                                 >
-                                    마이페이지
+                                    {user.nickname || user.username}님
+                                    {user.discriminator && `#${user.discriminator}`}
                                 </Link>
                                 <button
                                     onClick={handleLogout}

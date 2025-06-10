@@ -38,50 +38,53 @@ const BoardList = () => {
 
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-              <thead className="bg-gray-50 dark:bg-gray-700">
-                <tr>
-                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-16">번호</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">제목</th>
-                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-32">글쓴이</th>
-                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-40">등록일</th>
-                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-20">추천</th>
-                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-20">조회</th>
-                </tr>
+
+              <thead className="bg-gray-50 dark:bg-gray-900">
+              <tr>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-100 uppercase tracking-wider w-16">번호</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-100 uppercase tracking-wider">제목</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-100 uppercase tracking-wider w-32">글쓴이</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-100 uppercase tracking-wider w-40">등록일</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-100 uppercase tracking-wider w-20">추천</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-100 uppercase tracking-wider w-20">조회</th>
+              </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700">
-                {boards.length === 0 ? (
+
+              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+              {boards.length === 0 ? (
                   <tr>
-                    <td colSpan="6" className="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                    <td colSpan="6" className="px-6 py-4 text-center text-gray-500 dark:text-gray-300">
                       게시글이 없습니다.
                     </td>
                   </tr>
-                ) : (
+              ) : (
                   boards.map((board, index) => (
-                    <tr key={board.id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                      <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 text-center">
-                        {boards.length - index}
-                      </td>
-                      <td className="px-6 py-4 text-sm">
-                        <Link to={`/boards/${board.id}`} className="text-gray-900 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400">
-                          {board.title}
-                        </Link>
-                      </td>
-                      <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 text-center">
-                        {board.author || '익명'}
-                      </td>
-                      <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 text-center">
-                        {formatDate(board.createdAt)}
-                      </td>
-                      <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 text-center">
-                        {board.likes ?? 0}
-                      </td>
-                      <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 text-center">
-                        {board.views ?? 0}
-                      </td>
-                    </tr>
+                      <tr key={board.id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 text-center">
+                          {boards.length - index}
+                        </td>
+                        <td className="px-6 py-4 text-sm">
+                          <Link to={`/boards/${board.id}`} className="text-gray-900 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400">
+                            {board.title}
+                          </Link>
+                        </td>
+                        <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 text-center">
+                          {board.author || '익명'}
+                        </td>
+                        <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 text-center">
+                          {formatDate(board.createdAt)}
+                        </td>
+                        <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 text-center">
+                          {board.likes ?? 0}
+                        </td>
+                        <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 text-center">
+                          {board.views ?? 0}
+                        </td>
+                      </tr>
                   ))
-                )}
+              )}
               </tbody>
+
             </table>
           </div>
         </div>
