@@ -47,15 +47,15 @@ const ClearSubmitForm = () => {
       await axios.post("/api/clear-records", form, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      alert("제출 완료!");
+      alert("등록 완료되었습니다.");
     } catch (err) {
-      alert("제출 실패");
+      alert("등록이 실패하였습니다.");
     }
   };
 
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 p-6 bg-white rounded-lg shadow-md max-w-2xl mx-auto">
+      <form onSubmit={handleSubmit} className="space-y-4 p-6 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg shadow-md max-w-2xl mx-auto">
       <h2 className="text-xl font-bold">레이드 클리어 인증</h2>
 
       {/* 공대 이름 */}
@@ -66,7 +66,7 @@ const ClearSubmitForm = () => {
           value={guildName}
           onChange={e => setGuildName(e.target.value)}
           placeholder="예: 포포단물팟"
-          className="border border-gray-300 rounded px-2 py-1 w-full"
+          className="border border-gray-300 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded px-2 py-1 w-full"
         />
       </div>
 
@@ -76,7 +76,7 @@ const ClearSubmitForm = () => {
         <select
           value={boss}
           onChange={e => setBoss(e.target.value)}
-          className="border border-gray-300 rounded px-2 py-1 w-full"
+          className="border border-gray-300 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded px-2 py-1 w-full"
         >
           <option value="">선택</option>
 
@@ -109,7 +109,7 @@ const ClearSubmitForm = () => {
         <select
           value={difficulty}
           onChange={e => setDifficulty(e.target.value)}
-          className="border border-gray-300 rounded px-2 py-1 w-full"
+          className="border border-gray-300 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded px-2 py-1 w-full"
         >
           <option value="">선택</option>
           <option value="노말">노말</option>
@@ -125,7 +125,7 @@ const ClearSubmitForm = () => {
           value={clearTime}
           onChange={e => setClearTime(e.target.value)}
           placeholder="예: 08:41"
-          className="border border-gray-300 rounded px-2 py-1 w-full"
+          className="border border-gray-300 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded px-2 py-1 w-full"
         />
       </div>
 
@@ -139,28 +139,28 @@ const ClearSubmitForm = () => {
               placeholder="닉네임"
               value={member.nickname}
               onChange={e => handlePartyChange(setParty1, party1, idx, 'characterName', e.target.value)}
-              className="border border-gray-300 rounded px-2 py-1 w-full"
+              className="border border-gray-300 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded px-2 py-1 w-full"
             />
             <input
               type="text"
               placeholder="직업"
               value={member.job}
               onChange={e => handlePartyChange(setParty1, party1, idx, 'job', e.target.value)}
-              className="border border-gray-300 rounded px-2 py-1 w-full"
+              className="border border-gray-300 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded px-2 py-1 w-full"
             />
             <input
               type="number"
               placeholder="아이템레벨"
               value={member.level}
               onChange={e => handlePartyChange(setParty1, party1, idx, 'level', e.target.value)}
-              className="border border-gray-300 rounded px-2 py-1 w-full"
+              className="border border-gray-300 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded px-2 py-1 w-full"
             />
           </div>
         ))}
         <button
           type="button"
           onClick={() => addPartyMember(setParty1, party1)}
-          className="text-sm text-blue-500 hover:underline"
+          className="border border-gray-300 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded px-2 py-1 w-full"
         >
           + 1파티원 추가
         </button>
@@ -176,28 +176,28 @@ const ClearSubmitForm = () => {
               placeholder="닉네임"
               value={member.nickname}
               onChange={e => handlePartyChange(setParty2, party2, idx, 'nickname', e.target.value)}
-              className="border border-gray-300 rounded px-2 py-1 w-full"
+              className="border border-gray-300 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded px-2 py-1 w-full"
             />
             <input
               type="text"
               placeholder="직업"
               value={member.job}
               onChange={e => handlePartyChange(setParty2, party2, idx, 'job', e.target.value)}
-              className="border border-gray-300 rounded px-2 py-1 w-full"
+              className="border border-gray-300 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded px-2 py-1 w-full"
             />
             <input
               type="number"
               placeholder="아이템레벨"
               value={member.level}
               onChange={e => handlePartyChange(setParty2, party2, idx, 'level', e.target.value)}
-              className="border border-gray-300 rounded px-2 py-1 w-full"
+              className="border border-gray-300 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded px-2 py-1 w-full"
             />
           </div>
         ))}
         <button
           type="button"
           onClick={() => addPartyMember(setParty2, party2)}
-          className="text-sm text-blue-500 hover:underline"
+          className="border border-gray-300 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded px-2 py-1 w-full"
         >
           + 2파티원 추가
         </button>
