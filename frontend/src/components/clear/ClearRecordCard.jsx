@@ -15,7 +15,8 @@ const ClearRecordCard = ({ record }) => {
   const renderParty = (party) => (
     <ul className="text-sm text-gray-700 dark:text-gray-300 list-disc ml-4">
       {party.map((m, i) => (
-        <li key={i}>{m.job} ({m.level})</li>
+        <li key={i}>
+          {m.characterName} ({m.job}, {m.level})</li>
       ))}
     </ul>
   );

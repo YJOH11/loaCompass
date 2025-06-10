@@ -1,5 +1,6 @@
 package com.finalteam.loacompass.clearrecord.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

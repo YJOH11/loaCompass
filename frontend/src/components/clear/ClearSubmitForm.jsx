@@ -18,7 +18,7 @@ const ClearSubmitForm = () => {
 
   const addPartyMember = (partySetter, party) => {
     if (party.length < 4) {
-      partySetter([...party, { nickname: '', job: '', level: '' }]);
+      partySetter([...party, { characterName: '', job: '', level: '' }]);
     } else {
       alert("각 파티는 최대 4명까지만 입력 가능합니다.");
     }
@@ -138,7 +138,7 @@ const ClearSubmitForm = () => {
               type="text"
               placeholder="닉네임"
               value={member.nickname}
-              onChange={e => handlePartyChange(setParty1, party1, idx, 'nickname', e.target.value)}
+              onChange={e => handlePartyChange(setParty1, party1, idx, 'characterName', e.target.value)}
               className="border border-gray-300 rounded px-2 py-1 w-full"
             />
             <input
