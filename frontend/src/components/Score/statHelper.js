@@ -745,6 +745,7 @@ const engravings = {
   }
 },
 
+
 "질량 증가": {
   base: { finalDamagePer: 10 },
   effects: {

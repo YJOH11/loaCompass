@@ -18,6 +18,7 @@ import CharacterSimulation from '../pages/CharacterSimulation';
 import CharacterCapture from '../pages/CharacterCapture';
 
 
+
 const AppRouter = () => {
     return (
         <Router>

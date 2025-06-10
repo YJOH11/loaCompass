@@ -12,6 +12,7 @@ repositories {
     mavenCentral()
 }
 
+
 dependencies {
     implementation 'org.seleniumhq.selenium:selenium-java:4.19.0'
     implementation 'org.springframework.boot:spring-boot-starter-web'

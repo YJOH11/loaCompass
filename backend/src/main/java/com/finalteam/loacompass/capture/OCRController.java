@@ -11,6 +11,7 @@ import java.util.Map;
 @RequestMapping("/api/ocr")
 public class   OCRController {
 
+
     private final TesseractOCRService ocrService;
 
     public OCRController(TesseractOCRService ocrService) {

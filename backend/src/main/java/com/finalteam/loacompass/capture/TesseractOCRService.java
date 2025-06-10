@@ -17,6 +17,7 @@ import java.util.regex.*;
 @Service
 public class TesseractOCRService {
 
+
     public List<Map<String, String>> extractText(MultipartFile file) {
         List<Map<String, String>> resultList = new ArrayList<>();
         File tempFile = null;
