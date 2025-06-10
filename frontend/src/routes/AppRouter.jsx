@@ -19,13 +19,10 @@ import MyPage from '../pages/MyPage';
 import Statistics from '../pages/Statistics';
 import ForgotPassword from '../pages/ForgotPassword';
 import CharacterSimulation from '../pages/CharacterSimulation';
-import AIAssistant from '../pages/AIAssistant';
 import Ranking from '../pages/Ranking';
 import ClearSubmitPage from '../pages/ClearSubmitPage';
 import ClearRecordListPage from '../pages/ClearRecordListPage';
 import ClearMainPage from '../pages/ClearMainPage';
-
-import Navbar from '../components/Navbar';
 
 
 
@@ -49,7 +46,7 @@ const AppRouter = () => {
                     <Route path="/forgot-password" element={<ForgotPassword />} />
                     <Route path="/mypage" element={<MyPage />} />
                     <Route path="/statistics" element={<Statistics />} />
-                    <Route path="/ai-assistant" element={<AIAssistant />} />
+                    {/*<Route path="/ai-assistant" element={<AIAssistant />} />*/}
                     <Route path="/ranking" element={<Ranking />} />
                     <Route path="/clear/submit" element={<ClearSubmitPage />} />
                     <Route path="/clear/list" element={<ClearRecordListPage />} />

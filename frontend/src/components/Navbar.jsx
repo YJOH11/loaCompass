@@ -196,13 +196,9 @@ const Navbar = () => {
                             {
                                 to: '/boards',
                                 label: '자유 게시판'
-                            },
-                            {
-                                to: '/ai-assistant',
-                                label: '로아 AI 도우미'
-                            },
-        
-            
+
+                            }
+
                         ].map((tab) => (
                             <NavLink
                                 key={tab.to}

@@ -3,12 +3,11 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import CharacterSearchInput from "../components/CharacterSearchInput";
 import CharacterProfileCard from "../components/CharacterProfileCard";
-import GemList from "../components/Gem/GemList";
+import GemList from "../components/Simulation/SimulationGemList";
 import ScoreRow from "../components/score/ScoreRow";
 import SimulationRow from "../components/Simulation/SimulationRow";
 
 export default function CharacterSimulation() {
-
   const { name: characterName } = useParams();
   const [characterData, setCharacterData] = useState(null);
   const [hasSearched, setHasSearched] = useState(false);
@@ -17,6 +16,8 @@ export default function CharacterSimulation() {
   const [updatedItem, setUpdatedItem] = useState(null);
   const [updatedAbilityStone, setUpdatedAbilityStone] = useState(null);
   const [updatedAccessory, setUpdatedAccessory] = useState(null);
+  const [updatedGems, setUpdatedGems] = useState(null);
+  const [updatedEngravings, setUpdatedEngravings] = useState(null);
   const [favorites, setFavorites] = useState(() => {
     try {
       const stored = localStorage.getItem("favoriteHistory");
@@ -34,7 +35,8 @@ export default function CharacterSimulation() {
       try {
         const response = await axios.get(`http://localhost:8080/api/character/${characterName}`);
         if (response.data?.profile) {
-          setCharacterData(response.data);
+          const gemsWithId = response.data.gems?.map((gem, idx) => ({ ...gem, id: idx })) || [];
+          setCharacterData({ ...response.data, gems: gemsWithId });
         } else {
           setCharacterData(null);
         }
@@ -56,88 +58,86 @@ export default function CharacterSimulation() {
     localStorage.setItem("favoriteHistory", JSON.stringify(updated));
     setFavorites(updated);
   };
+  const handleEngravingChange = (newEngravings) => {
+    setUpdatedEngravings(newEngravings);
+    setSimOptionsChanged((prev) => prev + 1);
+  };
+
+  const setGems = (newItems) => {
+    setUpdatedGems(newItems);
+    setSimOptionsChanged((prev) => prev + 1);
+  };
 
   const handleEquipmentChange = (newItems) => {
     setUpdatedItem(newItems);
     setSimOptionsChanged((prev) => prev + 1);
-
   };
+
+
+
   const handleAccessoryChange = (newItems) => {
+    if (["목걸이", "귀걸이", "반지"].includes(newItems.Type)) {
+      setUpdatedAccessory(newItems);
+      console.log(newItems);
+        console.log("악세");
+    }
+    if (["어빌리티 스톤"].includes(newItems.Type)) {
+        console.log("어빌");
+        setUpdatedAbilityStone(newItems);
 
+    }
 
-        if(newItems.Type == "목걸이"&&"귀걸이"&&"반지"){
-            console.log("여기");
-            setUpdatedAccessory(newItems);
-
-        }else if(newItems.Type == "어빌리티 스톤"){
-            setUpdatedAccessory(newItems);
-        }
-
-        setSimOptionsChanged((prev) => prev + 1);
-
-
+    setSimOptionsChanged((prev) => prev + 1);
   };
 
   const engravings = characterData?.profile?.engravings || [];
 
-  const gears =
-    characterData?.equipments?.filter((item) =>
-      ["무기", "투구", "상의", "하의", "장갑", "어깨"].includes(item.Type)
-    ) || [];
+  const gears = characterData?.equipments?.filter((item) =>
+    ["무기", "투구", "상의", "하의", "장갑", "어깨"].includes(item.Type)
+  ) || [];
 
-  const accessories =
-    characterData?.equipments?.filter((item) =>
-      ["목걸이", "귀걸이", "반지"].includes(item.Type)
-    ) || [];
+  const accessories = characterData?.equipments?.filter((item) =>
+    ["목걸이", "귀걸이", "반지"].includes(item.Type)
+  ) || [];
 
   const displayItems = (() => {
     if (!updatedItem || updatedItem.length === 0) return gears;
     const updatedArray = Array.isArray(updatedItem) ? updatedItem : [updatedItem];
-
-    const updatedTypes = updatedArray.map((item) => item.Type);
-
     return gears.map((gear) => {
       const replacement = updatedArray.find((item) => item.Type === gear.Type);
       return replacement || gear;
     });
   })();
-
-const displayAccessorys = (() => {
-      if (!updatedAccessory || updatedAccessory.length === 0) return accessories;
+const abilityStone = characterData?.equipments?.find((item) => item.Type === "어빌리티 스톤");
+  const displayAccessorys = (() => {
+    if (!updatedAccessory || updatedAccessory.length === 0) return accessories;
     const updatedArray = Array.isArray(updatedAccessory) ? updatedAccessory : [updatedAccessory];
-
-    const updatedTypes = updatedArray.map((item) => item.Type);
-
-    return accessories.map((accessories) => {
-      const replacement = updatedArray.find((item) => item.Type === accessories.Type);
-      return replacement || accessories;
+    return accessories.map((accessory) => {
+      const replacement = updatedArray.find((item) => item.Type === accessory.Type);
+      return replacement || accessory;
     });
   })();
+
   const displayAbilityStone = (() => {
-        if (!updatedAccessory || updatedAccessory.length === 0) return accessories;
-      const updatedArray = Array.isArray(updatedAccessory) ? updatedAccessory : [updatedAccessory];
+    if (!updatedAbilityStone || updatedAbilityStone.length === 0) return abilityStone ? [abilityStone] : [];
+    const updatedArray = Array.isArray(updatedAbilityStone) ? updatedAbilityStone : [updatedAbilityStone];
+    return updatedArray.filter(item => item.Type === "어빌리티 스톤");
+  })();
 
-      const updatedTypes = updatedArray.map((item) => item.Type);
 
-      return accessories.map((accessories) => {
-        const replacement = updatedArray.find((item) => item.Type === accessories.Type);
-        return replacement || accessories;
-      });
-    })();
+  const gems = characterData?.gems || [];
 
-  const abilityStone = characterData?.equipments?.find((item) => item.Type === "어빌리티 스톤");
+  const displayGems = (() => {
+    if (!updatedGems || updatedGems.length === 0) return gems;
+    return gems.map((gem, idx) => updatedGems[idx] || gem);
+  })();
+
+
   const bracelet = characterData?.equipments?.find((item) => item.Type === "팔찌");
   const maxLen = 7;
-
+  const displayEngravings = updatedEngravings || engravings;
   return (
     <div className="min-h-screen bg-white text-black dark:bg-gray-900 dark:text-white p-6">
-      {(!hasSearched || (!characterData && !isLoading)) && (
-        <CharacterSearchInput
-          favorites={favorites}
-          setFavorites={setFavorites}
-          onFavoriteToggle={handleFavoriteToggle}
-        />
-      )}
 
       {isLoading ? (
         <p className="text-center text-gray-500 dark:text-gray-400">잠시만 기다려주세요</p>
@@ -156,20 +156,20 @@ const displayAccessorys = (() => {
                   onFavoriteToggle={handleFavoriteToggle}
                 />
                 <ScoreRow
-                  key={simOptionsChanged} // 강제 리렌더링
+                  key={simOptionsChanged}
                   items={displayItems}
                   accessories={displayAccessorys}
-                  engravings={engravings}
+                  engravings={displayEngravings}
                   abilityStone={displayAbilityStone}
                   bracelet={bracelet}
-                  gems={characterData.gems}
+                  gems={displayGems}
                 />
               </div>
               <div className="flex-1">
                 <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-4 shadow">
                   <div className="mb-6">
                     <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">보석</h2>
-                    <GemList gems={characterData.gems} layout="inline" />
+                    <GemList gems={updatedGems || gems} onGemsChange={setUpdatedGems} layout="inline" />
                   </div>
 
                   <div className="mt-6">
@@ -183,12 +183,12 @@ const displayAccessorys = (() => {
                           key={i}
                           equipment={gears[i] || null}
                           accessory={accessories[i] || null}
-                          engravings={i === maxLen - 1 ? engravings : null}
+                          engravings={i === maxLen - 1 ? displayEngravings : null}
                           abilityStone={i === maxLen - 2 ? abilityStone : null}
                           bracelet={i === maxLen - 1 ? bracelet : null}
                           onEquipmentChanges={handleEquipmentChange}
                           onAccessoryChanges={handleAccessoryChange}
-
+                          onEngravingChanges={handleEngravingChange}
                         />
                       ))}
                     </div>

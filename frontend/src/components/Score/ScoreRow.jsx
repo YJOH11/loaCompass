@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import * as statHelper from "./statHelper";
 
-
-const ScoreRow = ({ items ,accessories,engravings,abilityStone,bracelet,gems}) => {
+const ScoreRow = ({ items, accessories, engravings, abilityStone, bracelet, gems }) => {
   const [myStat, setMyStat] = useState({
     STAT: 0,
     WeaponAtk: 0,
@@ -15,8 +14,8 @@ const ScoreRow = ({ items ,accessories,engravings,abilityStone,bracelet,gems}) =
     criticalDamagePer: 0,
     mainStat: 2000,
   });
+
   useEffect(() => {
-    // useEffect 안에서 items, accessories 등 모든 props 최신값을 사용
     const tempStat = {
       STAT: 0,
       WeaponAtk: 0,
@@ -69,33 +68,29 @@ const ScoreRow = ({ items ,accessories,engravings,abilityStone,bracelet,gems}) =
 
     if (Array.isArray(engravings)) {
       engravings.forEach(engraving => {
-        statHelper.applyEngravingOption(engraving,tempStat);
+        statHelper.applyEngravingOption(engraving, tempStat);
       });
     }
 
-    if(abilityStone) {
-      statHelper.applyAbilityStones(abilityStone.abilityStoneEngravings,tempStat);
+    if (abilityStone) {
+      statHelper.applyAbilityStones(abilityStone.abilityStoneEngravings, tempStat);
     }
 
-    if(bracelet) {
-      statHelper.applyBraceletEffects(bracelet.braceletEffects,tempStat);
+    if (bracelet) {
+      statHelper.applyBraceletEffects(bracelet.braceletEffects, tempStat);
     }
 
     setMyStat(tempStat);
-
   }, [items, accessories, engravings, abilityStone, bracelet, gems]);
 
+  const score = statHelper.calculateScore(myStat, gems);
 
-
-
-  const score = statHelper.calculateScore(myStat,gems);
-  
   return (
-      <div className="score-row">
-        <h3>🧮 내 점수</h3>
-           <p><strong>총 점수:</strong> {score}</p>
-      </div>
-    );
-  };
+    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 text-center shadow-sm w-full">
+      <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">총 점수</div>
+      <div className="text-2xl font-semibold text-yellow-500">{score}</div>
+    </div>
+  );
+};
 
 export default ScoreRow;

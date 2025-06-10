@@ -1,47 +1,28 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-export default function EngravingsCard({ item }) {
-  const [engravings, setEngravings] = useState(item || []);
+export default function EngravingsCard({ item = [], onChange }) {
+  const [engravings, setEngravings] = useState(item);
 
   const nameOptions = [
-    "원한",
-    "질량 증가",
-    "기습의 대가",
-    "마나 효율 증가",
-    "아드레날린",
-    "저주받은 인형",
-    "예리한 둔기",
-    "결투의 대가",
-    "돌격대장",
-    "정밀단도",
-    "슈퍼차지",
-    "타격의 대가",
-    "안정된 상태",
-    "바리케이드",
-    "속전속결",
-    "에테르 포식자"
+    "원한", "질량 증가", "기습의 대가", "마나 효율 증가", "아드레날린",
+    "저주받은 인형", "예리한 둔기", "결투의 대가", "돌격대장", "정밀단도",
+    "슈퍼차지", "타격의 대가", "안정된 상태", "바리케이드", "속전속결", "에테르 포식자"
   ];
 
   const gradeOptions = ["영웅", "전설", "유물"];
   const levelOptions = ["Lv.0", "Lv.1", "Lv.2", "Lv.3", "Lv.4"];
 
-  const handleNameChange = (index, newName) => {
+  // 공통 변경 핸들러
+  const updateEngraving = (index, key, value) => {
     const updated = [...engravings];
-    updated[index].name = newName;
+    updated[index] = { ...updated[index], [key]: value };
     setEngravings(updated);
+    onChange?.(updated); // 상위에 전달
   };
 
-  const handleGradeChange = (index, newGrade) => {
-    const updated = [...engravings];
-    updated[index].grade = newGrade;
-    setEngravings(updated);
-  };
-
-  const handleLevelChange = (index, newLevel) => {
-    const updated = [...engravings];
-    updated[index].level = newLevel;
-    setEngravings(updated);
-  };
+  useEffect(() => {
+    setEngravings(item);
+  }, [item]);
 
   if (!engravings.length) return null;
 
@@ -56,7 +37,7 @@ export default function EngravingsCard({ item }) {
           >
             <select
               value={engraving.name}
-              onChange={(e) => handleNameChange(index, e.target.value)}
+              onChange={(e) => updateEngraving(index, "name", e.target.value)}
               className="flex-1 text-sm text-gray-800 dark:text-gray-200 bg-transparent border rounded border-gray-300 dark:border-gray-600"
             >
               {nameOptions.map((name) => (
@@ -68,7 +49,7 @@ export default function EngravingsCard({ item }) {
 
             <select
               value={engraving.grade}
-              onChange={(e) => handleGradeChange(index, e.target.value)}
+              onChange={(e) => updateEngraving(index, "grade", e.target.value)}
               className="w-20 text-sm text-orange-600 dark:text-orange-400 bg-transparent border rounded border-gray-300 dark:border-gray-600"
             >
               {gradeOptions.map((grade) => (
@@ -80,7 +61,7 @@ export default function EngravingsCard({ item }) {
 
             <select
               value={engraving.level}
-              onChange={(e) => handleLevelChange(index, e.target.value)}
+              onChange={(e) => updateEngraving(index, "level", e.target.value)}
               className="w-16 text-sm text-right text-gray-600 dark:text-gray-400 bg-transparent border rounded border-gray-300 dark:border-gray-600"
             >
               {levelOptions.map((level) => (
