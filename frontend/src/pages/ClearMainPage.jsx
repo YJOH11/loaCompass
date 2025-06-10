@@ -152,7 +152,9 @@ const ClearMainPage = () => {
           </div>
         </div>
 
-        <JobTierDisplay jobTiers={jobTiers} />
+        <div className="w-full px-4 py-3 bg-white/70 dark:bg-black/50 backdrop-blur-sm z-10 overflow-visible relative">
+          <JobTierDisplay jobTiers={jobTiers} />
+        </div>
       </div>
     </div>
   );

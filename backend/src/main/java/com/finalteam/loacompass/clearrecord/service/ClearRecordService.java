@@ -106,6 +106,25 @@ public class ClearRecordService {
             case "슬레이어" -> "slayer";
             case "건슬링어" -> "gunslinger";
             case "소서리스" -> "sorceress";
+            case "버서커" -> "berserker";
+            case "워로드" -> "warload";
+            case "디스트로이어" -> "destroyer";
+            case "아르카나" -> "arcana";
+            case "서머너" -> "summoner";
+            case "데빌헌터" -> "devil_hunter";
+            case "호크아이" -> "hawkeye";
+            case "블래스터" -> "blaster";
+            case "스카우터" -> "scouter";
+            case "배틀마스터" -> "battle_master";
+            case "인파이터" -> "infighter";
+            case "스트라이커" -> "striker";
+            case "블레이드" -> "blade";
+            case "리퍼" -> "reapler";
+            case "데모닉" -> "demonic";
+            case "소울이터" -> "soul_eater";
+            case "환수사" -> "wild_soul";
+
+
             // 필요한 직업 계속 추가
             default -> "default_icon";
         };
