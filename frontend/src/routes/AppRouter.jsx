@@ -19,6 +19,7 @@ import MyPage from '../pages/MyPage';
 import Statistics from '../pages/Statistics';
 import ForgotPassword from '../pages/ForgotPassword';
 import CharacterSimulation from '../pages/CharacterSimulation';
+import CharacterCapture from '../pages/CharacterCapture';
 import Ranking from '../pages/Ranking';
 import ClearSubmitPage from '../pages/ClearSubmitPage';
 import ClearRecordListPage from '../pages/ClearRecordListPage';
@@ -26,14 +27,17 @@ import ClearMainPage from '../pages/ClearMainPage';
 
 
 
+
 const AppRouter = () => {
     return (
         <BrowserRouter>
             <Routes>
+
                 <Route element={<Layout />}>
                     <Route path="/" element={<Home />} />
                     <Route path="/character/simulation/:name" element={<CharacterSimulation />} />
                     <Route path="/character/:name" element={<CharacterSearch />} />
+                      <Route path="/Capture" element={<CharacterCapture />} />
                     <Route path="/sassagae" element={<SassagaeCrawler />} />
                     <Route path="/about" element={<About />} />
                     <Route path="/boards" element={<BoardList />} />
@@ -53,6 +57,7 @@ const AppRouter = () => {
                     <Route path="/clear" element={<ClearMainPage />} />
                     <Route path="*" element={<NotFound />} />
                 </Route>
+
             </Routes>
         </BrowserRouter>
     );
