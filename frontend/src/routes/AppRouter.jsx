@@ -15,6 +15,7 @@ import MyPage from '../pages/MyPage';
 import Statistics from '../pages/Statistics';
 import ForgotPassword from '../pages/ForgotPassword';
 import CharacterSimulation from '../pages/CharacterSimulation';
+import CharacterCapture from '../pages/CharacterCapture';
 
 
 const AppRouter = () => {
@@ -24,6 +25,7 @@ const AppRouter = () => {
             <Routes>
                 <Route path="/character/:name" element={<CharacterSearch />} />
                 <Route path="/character/simulation/:name" element={<CharacterSimulation />} />
+                <Route path="/Capture" element={<CharacterCapture />} />
                 <Route path="/" element={<Home />} />
                 <Route path="/sassagae" element={<SassagaeCrawler />} />
                 <Route path="/about" element={<About />} />

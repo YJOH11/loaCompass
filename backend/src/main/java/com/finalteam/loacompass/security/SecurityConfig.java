@@ -48,13 +48,15 @@ public class SecurityConfig {
                         .requestMatchers("/api/user/**").permitAll()
                         .requestMatchers("/api/statistics/**").permitAll()
                         .requestMatchers("/api/admin/collect-random").permitAll()
-
+                        .requestMatchers("/api/ocr").permitAll()
+                        .requestMatchers("/api/ocr/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {

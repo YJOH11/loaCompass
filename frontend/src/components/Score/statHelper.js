@@ -721,7 +721,7 @@ const engravings = {
   }
 },
 
-"정밀단도": {
+"정밀 단도": {
   base: { criticalChancePer: 12, criticalDamagePer: -6 },
   effects: {
     영웅: [0.75, 1.5, 2.25, 3],
@@ -738,14 +738,14 @@ const engravings = {
 
     for (let i = 0; i <= currentIndex; i++) {
       const g = gradeOrder[i];
-      const effectList = engravings["정밀단도"].effects[g];
+      const effectList = engravings["정밀 단도"].effects[g];
       const value = isZeroLevel ? effectList[0] : effectList[parsedLevel - 1];
       myStat.criticalChancePer = (myStat.criticalChancePer || 0) + value;
     }
   }
 },
 
-"질량증가": {
+"질량 증가": {
   base: { finalDamagePer: 10 },
   effects: {
     영웅: [0.75, 1.5, 2.25, 3],
@@ -762,7 +762,7 @@ const engravings = {
 
     for (let i = 0; i <= currentIndex; i++) {
       const g = gradeOrder[i];
-      const effectList = engravings["질량증가"].effects[g];
+      const effectList = engravings["질량 증가"].effects[g];
       const value = isZeroLevel ? effectList[0] : effectList[parsedLevel - 1];
       myStat.finalDamagePer = (myStat.finalDamagePer || 0) + value;
     }
@@ -1056,6 +1056,8 @@ export function getTotalElixirLevelFromItems(items) {
 }
 
 function calculateAverageGemLevel(gemList) {
+  if (!Array.isArray(gemList)) return 0; // 또는 적절한 기본값
+
   const adjustedLevels = gemList.map(gem => {
     const level = parseInt(gem.Name);
     if (gem.gemType === '멸화' || gem.gemType === '홍염') {

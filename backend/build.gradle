@@ -3,10 +3,10 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.0'
     id 'java'
 }
-
+sourceCompatibility = '17'
 group = 'com.loacompass'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '17'
+
 
 repositories {
     mavenCentral()
@@ -22,9 +22,18 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
+    implementation 'net.sourceforge.tess4j:tess4j:5.4.0'
+    // Kakao OCR 캡처 닉네임 읽기 기능
+
+    // 기존 httpclient 의존성 유지
+    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+
+    // 추가: httpmime 라이브러리
+    implementation 'org.apache.httpcomponents:httpmime:4.5.13'
+
     // Spring Security
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    
+
     // JWT
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
@@ -35,10 +44,15 @@ dependencies {
 
     runtimeOnly 'com.mysql:mysql-connector-j'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    
+
     // Lombok - Java 17 호환 버전으로 통일
     compileOnly 'org.projectlombok:lombok:1.18.30'
     annotationProcessor 'org.projectlombok:lombok:1.18.30'
+
+
+
+
+
 }
 
 test {
