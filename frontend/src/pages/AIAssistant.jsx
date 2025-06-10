@@ -1,3 +1,4 @@
+/*
 import { useEffect, useRef, useState } from "react";
 import { askGemini } from "@/services/gemini";
 import ChatMessage from "@/components/ChatMessage";
@@ -117,7 +118,7 @@ export default function ChatMain() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm h-[calc(100vh-8rem)]">
                     <div className="relative flex flex-col h-full">
-                        {/* 메시지 출력 영역 */}
+                        {/!* 메시지 출력 영역 *!/}
                         <div ref={chatContainerRef} className="flex-1 overflow-y-auto px-4 py-6 space-y-4">
                             {messages.map((msg, i) => (
                                 <ChatMessage key={i} message={msg} />
@@ -129,7 +130,7 @@ export default function ChatMain() {
                             )}
                         </div>
 
-                        {/* 전송 입력창 */}
+                        {/!* 전송 입력창 *!/}
                         <form
                             onSubmit={handleSubmit}
                             className="w-full bg-transparent px-4 py-3 border-t dark:border-gray-700"
@@ -156,3 +157,4 @@ export default function ChatMain() {
         </div>
     );
 }
+*/

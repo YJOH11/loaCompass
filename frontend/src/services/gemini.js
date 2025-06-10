@@ -1,3 +1,4 @@
+/*
 export const askGemini = async (messages) => {
     // ✅ 여기에 prompt 변환 로직 다시 추가
     const prompt = messages
@@ -21,3 +22,4 @@ export const askGemini = async (messages) => {
     const data = await res.json();
     return data.candidates?.[0]?.content?.parts?.[0]?.text || "답변을 불러오지 못했습니다.";
 };
+*/
