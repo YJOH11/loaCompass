@@ -37,7 +37,7 @@ const AppRouter = () => {
                     <Route path="/" element={<Home />} />
                     <Route path="/character/simulation/:name" element={<CharacterSimulation />} />
                     <Route path="/character/:name" element={<CharacterSearch />} />
-                      <Route path="/Capture" element={<CharacterCapture />} />
+                    <Route path="/ingame" element={<CharacterCapture />} />
                     <Route path="/sassagae" element={<SassagaeCrawler />} />
                     <Route path="/about" element={<About />} />
                     <Route path="/boards" element={<BoardList />} />
@@ -54,7 +54,7 @@ const AppRouter = () => {
                     <Route path="/ranking" element={<Ranking />} />
                     <Route path="/clear/submit" element={<ClearSubmitPage />} />
                     <Route path="/clear/list" element={<ClearRecordListPage />} />
-                    <Route path="/clear" element={<ClearMainPage />} />
+                    <Route path="/raid" element={<ClearMainPage />} />
                     <Route path="*" element={<NotFound />} />
                 </Route>
 
