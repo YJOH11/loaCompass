@@ -10,7 +10,7 @@ function ForgotPassword() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         if (!email.trim()) {
             setError('이메일을 입력해주세요.');
             return;
@@ -21,10 +21,10 @@ function ForgotPassword() {
         setSuccessMessage('');
 
         try {
-            const response = await axios.post('http://localhost:8080/api/auth/forgot-password', {
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/forgot-password`, {
                 email: email
             });
-            
+
             setSuccessMessage('비밀번호 재설정 링크가 이메일로 전송되었습니다. 이메일을 확인해주세요.');
             setEmail('');
         } catch (error) {
@@ -53,7 +53,7 @@ function ForgotPassword() {
                             <p>{error}</p>
                         </div>
                     )}
-                    
+
                     {successMessage && (
                         <div className="mb-4 bg-green-100 border-l-4 border-green-500 text-green-700 p-4">
                             <p>{successMessage}</p>

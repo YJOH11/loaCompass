@@ -33,7 +33,7 @@ export default function CharacterSimulation() {
       if (!characterName) return;
       setIsLoading(true);
       try {
-        const response = await axios.get(`http://localhost:8080/api/character/${characterName}`);
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/character/${characterName}`);
         if (response.data?.profile) {
           const gemsWithId = response.data.gems?.map((gem, idx) => ({ ...gem, id: idx })) || [];
           setCharacterData({ ...response.data, gems: gemsWithId });
@@ -79,11 +79,11 @@ export default function CharacterSimulation() {
     if (["목걸이", "귀걸이", "반지"].includes(newItems.Type)) {
       setUpdatedAccessory(newItems);
       console.log(newItems);
-        console.log("악세");
+      console.log("악세");
     }
     if (["어빌리티 스톤"].includes(newItems.Type)) {
-        console.log("어빌");
-        setUpdatedAbilityStone(newItems);
+      console.log("어빌");
+      setUpdatedAbilityStone(newItems);
 
     }
 
@@ -108,7 +108,7 @@ export default function CharacterSimulation() {
       return replacement || gear;
     });
   })();
-const abilityStone = characterData?.equipments?.find((item) => item.Type === "어빌리티 스톤");
+  const abilityStone = characterData?.equipments?.find((item) => item.Type === "어빌리티 스톤");
   const displayAccessorys = (() => {
     if (!updatedAccessory || updatedAccessory.length === 0) return accessories;
     const updatedArray = Array.isArray(updatedAccessory) ? updatedAccessory : [updatedAccessory];

@@ -9,9 +9,9 @@ const CommentForm = ({ boardId, onCommentSaved }) => {
     if (!content.trim()) return;
 
     try {
-      await axios.post(`http://localhost:8080/api/boards/${boardId}/comments`, {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/boards/${boardId}/comments`, {
         content,
-        author: "익명", // 임시로 고정. 로그인 기능 붙이면 수정
+        author: "익명",
       });
       setContent("");
       onCommentSaved(); // 댓글 새로고침

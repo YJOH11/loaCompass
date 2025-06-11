@@ -25,32 +25,33 @@ export default function CharacterSearchPage() {
     }
   });
 
-  useEffect(() => {
-    const fetchCharacter = async () => {
-      if (!characterName) return;
-      setIsLoading(true);
-      try {
-        const response = await axios.get(`http://localhost:8080/api/character/${characterName}`);
-        if (response.data?.profile) {
-          setCharacterData(response.data);
-        } else {
-          setCharacterData(null);
-        }
-      } catch (err) {
-        console.error(err);
+useEffect(() => {
+  const fetchCharacter = async () => {
+    if (!characterName) return;
+    setIsLoading(true);
+    try {
+      const encodedName = encodeURIComponent(characterName);  
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/character/${encodedName}`);
+      if (response.data?.profile) {
+        setCharacterData(response.data);
+      } else {
         setCharacterData(null);
       }
-      setHasSearched(true);
-      setIsLoading(false);
-    };
+    } catch (err) {
+      console.error(err);
+      setCharacterData(null);
+    }
+    setHasSearched(true);
+    setIsLoading(false);
+  };
 
-    fetchCharacter();
-  }, [characterName]);
+  fetchCharacter();
+}, [characterName]);
 
   const handleFavoriteToggle = (name, isNowFavorite) => {
     const updated = isNowFavorite
-        ? [name, ...favorites.filter((n) => n !== name)]
-        : favorites.filter((n) => n !== name);
+      ? [name, ...favorites.filter((n) => n !== name)]
+      : favorites.filter((n) => n !== name);
     localStorage.setItem("favoriteHistory", JSON.stringify(updated));
     setFavorites(updated);
   };
@@ -92,35 +93,35 @@ export default function CharacterSearchPage() {
             <div className="flex w-full max-w-[1280px] gap-6">
               <div className="min-w-[260px] max-w-[260px] bg-gray-100 dark:bg-gray-800 rounded-lg p-6 shadow">
                 <CharacterProfileCard
-                    key={characterData.profile.CharacterName} // ★ 변경되면 다시 그려짐
-                    profile={characterData.profile}
-                    favorites={favorites}
-                    onFavoriteToggle={handleFavoriteToggle}
+                  key={characterData.profile.CharacterName} // ★ 변경되면 다시 그려짐
+                  profile={characterData.profile}
+                  favorites={favorites}
+                  onFavoriteToggle={handleFavoriteToggle}
                 />
-                      
+
                 <ScoreRow
-                    items={gears}
-                    accessories={accessories}
-                    engravings={engravings}
-                    abilityStone={abilityStone}
-                    bracelet={bracelet}
-                    gems={characterData.gems}
+                  items={gears}
+                  accessories={accessories}
+                  engravings={engravings}
+                  abilityStone={abilityStone}
+                  bracelet={bracelet}
+                  gems={characterData.gems}
                 />
 
               </div>
               <div className="flex-1">
                 <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-4 shadow">
                   <div className="mb-6">
-                   <div className="flex items-center justify-between mb-2">
-                     <h2 className="text-lg font-semibold text-gray-800 dark:text-white">보석</h2>
-                     <Link
-                       to={`/character/simulation/${characterName}`}
-                       className="inline-block px-4 py-2 bg-blue-500 text-white rounded"
-                     >
-                       시뮬레이션으로 이동
-                     </Link>
+                    <div className="flex items-center justify-between mb-2">
+                      <h2 className="text-lg font-semibold text-gray-800 dark:text-white">보석</h2>
+                      <Link
+                        to={`/character/simulation/${characterName}`}
+                        className="inline-block px-4 py-2 bg-blue-500 text-white rounded"
+                      >
+                        시뮬레이션으로 이동
+                      </Link>
 
-                   </div>
+                    </div>
 
                     <GemList gems={characterData.gems} layout="inline" />
                   </div>
