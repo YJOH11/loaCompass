@@ -31,7 +31,7 @@ useEffect(() => {
     setIsLoading(true);
     try {
       const encodedName = encodeURIComponent(characterName);  
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/character/${encodedName}`);
+      const response = await axios.get(`/api/character/${encodedName}`);
       if (response.data?.profile) {
         setCharacterData(response.data);
       } else {
