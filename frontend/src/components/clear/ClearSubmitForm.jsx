@@ -137,7 +137,7 @@ const ClearSubmitForm = () => {
             <input
               type="text"
               placeholder="닉네임"
-              value={member.nickname}
+              value={member.characterName}
               onChange={e => handlePartyChange(setParty1, party1, idx, 'characterName', e.target.value)}
               className="border border-gray-300 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded px-2 py-1 w-full"
             />
