@@ -45,7 +45,7 @@ const CommentList = ({ boardId }) => {
               <p>
                 📎{' '}
                 <a
-                  href={`${import.meta.env.VITE_API_URL}/api/comments/${comment.id}/file`}
+                  href={`/api/comments/${comment.id}/file`}
                   className="text-blue-500 underline"
                   download
                 >

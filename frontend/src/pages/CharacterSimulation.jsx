@@ -33,7 +33,8 @@ export default function CharacterSimulation() {
       if (!characterName) return;
       setIsLoading(true);
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/character/${characterName}`);
+        const encodedName = encodeURIComponent(characterName);
+        const response = await axios.get(`/api/character/${encodedName}`);
         if (response.data?.profile) {
           const gemsWithId = response.data.gems?.map((gem, idx) => ({ ...gem, id: idx })) || [];
           setCharacterData({ ...response.data, gems: gemsWithId });

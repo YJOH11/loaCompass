@@ -61,7 +61,7 @@ const MyPage = () => {
       }
 
       // 사용자 정보 가져오기 (API 호출)
-      axios.get(`${import.meta.env.VITE_API_URL}/api/user/me`, {
+      axios.get(`/api/user/me`, {
         headers: { Authorization: `Bearer ${token}` }
       })
 
@@ -168,7 +168,7 @@ const MyPage = () => {
 
         for (const characterName of parsedFavorites) {
           try {
-            const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/character/${characterName}`);
+            const response = await axios.get(`/api/character/${characterName}`);
             if (response.data?.profile) {
               updatedCharacters.push({
                 name: response.data.profile.CharacterName,
@@ -288,7 +288,7 @@ const handlePasswordChange = (e) => {
   const token = localStorage.getItem('token');
 
   // 비밀번호 변경 API 호출
-  axios.post(`${import.meta.env.VITE_API_URL}/api/user/password/change`, {
+  axios.post(`/api/user/password/change`, {
     currentPassword,
     newPassword
   }, {
@@ -324,7 +324,7 @@ const handleDeleteAccount = (e) => {
   const token = localStorage.getItem('token');
 
   // 회원탈퇴 API 호출
-  axios.delete(`${import.meta.env.VITE_API_URL}/api/user/delete`, {
+  axios.delete(`/api/user/delete`, {
     headers: { Authorization: `Bearer ${token}` }
   })
     .then(response => {
