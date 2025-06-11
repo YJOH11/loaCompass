@@ -14,9 +14,10 @@ public class WebConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOriginPatterns("http://localhost:5173") // ✅ allowedOrigins 말고 allowedOriginPatterns 사용
+                        .allowedOrigins("http://localhost:5173", "http://3.36.92.116:5173")
                         .allowedMethods("*")
-                        .allowCredentials(true);
+                        .allowedHeaders("*")
+                        .allowCredentials(true); // 로그인/세션 인증
             }
         };
     }

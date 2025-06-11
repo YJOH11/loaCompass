@@ -11,7 +11,7 @@ function Register() {
         nickname: '',
         agreeTerms: false
     });
-    
+
     const [errors, setErrors] = useState({});
     const [isLoading, setIsLoading] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
@@ -23,7 +23,7 @@ function Register() {
             ...prev,
             [name]: type === 'checkbox' ? checked : value
         }));
-        
+
         // 입력 시 해당 필드의 에러 메시지 제거
         if (errors[name]) {
             setErrors(prev => ({
@@ -35,64 +35,64 @@ function Register() {
 
     const validate = () => {
         const newErrors = {};
-        
+
         // 사용자 이름 검증
         if (!formData.username.trim()) {
             newErrors.username = '사용자 이름을 입력해주세요';
         } else if (formData.username.length < 4) {
             newErrors.username = '사용자 이름은 4자 이상이어야 합니다';
         }
-        
+
         // 이메일 검증
         if (!formData.email.trim()) {
             newErrors.email = '이메일을 입력해주세요';
         } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
             newErrors.email = '유효한 이메일 주소를 입력해주세요';
         }
-        
+
         // 비밀번호 검증
         if (!formData.password) {
             newErrors.password = '비밀번호를 입력해주세요';
         } else if (formData.password.length < 6) {
             newErrors.password = '비밀번호는 6자 이상이어야 합니다';
         }
-        
+
         // 비밀번호 확인 검증
         if (!formData.confirmPassword) {
             newErrors.confirmPassword = '비밀번호 확인을 입력해주세요';
         } else if (formData.password !== formData.confirmPassword) {
             newErrors.confirmPassword = '비밀번호가 일치하지 않습니다';
         }
-        
+
         // 닉네임 검증
         if (!formData.nickname.trim()) {
             newErrors.nickname = '닉네임을 입력해주세요';
         }
-        
+
         // 약관 동의 검증
         if (!formData.agreeTerms) {
             newErrors.agreeTerms = '서비스 이용약관에 동의해주세요';
         }
-        
+
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         if (!validate()) return;
-        
+
         setIsLoading(true);
         try {
             // 실제 API 연동 시 이 부분을 수정
-            const response = await axios.post('http://localhost:8080/api/auth/signup', {
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/signup`, {
                 username: formData.username,
                 email: formData.email,
                 password: formData.password,
                 nickname: formData.nickname
             });
-            
+
             // 성공 메시지를 서버 응답에서 가져옴
             setSuccessMessage(response.data);
             setTimeout(() => {
@@ -127,19 +127,19 @@ function Register() {
                         </Link>
                     </p>
                 </div>
-                
+
                 {successMessage && (
                     <div className="mb-4 bg-green-100 border-l-4 border-green-500 text-green-700 p-4">
                         <p>{successMessage}</p>
                     </div>
                 )}
-                
+
                 {errors.serverError && (
                     <div className="mb-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-4">
                         <p>{errors.serverError}</p>
                     </div>
                 )}
-                
+
                 <form className="space-y-6" onSubmit={handleSubmit}>
                     <div>
                         <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -159,7 +159,7 @@ function Register() {
                             <p className="mt-1 text-sm text-red-600 dark:text-red-500">{errors.username}</p>
                         )}
                     </div>
-                    
+
                     <div>
                         <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                             이메일 *
@@ -178,7 +178,7 @@ function Register() {
                             <p className="mt-1 text-sm text-red-600 dark:text-red-500">{errors.email}</p>
                         )}
                     </div>
-                    
+
                     <div>
                         <label htmlFor="nickname" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                             닉네임 *
@@ -196,7 +196,7 @@ function Register() {
                             <p className="mt-1 text-sm text-red-600 dark:text-red-500">{errors.nickname}</p>
                         )}
                     </div>
-                    
+
                     <div>
                         <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                             비밀번호 *
@@ -214,7 +214,7 @@ function Register() {
                             <p className="mt-1 text-sm text-red-600 dark:text-red-500">{errors.password}</p>
                         )}
                     </div>
-                    
+
                     <div>
                         <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                             비밀번호 확인 *
@@ -232,7 +232,7 @@ function Register() {
                             <p className="mt-1 text-sm text-red-600 dark:text-red-500">{errors.confirmPassword}</p>
                         )}
                     </div>
-                    
+
                     <div className="flex items-start">
                         <div className="flex items-center h-5">
                             <input
@@ -253,7 +253,7 @@ function Register() {
                             )}
                         </div>
                     </div>
-                    
+
                     <div>
                         <button
                             type="submit"

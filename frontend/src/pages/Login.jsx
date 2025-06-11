@@ -8,20 +8,20 @@ function Login() {
         password: '',
         rememberMe: false
     });
-    
+
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
     // 현재 호스트 URL 가져오기 (포트 포함)
     const currentHost = window.location.origin;
-    
+
     // 디스코드 인증 URL 생성
     const CLIENT_ID = '1370226057252438068';
     const REDIRECT_URI = encodeURIComponent(`${currentHost}/discord/callback`);
     const RESPONSE_TYPE = 'code';
     const SCOPE = encodeURIComponent('identify email');
-    
+
     const discordAuthUrl = `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=${SCOPE}`;
 
     const handleChange = (e) => {
@@ -34,20 +34,21 @@ function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         if (!formData.username.trim() || !formData.password) {
             setError('아이디와 비밀번호를 모두 입력해주세요.');
             return;
         }
-        
+
         setIsLoading(true);
         try {
             // 실제 API 연동
-            const response = await axios.post('http://localhost:8080/api/auth/login', {
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, {
                 username: formData.username,
                 password: formData.password
             });
-            
+
+
             // 로그인 처리
             const userData = {
                 id: response.data.id,
@@ -56,14 +57,14 @@ function Login() {
                 nickname: response.data.nickname,
                 role: response.data.role
             };
-            
+
             localStorage.setItem('token', response.data.token);
             localStorage.setItem('user', JSON.stringify(userData));
-            
+
             if (formData.rememberMe) {
                 localStorage.setItem('rememberedUser', formData.username);
             }
-            
+
             // 홈 페이지로 리디렉션
             navigate('/');
         } catch (error) {
@@ -99,7 +100,7 @@ function Login() {
                             <p>{error}</p>
                         </div>
                     )}
-                    
+
                     <form className="space-y-6" onSubmit={handleSubmit}>
                         <div>
                             <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300">

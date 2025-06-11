@@ -5,7 +5,7 @@ const Boards = () => {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:8080/api/boards')
+    fetch('${import.meta.env.VITE_API_URL}/api/boards')
       .then((res) => res.json())
       .then((data) => setPosts(data))
       .catch((err) => console.error('게시글을 불러오는 데 실패했습니다.', err));

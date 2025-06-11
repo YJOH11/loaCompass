@@ -25,16 +25,16 @@ const DiscordCallback = () => {
             try {
                 console.log('Sending request to backend:', { code });
                 setLoadingStage('서버에 인증 정보 전송 중...');
-                
-                const response = await axios.post('http://localhost:8080/api/auth/discord', { code });
-                
+
+                const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/discord`, { code });
+
                 console.log('로그인 성공:', response.data);
                 setLoadingStage('로그인 정보 처리 중...');
-                
+
                 if (!response.data || !response.data.id) {
                     throw new Error('Backend returned invalid user data');
                 }
-                
+
                 // 로그인 성공 시 처리
                 localStorage.setItem('discordUser', JSON.stringify(response.data));
                 if (response.data.token) {
@@ -43,9 +43,9 @@ const DiscordCallback = () => {
 
                 // 로컬 스토리지 이벤트 강제 발생 (다른 탭/창에서 감지 가능)
                 window.dispatchEvent(new Event('storage'));
-                
+
                 setLoadingStage('로그인 완료! 메인 페이지로 이동합니다...');
-                
+
                 // 직접 사용자 데이터를 전역 상태에 저장하는 방법이 있다면 좋겠지만
                 // 현재는 없으므로 홈으로 리다이렉트 후 새로고침
                 setTimeout(() => {
@@ -78,8 +78,8 @@ const DiscordCallback = () => {
                     <div className="py-3 text-center text-gray-600 dark:text-gray-300 mb-4">
                         정보를 처리하는 중입니다. 잠시만 기다려주세요.
                     </div>
-                    <button 
-                        onClick={() => navigate('/login')} 
+                    <button
+                        onClick={() => navigate('/login')}
                         className="w-full mt-4 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
                     >
                         로그인 페이지로 돌아가기
