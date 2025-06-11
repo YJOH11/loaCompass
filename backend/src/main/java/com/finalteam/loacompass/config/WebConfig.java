@@ -17,7 +17,7 @@ public class WebConfig {
                         .allowedOriginPatterns("http://localhost:*","http://3.36.92.116:*")
                         .allowedMethods("*")
                         .allowedHeaders("*")
-                        .allowCredentials(false);
+                        .allowCredentials(true);
             }
         };
     }
