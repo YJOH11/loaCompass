@@ -22,7 +22,7 @@ const BoardWrite = () => {
     e.preventDefault();
 
     try {
-       const res = await fetch(`${import.meta.env.VITE_API_URL}/api/boards`, {
+       const res = await fetch(`/api/boards`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

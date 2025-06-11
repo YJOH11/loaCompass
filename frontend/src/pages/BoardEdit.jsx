@@ -12,7 +12,7 @@ const BoardEdit = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/boards/${id}`)
+    fetch(`/api/boards/${id}`)
       .then(res => {
         if (!res.ok) throw new Error('게시글을 불러오는 데 실패했습니다.');
         return res.json();
@@ -46,7 +46,7 @@ const BoardEdit = () => {
     const token = localStorage.getItem('token');
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/boards/${id}`, {
+      const response = await fetch(`/api/boards/${id}`, {
         method: 'PUT', // 혹은 백엔드에서 지정한 메서드로 변경
         headers: {
           'Content-Type': 'application/json',

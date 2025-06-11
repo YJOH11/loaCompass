@@ -43,7 +43,7 @@ function Login() {
         setIsLoading(true);
         try {
             // 실제 API 연동
-            const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, {
+            const response = await axios.post(`/api/auth/login`, {
                 username: formData.username,
                 password: formData.password
             });

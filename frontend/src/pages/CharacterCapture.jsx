@@ -23,8 +23,7 @@ function CharacterScoreFromImage() {
     setNicknameCandidates([]);
 
     try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/ocr`,
+      const res = await axios.post(`/api/ocr`,
         formData,
         {
           headers: { 'Content-Type': 'multipart/form-data' },
@@ -57,8 +56,7 @@ function CharacterScoreFromImage() {
     setSelectedNames((prev) => [...prev, name]);
 
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/character/${name}`
+      const response = await axios.get(`/api/character/${name}`
       );
       if (response.data?.profile) {
         const characterData = response.data;

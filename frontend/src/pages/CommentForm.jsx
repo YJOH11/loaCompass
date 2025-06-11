@@ -9,7 +9,7 @@ const CommentForm = ({ boardId, onCommentSaved }) => {
     if (!content.trim()) return;
 
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL}/api/boards/${boardId}/comments`, {
+      await axios.post(`/api/boards/${boardId}/comments`, {
         content,
         author: "익명",
       });

@@ -25,7 +25,7 @@ const BoardDetail = () => {
 
   // 댓글 불러오기
   const fetchComments = () => {
-    axios.get(`${import.meta.env.VITE_API_URL}/api/comments/board/${id}`)
+    axios.get(`/api/comments/board/${id}`)
         .then(res => setComments(res.data))
         .catch(err => console.error(err));
   };
@@ -38,7 +38,7 @@ const BoardDetail = () => {
     e.preventDefault();
     if (commentInput.trim() === '') return;
 
-    axios.post('${import.meta.env.VITE_API_URL}/api/comments', {
+    axios.post('/api/comments', {
       content: commentInput,
       boardId: id,
     })
@@ -75,7 +75,7 @@ const BoardDetail = () => {
           <div className="space-x-2">
             <button
                 onClick={() => {
-                  axios.post(`${import.meta.env.VITE_API_URL}/api/boards/${id}/like`)
+                  axios.post(`/api/boards/${id}/like`)
                       .then(res => setLiked(res.data.liked));
                 }}
                 className={`px-4 py-2 rounded font-bold text-sm ${
@@ -95,7 +95,7 @@ const BoardDetail = () => {
             <button
                 onClick={() => {
                   if (window.confirm('게시글을 삭제하시겠습니까?')) {
-                    axios.delete(`${import.meta.env.VITE_API_URL}/api/boards/${id}`)
+                    axios.delete(`/api/boards/${id}`)
                         .then(() => navigate('/boards'));
                   }
                 }}

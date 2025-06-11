@@ -5,7 +5,7 @@ const BoardList = () => {
   const [boards, setBoards] = useState([]);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/boards`)
+    fetch(`/api/boards`)
       .then(res => res.json())
       .then(data => setBoards(data))
       .catch(err => console.error('게시글 목록 불러오기 실패:', err));

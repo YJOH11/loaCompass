@@ -30,7 +30,7 @@ useEffect(() => {
     if (!characterName) return;
     setIsLoading(true);
     try {
-      const encodedName = encodeURIComponent(characterName);  
+      const encodedName = encodeURIComponent(characterName); 
       const response = await axios.get(`/api/character/${encodedName}`);
       if (response.data?.profile) {
         setCharacterData(response.data);
@@ -47,6 +47,7 @@ useEffect(() => {
 
   fetchCharacter();
 }, [characterName]);
+
 
   const handleFavoriteToggle = (name, isNowFavorite) => {
     const updated = isNowFavorite

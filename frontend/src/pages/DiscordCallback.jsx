@@ -26,7 +26,7 @@ const DiscordCallback = () => {
                 console.log('Sending request to backend:', { code });
                 setLoadingStage('서버에 인증 정보 전송 중...');
 
-                const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/discord`, { code });
+                const response = await axios.post(`/api/auth/discord`, { code });
 
                 console.log('로그인 성공:', response.data);
                 setLoadingStage('로그인 정보 처리 중...');
