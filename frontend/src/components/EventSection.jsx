@@ -2,6 +2,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
+// Swiper 관련 import
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination, Navigation, Autoplay } from 'swiper/modules'; // 필요한 모듈 임포트 (자동 재생, 페이지네이션, 네비게이션)
+
+// Swiper 스타일 임포트 (필수)
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
 const EventSection = () => {
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -92,32 +100,54 @@ const EventSection = () => {
                         이벤트 정보를 불러올 수 없습니다.
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    // 🚨 이 부분이 캐러셀로 변경될 부분입니다.
+                    <Swiper
+                        modules={[Pagination, Navigation, Autoplay]}
+                        spaceBetween={24} // gap-6에 해당 (px 단위)
+                        slidesPerView={1} // 모바일 기본: 1개씩 표시
+                        autoplay={{
+                            delay: 3000, // 3초마다 자동 슬라이드
+                            disableOnInteraction: false, // 사용자 인터랙션 후에도 자동 재생 유지
+                        }}
+                        loop={true} // 무한 루프
+                        pagination={{ clickable: true }} // 하단 점 클릭 가능
+                        navigation={true} // 좌우 화살표 버튼
+                        breakpoints={{ // 반응형 설정
+                            768: { // md (768px) 이상에서
+                                slidesPerView: 2, // 2개씩 표시
+                            },
+                            1024: { // lg (1024px) 이상에서
+                                slidesPerView: 3, // 3개씩 표시
+                            },
+                        }}
+                        className="mySwiper" // 커스텀 CSS를 적용할 경우 사용
+                    >
                         {displayEvents.map((event) => (
-                            <a
-                                key={event.id}
-                                href={event.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="group block bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
-                            >
-                                <div className="aspect-[16/9] relative overflow-hidden">
-                                    <img
-                                        src={event.imageUrl}
-                                        alt={event.title || '이벤트 이미지'}
-                                        className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
-                                        loading="lazy"
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                                </div>
-                                <div className="p-4 border-t border-gray-100 dark:border-gray-700">
-                                    <h3 className="text-sm font-medium text-gray-800 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200">
-                                        {event.title || '로스트아크 이벤트'}
-                                    </h3>
-                                </div>
-                            </a>
+                            <SwiperSlide key={event.id}>
+                                <a
+                                    href={event.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="group block bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+                                >
+                                    <div className="aspect-[16/9] relative overflow-hidden">
+                                        <img
+                                            src={event.imageUrl}
+                                            alt={event.title || '이벤트 이미지'}
+                                            className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
+                                            loading="lazy"
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                    </div>
+                                    <div className="p-4 border-t border-gray-100 dark:border-gray-700">
+                                        <h3 className="text-sm font-medium text-gray-800 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200">
+                                            {event.title || '로스트아크 이벤트'}
+                                        </h3>
+                                    </div>
+                                </a>
+                            </SwiperSlide>
                         ))}
-                    </div>
+                    </Swiper>
                 )}
             </div>
         </div>
