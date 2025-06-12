@@ -22,6 +22,7 @@ const DiscordLoginButton = () => {
     const SCOPE = encodeURIComponent('identify email');
 
     const discordAuthUrl = `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=${SCOPE}`;
+    console.log("FRONT REDIRECT URI:", import.meta.env.VITE_DISCORD_REDIRECT_URI);
 
 
     return (
