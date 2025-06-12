@@ -53,14 +53,11 @@ const Navbar = () => {
 
     // 로그아웃 처리
     const handleLogout = () => {
-        localStorage.removeItem('token');
         localStorage.removeItem('user');
-        localStorage.removeItem('discordUser'); // 디스코드 사용자 정보도 삭제
-
-        // 로컬 스토리지 이벤트 강제 발생 (다른 탭/창에서 변경 감지)
-        window.dispatchEvent(new Event('storage'));
-
+        localStorage.removeItem('token');
         setUser(null);
+        // 로그아웃 이벤트 발생
+        document.dispatchEvent(new Event('userLoggedOut'));
         navigate('/');
     };
 
