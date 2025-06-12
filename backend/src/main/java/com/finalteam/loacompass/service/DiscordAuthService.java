@@ -2,6 +2,7 @@ package com.finalteam.loacompass.service;
 import com.finalteam.loacompass.dto.DiscordTokenResponse;
 import com.finalteam.loacompass.dto.DiscordUserResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DiscordAuthService {
@@ -25,6 +27,11 @@ public class DiscordAuthService {
     private final RestTemplate restTemplate = new RestTemplate();
 
     public DiscordUserResponse getDiscordUser(String code) {
+
+        log.info("요청 code: {}", code);
+        log.info("redirect_uri: {}", redirectUri);
+        log.info("clientId: {}, clientSecret: {}", clientId, clientSecret);
+
         // 1️⃣ 토큰 요청
         String tokenUrl = "https://discord.com/api/oauth2/token";
 
