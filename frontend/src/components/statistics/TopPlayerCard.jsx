@@ -32,7 +32,7 @@ export default function TopPlayerCarousel() {
   if (!players.length) return null;
 
   return (
-    <div className="relative flex justify-center items-center w-full mt-10">
+    <div className="relative flex justify-center items-center w-full mt-10  overflow-x-hidden">
       {/* 좌측 버튼 */}
       <button
         onClick={prev}
@@ -81,7 +81,6 @@ export default function TopPlayerCarousel() {
                 {/* 이미지 & 정보 */}
                 <div className="flex flex-col items-center space-y-4">
                   <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-purple-500/20 dark:to-purple-500/30 rounded-full"></div>
                     <img
                       src={encodeURI(p.characterImage)}
                       alt="캐릭터 이미지"

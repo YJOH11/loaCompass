@@ -78,6 +78,8 @@ const Navbar = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
     };
 
+
+
     return (
         <nav className="w-full bg-white dark:bg-gray-900 text-black dark:text-white">
             {/* 첫 번째 줄 */}
@@ -85,7 +87,7 @@ const Navbar = () => {
                 <div className="flex items-center justify-between py-3">
                     {/* 로고와 검색바 그룹 (이 부분은 이전 답변에서 pl-48을 md:pl-48로 수정 권장) */}
                     <div className="flex items-center flex-1">
-                        <div className="flex-1 mx-1 md:pl-48"> {/* pl-48 수정된 부분 */}
+                        <div className="flex-1 mx-1 ">
                             <div className="w-full flex items-center gap-6 mr-4">
                                 <div className="text-2xl font-bold whitespace-nowrap">
                                     <Link to="/" className="flex items-center group transition-colors duration-200">
@@ -190,68 +192,55 @@ const Navbar = () => {
 
             {/* 🍔 모바일 메뉴 (햄버거 버튼 클릭 시 나타나는 메뉴) */}
             {isMobileMenuOpen && (
-                <div className="md:hidden px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-gray-100 dark:bg-gray-800">
-                    <div className="flex flex-col items-start space-y-2">
+                <div className="md:hidden px-4 pt-4 pb-3 bg-gray-100 dark:bg-gray-800">
+                    <div className="flex flex-wrap items-center gap-3"> {/* 가로 배치 + 줄바꿈 가능 */}
                         {user ? (
                             <>
                                 <Link
                                     to="/mypage"
-                                    className="block w-full px-3 py-2 text-base font-medium text-white bg-indigo-500 rounded-md text-left"
-                                    onClick={toggleMobileMenu} // 메뉴 클릭 시 닫기
+                                    className="px-4 py-2 text-base font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 transition-colors"
+                                    onClick={toggleMobileMenu}
                                 >
-                                    {user.nickname || user.username}님
-                                    {user.discriminator && `#${user.discriminator}`}
+                                    {user.nickname || user.username}님{user.discriminator && `#${user.discriminator}`}
                                 </Link>
                                 <button
-                                    onClick={() => { handleLogout(); toggleMobileMenu(); }} // 로그아웃 후 메뉴 닫기
-                                    className="block w-full px-3 py-2 text-base font-medium text-white bg-red-500 rounded-md text-left"
+                                    onClick={() => {
+                                        handleLogout();
+                                        toggleMobileMenu();
+                                    }}
+                                    className="px-4 py-2 text-base font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors"
                                 >
                                     로그아웃
                                 </button>
                             </>
                         ) : (
                             <>
-                                <Link to="/login" className="block w-full px-3 py-2 text-base font-medium text-white bg-indigo-500 rounded-md text-left" onClick={toggleMobileMenu}>
+                                <Link
+                                    to="/login"
+                                    className="px-4 py-2 text-base font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 transition-colors"
+                                    onClick={toggleMobileMenu}
+                                >
                                     로그인
                                 </Link>
-                                <Link to="/register" className="block w-full px-3 py-2 text-base font-medium text-gray-800 dark:text-white bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md text-left" onClick={toggleMobileMenu}>
+                                <Link
+                                    to="/register"
+                                    className="px-4 py-2 text-base font-medium text-gray-800 dark:text-white bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+                                    onClick={toggleMobileMenu}
+                                >
                                     회원가입
                                 </Link>
                             </>
                         )}
-                        <DarkToggle className="w-full justify-start px-3 py-2" /> {/* DarkToggle도 메뉴 안에 넣기 */}
 
-                        {/* 🍔 두 번째 줄의 탭 내비게이션도 이 모바일 메뉴 안으로 이동 (선택 사항) */}
-                        {/* 탭이 많다면 이 또한 햄버거 메뉴 안으로 이동시키는 것이 좋습니다. */}
-                        {[
-                            { to: '/', label: '홈' },
-                            { to: '/sassagae', label: '사건/사고 게시판' },
-                            { to: '/statistics', label: '통계' },
-                            { to: '/ranking', label: '순위' },
-                            { to: '/boards', label: '자유 게시판' },
-                            { to: '/raid', label: '레이드 정보' },
-                            { to: '/ingame', label: '인게임 정보' }
-                        ].map((tab) => (
-                            <NavLink
-                                key={tab.to}
-                                to={tab.to}
-                                onClick={toggleMobileMenu} // 탭 클릭 시 메뉴 닫기
-                                className={({ isActive }) =>
-                                    `block w-full px-3 py-2 text-base font-medium rounded-md text-left ${isActive
-                                        ? 'bg-gray-300 dark:bg-gray-900 text-gray-900 dark:text-white'
-                                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
-                                    }`
-                                }
-                            >
-                                {tab.label}
-                            </NavLink>
-                        ))}
+                        <DarkToggle className="w-full sm:w-auto justify-start px-4 py-2" />
                     </div>
                 </div>
             )}
 
-            <div className="w-full bg-gray-200 text-gray-800 dark:bg-gray-800 dark:text-white shadow-sm md:block">                <div className="max-w-7xl mx-auto px-8">
-                <div className="flex w-full overflow-x-auto whitespace-nowrap">
+
+            <div className="w-full bg-gray-200 text-gray-800 dark:bg-gray-800 dark:text-white shadow-sm md:block ">
+                <div className="max-w-7xl mx-auto px-8">
+                    <div className="flex w-full overflow-x-auto whitespace-nowrap">
                     {[
                             { to: '/', label: '홈' },
                             { to: '/sassagae', label: '사건/사고 게시판' },
@@ -265,7 +254,7 @@ const Navbar = () => {
                                 key={tab.to}
                                 to={tab.to}
                                 className={({ isActive }) =>
-                                    `px-4 py-2 rounded-md text-sm font-medium flex items-center justify-center flex-1 ${isActive
+                                    `px-4 py-2 rounded-md text-sm font-medium flex items-center justify-center flex-1  ${isActive
                                         ? 'bg-gray-300 dark:bg-gray-900'
                                         : 'hover:bg-gray-300 dark:hover:bg-gray-700'
                                     }`
