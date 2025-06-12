@@ -40,7 +40,7 @@ export default function Footer() {
                         <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">커뮤니티</h3>
                         <ul className="space-y-2">
                             <li><a href="#" className="text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 text-sm transition-colors duration-200">게시판</a></li>
-                            <li><a href="#" className="text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 text-sm transition-colors duration-200">사사게</a></li>
+                            <li><a href="#" className="text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 text-sm transition-colors duration-200">사건/사고</a></li>
                             <li><a href="#" className="text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 text-sm transition-colors duration-200">디스코드</a></li>
                         </ul>
                     </div>
