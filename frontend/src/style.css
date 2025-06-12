@@ -1,0 +1,26 @@
+/* 데스크톱 기본 스타일 */
+.container {
+    width: 960px;
+    margin: 0 auto;
+}
+
+/* 모바일 (예: 767px 이하 화면) */
+@media screen and (max-width: 767px) {
+    .container {
+        width: 100% !important; /* 모바일 화면에 꽉 차게 */
+        padding: 0 15px !important;
+    }
+    h1 {
+        font-size: 24px; /* 모바일에 맞게 글꼴 크기 조절 */
+    }
+    img {
+        max-width: 100%; /* 이미지가 화면을 넘치지 않도록 */
+        height: auto;
+    }
+    /* 데스크톱에서 float, flex, grid로 복잡하게 구성된 레이아웃을 모바일에서는 한 줄로 정렬 */
+    .column {
+        width: 100%;
+        float: none; /* float 해제 */
+        margin-bottom: 20px;
+    }
+}
