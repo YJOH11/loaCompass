@@ -8,6 +8,7 @@ const Navbar = () => {
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
     const location = useLocation();
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // 🍔 햄버거 메뉴 상태 추가
 
     // 로컬 스토리지에서 사용자 정보 가져오기
     const loadUserFromStorage = () => {
@@ -75,29 +76,32 @@ const Navbar = () => {
         setFavorites(updated);
         localStorage.setItem("favoriteHistory", JSON.stringify(updated));
     };
-
+    // 🍔 햄버거 메뉴 토글 함수
+    const toggleMobileMenu = () => {
+        setIsMobileMenuOpen(!isMobileMenuOpen);
+    };
 
     return (
         <nav className="w-full bg-white dark:bg-gray-900 text-black dark:text-white">
             {/* 첫 번째 줄 */}
             <div className="max-w-9xl mx-auto px-8">
                 <div className="flex items-center justify-between py-3">
-                    {/* 로고와 검색바 그룹 */}
+                    {/* 로고와 검색바 그룹 (이 부분은 이전 답변에서 pl-48을 md:pl-48로 수정 권장) */}
                     <div className="flex items-center flex-1">
-                        <div className="flex-1 mx-1 pl-48">
+                        <div className="flex-1 mx-1 md:pl-48"> {/* pl-48 수정된 부분 */}
                             <div className="w-full flex items-center gap-6 mr-4">
                                 <div className="text-2xl font-bold whitespace-nowrap">
                                     <Link to="/" className="flex items-center group transition-colors duration-200">
                                         <div className="flex items-center">
                                             <div className="relative w-7 h-7 mr-2">
                                                 <svg xmlns="http://www.w3.org/2000/svg"
-                                                    className="w-full h-full text-indigo-600 dark:text-indigo-400 group-hover:text-indigo-500 dark:group-hover:text-indigo-300 transition-all duration-300"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    strokeWidth="2"
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
+                                                     className="w-full h-full text-indigo-600 dark:text-indigo-400 group-hover:text-indigo-500 dark:group-hover:text-indigo-300 transition-all duration-300"
+                                                     viewBox="0 0 24 24"
+                                                     fill="none"
+                                                     stroke="currentColor"
+                                                     strokeWidth="2"
+                                                     strokeLinecap="round"
+                                                     strokeLinejoin="round"
                                                 >
                                                     {/* 외부 원 */}
                                                     <circle className="opacity-20" cx="12" cy="12" r="10" />
@@ -106,12 +110,12 @@ const Navbar = () => {
 
                                                     {/* 나침반 바늘 */}
                                                     <path className="transform origin-center group-hover:rotate-[360deg] transition-transform duration-700"
-                                                        d="M12 2l2 8-2 2-2-2z"
-                                                        fill="currentColor"
+                                                          d="M12 2l2 8-2 2-2-2z"
+                                                          fill="currentColor"
                                                     />
                                                     <path className="transform origin-center group-hover:rotate-[360deg] transition-transform duration-700"
-                                                        d="M12 22l-2-8 2-2 2 2z"
-                                                        fill="currentColor"
+                                                          d="M12 22l-2-8 2-2 2 2z"
+                                                          fill="currentColor"
                                                     />
 
                                                     {/* 중앙 포인트 */}
@@ -127,83 +131,138 @@ const Navbar = () => {
                                             <span className="font-extrabold text-gray-800 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200">로침반</span>
                                         </div>
                                     </Link>
-                                </div>
-                                <CharacterSearchInput
+                                </div>                                <CharacterSearchInput
                                     favorites={favorites}
                                     onFavoriteToggle={handleFavoriteToggle}
+                                    // 🍔 모바일에서 검색창 숨기거나 조절 필요 시 여기에 Tailwind 클래스 추가
+                                    // 예: className="hidden sm:block" 또는 sm:w-auto w-full
                                 />
                             </div>
                         </div>
                     </div>
 
-                    {/* 버튼 그룹 */}
-                    <div className="flex items-center space-x-4">
-                        <DarkToggle />
+                    {/* 버튼 그룹 (이 부분이 햄버거 메뉴로 바뀔 부분) */}
+                    <div className="flex items-center space-x-4"> {/* sm:space-x-4는 유지, 아래 div에서 숨김 */}
+
+                        {/* 🍔 햄버거 메뉴 토글 버튼 (모바일에서만 보임) */}
+                        <button
+                            onClick={toggleMobileMenu}
+                            className="md:hidden p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+                            aria-label="Toggle mobile menu"
+                        >
+                            {isMobileMenuOpen ? (
+                                // X 아이콘 (메뉴 닫기)
+                                <svg className="h-6 w-6 text-gray-800 dark:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            ) : (
+                                // 햄버거 아이콘 (메뉴 열기)
+                                <svg className="h-6 w-6 text-gray-800 dark:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+                                </svg>
+                            )}
+                        </button>
+
+                        {/* 🍔 데스크톱에서 보이는 버튼 그룹 (md 이상에서만 flex로 보임) */}
+                        <div className="hidden md:flex items-center space-x-4">
+                            <DarkToggle />
+                            {user ? (
+                                <div className="flex items-center space-x-4">
+                                    <Link to="/mypage" className="px-4 py-2 text-sm font-medium text-white bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-600 dark:hover:bg-indigo-700 border border-transparent rounded-md transition">
+                                        {user.nickname || user.username}님
+                                        {user.discriminator && `#${user.discriminator}`}
+                                    </Link>
+                                    <button onClick={handleLogout} className="px-4 py-2 text-sm font-medium text-white bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 border border-transparent rounded-md transition">
+                                        로그아웃
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="flex items-center space-x-4">
+                                    <Link to="/login" className="px-4 py-2 text-sm font-medium text-white bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-600 dark:hover:bg-indigo-700 border border-transparent rounded-md transition">
+                                        로그인
+                                    </Link>
+                                    <Link to="/register" className="px-4 py-2 text-sm font-medium text-gray-800 dark:text-white bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-100 dark:hover:bg-gray-600 transition">
+                                        회원가입
+                                    </Link>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* 🍔 모바일 메뉴 (햄버거 버튼 클릭 시 나타나는 메뉴) */}
+            {isMobileMenuOpen && (
+                <div className="md:hidden px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-gray-100 dark:bg-gray-800">
+                    <div className="flex flex-col items-start space-y-2">
                         {user ? (
-                            <div className="flex items-center space-x-4">
+                            <>
                                 <Link
                                     to="/mypage"
-                                    className="px-4 py-2 text-sm font-medium text-white bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-600 dark:hover:bg-indigo-700 border border-transparent rounded-md transition"
+                                    className="block w-full px-3 py-2 text-base font-medium text-white bg-indigo-500 rounded-md text-left"
+                                    onClick={toggleMobileMenu} // 메뉴 클릭 시 닫기
                                 >
                                     {user.nickname || user.username}님
                                     {user.discriminator && `#${user.discriminator}`}
                                 </Link>
                                 <button
-                                    onClick={handleLogout}
-                                    className="px-4 py-2 text-sm font-medium text-white bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 border border-transparent rounded-md transition"
+                                    onClick={() => { handleLogout(); toggleMobileMenu(); }} // 로그아웃 후 메뉴 닫기
+                                    className="block w-full px-3 py-2 text-base font-medium text-white bg-red-500 rounded-md text-left"
                                 >
                                     로그아웃
                                 </button>
-                            </div>
+                            </>
                         ) : (
-                            <div className="flex items-center space-x-4">
-                                <Link to="/login" className="px-4 py-2 text-sm font-medium text-white bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-600 dark:hover:bg-indigo-700 border border-transparent rounded-md transition">
+                            <>
+                                <Link to="/login" className="block w-full px-3 py-2 text-base font-medium text-white bg-indigo-500 rounded-md text-left" onClick={toggleMobileMenu}>
                                     로그인
                                 </Link>
-                                <Link to="/register" className="px-4 py-2 text-sm font-medium text-gray-800 dark:text-white bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-100 dark:hover:bg-gray-600 transition">
+                                <Link to="/register" className="block w-full px-3 py-2 text-base font-medium text-gray-800 dark:text-white bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md text-left" onClick={toggleMobileMenu}>
                                     회원가입
                                 </Link>
-                            </div>
+                            </>
                         )}
+                        <DarkToggle className="w-full justify-start px-3 py-2" /> {/* DarkToggle도 메뉴 안에 넣기 */}
+
+                        {/* 🍔 두 번째 줄의 탭 내비게이션도 이 모바일 메뉴 안으로 이동 (선택 사항) */}
+                        {/* 탭이 많다면 이 또한 햄버거 메뉴 안으로 이동시키는 것이 좋습니다. */}
+                        {[
+                            { to: '/', label: '홈' },
+                            { to: '/sassagae', label: '사사게 게시판' },
+                            { to: '/statistics', label: '통계' },
+                            { to: '/ranking', label: '순위' },
+                            { to: '/boards', label: '자유 게시판' },
+                            { to: '/raid', label: '레이드 정보' },
+                            { to: '/ingame', label: '인게임 정보' }
+                        ].map((tab) => (
+                            <NavLink
+                                key={tab.to}
+                                to={tab.to}
+                                onClick={toggleMobileMenu} // 탭 클릭 시 메뉴 닫기
+                                className={({ isActive }) =>
+                                    `block w-full px-3 py-2 text-base font-medium rounded-md text-left ${isActive
+                                        ? 'bg-gray-300 dark:bg-gray-900 text-gray-900 dark:text-white'
+                                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                                    }`
+                                }
+                            >
+                                {tab.label}
+                            </NavLink>
+                        ))}
                     </div>
                 </div>
-            </div>
+            )}
 
-            {/* 두 번째 줄 - 탭 네비게이션 */}
-            <div className="w-full bg-gray-200 text-gray-800 dark:bg-gray-800 dark:text-white shadow-sm">
-                <div className="max-w-7xl mx-auto px-8">
-                    <div className="flex w-full">
-                        {[
-                            {
-                                to: '/',
-                                label: '홈'
-                            },
-                            {
-                                to: '/sassagae',
-                                label: '사사게 게시판'
-                            },
-                            {
-                                to: '/statistics',
-                                label: '통계'
-                            },
-                            {
-                                to: '/ranking',
-                                label: '순위'
-                            },
-                            {
-                                to: '/boards',
-                                label: '자유 게시판'
-
-                            },
-                            {
-                                to: '/raid',
-                                label: '레이드 정보'           // 🔹 추가된 항목
-                            },
-                            {
-                                to: '/ingame',
-                                label: '인게임 정보'           // 🔹 추가된 항목
-                            }
-
+            <div className="w-full bg-gray-200 text-gray-800 dark:bg-gray-800 dark:text-white shadow-sm md:block">                <div className="max-w-7xl mx-auto px-8">
+                <div className="flex w-full overflow-x-auto whitespace-nowrap">
+                    {[
+                            { to: '/', label: '홈' },
+                            { to: '/sassagae', label: '사사게 게시판' },
+                            { to: '/statistics', label: '통계' },
+                            { to: '/ranking', label: '순위' },
+                            { to: '/boards', label: '자유 게시판' },
+                            { to: '/raid', label: '레이드 정보' },
+                            { to: '/ingame', label: '인게임 정보' }
                         ].map((tab) => (
                             <NavLink
                                 key={tab.to}
@@ -222,8 +281,6 @@ const Navbar = () => {
                     </div>
                 </div>
             </div>
-
-
         </nav>
     );
 };

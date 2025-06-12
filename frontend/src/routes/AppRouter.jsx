@@ -32,7 +32,6 @@ const AppRouter = () => {
     return (
         <BrowserRouter>
             <Routes>
-
                 <Route element={<Layout />}>
                     <Route path="/" element={<Home />} />
                     <Route path="/character/simulation/:name" element={<CharacterSimulation />} />
