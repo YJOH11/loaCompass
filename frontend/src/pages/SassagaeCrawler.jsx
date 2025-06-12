@@ -70,14 +70,6 @@ export default function SassagaeCrawler() {
                             제목 검색과 본문 검색을 선택하여 사용하실 수 있습니다.
                         </p>
                     </div>
-                    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 max-w-xl mx-auto">
-                        <p className="text-gray-600 dark:text-gray-400 text-lg mb-2">
-                            닉네임을 입력해주세요
-                        </p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">
-                            정확한 검색을 위해 닉네임을 올바르게 입력해주세요
-                        </p>
-                    </div>
                 </div>
 
                 <div className="mb-10">
@@ -87,7 +79,7 @@ export default function SassagaeCrawler() {
                             value={keyword}
                             onChange={(e) => setKeyword(e.target.value)}
                             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                            placeholder="검색어를 입력해주세요"
+                            placeholder="닉네임을 입력해주세요"
                             className="w-full p-4 pl-5 pr-12 rounded-full bg-gray-100 dark:bg-gray-800 text-black dark:text-white border-2 border-gray-300 dark:border-gray-700 focus:outline-none focus:border-blue-500 text-center text-lg"
                         />
                         <button
