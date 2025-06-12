@@ -56,8 +56,28 @@ export default function SassagaeCrawler() {
         <div className="min-h-screen bg-white text-black dark:bg-gray-900 dark:text-white flex flex-col items-center justify-start py-16">
             <div className="w-full max-w-3xl px-4">
                 <div className="text-center mb-12">
-                    <h1 className="text-4xl font-bold mb-2">사사게 게시판</h1>
-                   
+                    <h1 className="text-4xl font-bold mb-4">사건/사고 게시판</h1>
+                    <div className="bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-gray-800 dark:to-gray-800 p-6 rounded-xl shadow-sm mb-8 max-w-2xl mx-auto">
+                        <div className="flex items-center justify-center mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-indigo-500 dark:text-indigo-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span className="text-lg font-semibold text-gray-800 dark:text-gray-200">게시판 안내</span>
+                        </div>
+                        <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
+                            로스트아크 인벤 사건/사고 게시판의 게시글을 검색할 수 있습니다.<br/>
+                            특정 닉네임과 관련된 사건/사고 이력을 확인하실 수 있으며,<br/>
+                            제목 검색과 본문 검색을 선택하여 사용하실 수 있습니다.
+                        </p>
+                    </div>
+                    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 max-w-xl mx-auto">
+                        <p className="text-gray-600 dark:text-gray-400 text-lg mb-2">
+                            닉네임을 입력해주세요
+                        </p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                            정확한 검색을 위해 닉네임을 올바르게 입력해주세요
+                        </p>
+                    </div>
                 </div>
 
                 <div className="mb-10">

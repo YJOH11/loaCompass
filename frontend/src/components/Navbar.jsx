@@ -228,7 +228,7 @@ const Navbar = () => {
                         {/* 탭이 많다면 이 또한 햄버거 메뉴 안으로 이동시키는 것이 좋습니다. */}
                         {[
                             { to: '/', label: '홈' },
-                            { to: '/sassagae', label: '사사게 게시판' },
+                            { to: '/sassagae', label: '사건/사고 게시판' },
                             { to: '/statistics', label: '통계' },
                             { to: '/ranking', label: '순위' },
                             { to: '/boards', label: '자유 게시판' },
@@ -257,7 +257,7 @@ const Navbar = () => {
                 <div className="flex w-full overflow-x-auto whitespace-nowrap">
                     {[
                             { to: '/', label: '홈' },
-                            { to: '/sassagae', label: '사사게 게시판' },
+                            { to: '/sassagae', label: '사건/사고 게시판' },
                             { to: '/statistics', label: '통계' },
                             { to: '/ranking', label: '순위' },
                             { to: '/boards', label: '자유 게시판' },
