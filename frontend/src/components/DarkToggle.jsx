@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 export default function DarkToggle() {
-    const [dark, setDark] = useState(false);
+    const [dark, setDark] = useState(true); // 기본을 다크모드로 
 
     useEffect(() => {
         if (dark) {
