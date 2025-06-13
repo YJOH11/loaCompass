@@ -99,7 +99,152 @@ export default function SimulationEquipmentCard({ item, onEquipmentChanges }) {
 
   // JSX 렌더링 부분은 그대로 유지하되, 위 코드만 방어 보완됨
   return (
-    // ... 기존 JSX 그대로 유지
-    null // (여기선 JSX 생략)
+     <div className="bg-white dark:bg-gray-800 p-3 rounded shadow w-full h-auto flex gap-3 items-start">
+          <div className="flex flex-col items-center">
+            <img src={Icon} alt={Name} className="w-12 h-12 object-contain shrink-0" />
+            <div className="mt-1 relative">
+              <div
+                className="relative w-12 h-3 bg-gray-300 rounded-full overflow-hidden cursor-pointer"
+                onClick={() => setShowSelector(true)}
+              >
+                <div className="w-full bg-gray-300 dark:bg-gray-600 h-3 rounded overflow-hidden">
+                  <div
+                    className={`absolute top-0 left-0 h-full ${getQualityColor(quality)}`}
+                    style={{ width: `${quality}%` }}
+                  />
+                  <div className="absolute inset-0 text-[10px] text-white font-bold flex items-center justify-center pointer-events-none">
+                    {quality}%
+                  </div>
+                </div>
+              </div>
+              {showSelector && (
+                <select
+                  className="absolute left-0 top-5 text-xs bg-white dark:bg-gray-700 text-black dark:text-white border rounded px-1 py-0.5 shadow z-10"
+                  value={quality}
+                  onChange={(e) => {
+                    setQuality(Number(e.target.value));
+                    setShowSelector(false);
+                  }}
+                  onBlur={() => setShowSelector(false)}
+                >
+                  {Array.from({ length: 101 }, (_, i) => (
+                    <option key={i} value={i}>
+                      {i}%
+                    </option>
+                  ))}
+                </select>
+              )}
+            </div>
+          </div>
+
+          <div className="flex-1 text-xs text-orange-500 whitespace-pre-wrap leading-snug overflow-hidden">
+            <div className="font-semibold text-sm text-black dark:text-white mb-1 flex items-center gap-2">
+              <select
+                value={nameNumber}
+                onChange={(e) => setNameNumber(Number(e.target.value))}
+                className="border rounded px-1 py-0.5 dark:bg-gray-700 dark:text-white text-xs"
+              >
+                {Array.from({ length: 26 }, (_, i) => (
+                  <option key={i} value={i}>
+                    +{i}
+                  </option>
+                ))}
+              </select>
+              <span>{Name.replace(/^\+\d+\s*/, "")}</span> / 상급 재련:
+              <select
+                value={refinementLevel}
+                onChange={(e) => setRefinementLevel(Number(e.target.value))}
+                className="border rounded px-1 py-0.5 dark:bg-gray-700 dark:text-white text-xs"
+              >
+                {Array.from({ length: 41 }, (_, i) => (
+                  <option key={i} value={i}>
+                    {i}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex gap-2 items-center flex-wrap mb-1 text-black dark:text-white text-xs">
+              <span className="font-semibold">초월 옵션:</span>
+              <label>단계:</label>
+              <select
+                value={transcendStep}
+                onChange={(e) => setTranscendStep(Number(e.target.value))}
+                className="border rounded px-1 py-0.5 dark:bg-gray-700 dark:text-white"
+              >
+                {Array.from({ length: 8 }, (_, i) => (
+                  <option key={i} value={i}>
+                    {i}
+                  </option>
+                ))}
+              </select>
+              <label>레벨:</label>
+              <select
+                value={transcendLevel}
+                onChange={(e) => setTranscendLevel(Number(e.target.value))}
+                className="border rounded px-1 py-0.5 dark:bg-gray-700 dark:text-white"
+              >
+                {Array.from({ length: 22 }, (_, i) => (
+                  <option key={i} value={i}>
+                    {i}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Elixir Options */}
+            {Type !== "무기" && (
+              <div className="flex gap-2 flex-wrap mb-1 text-black dark:text-white text-xs">
+                <span className="font-semibold">엘릭서 옵션:</span>
+                {elixirs.map((elixir, index) => (
+                  <div key={index} className="flex items-center gap-1">
+                    <select
+                      value={elixir.name}
+                      onChange={(e) => {
+                        const newElixirs = [...elixirs];
+                        newElixirs[index].name = e.target.value;
+                        setElixirs(newElixirs);
+                      }}
+                      className="border rounded px-1 py-0.5 dark:bg-gray-700 dark:text-white"
+                    >
+                      <option value="">선택</option>
+                      {ELIXIR_EFFECTS.map((e) => (
+                        <option key={e.name} value={e.name}>
+                          {e.name}
+                        </option>
+                      ))}
+                    </select>
+
+                    <select
+                      value={elixir.level}
+                      onChange={(e) => {
+                        const newElixirs = [...elixirs];
+                        newElixirs[index].level = Number(e.target.value);
+                        setElixirs(newElixirs);
+                      }}
+                      className="border rounded px-1 py-0.5 dark:bg-gray-700 dark:text-white"
+                    >
+                      {Array.from({ length: 6 }, (_, i) => (
+                        <option key={i} value={i}>
+                          Lv.{i}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {Type === "무기" && additionalEffect && (
+              <div className="flex gap-2 flex-wrap mb-1">
+                <div className="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded text-xs">
+                  <span className={`${getQualityTextColor(quality)}`}>
+                    추가 피해: {additionalDamage}%
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
   );
 }
