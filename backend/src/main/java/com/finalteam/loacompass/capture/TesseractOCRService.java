@@ -42,7 +42,14 @@ public class TesseractOCRService {
             ImageIO.write(binaryImage, "png", preprocessedFile);
 
             Tesseract tesseract = new Tesseract();
-            tesseract.setDatapath("C:/Program Files/Tesseract-OCR");
+
+            String os = System.getProperty("os.name").toLowerCase();
+            if (os.contains("win")) {
+                tesseract.setDatapath("C:/Program Files/Tesseract-OCR");
+            } else {
+                tesseract.setDatapath("/home/ubuntu/Tesseract-OCR");
+            }
+
             tesseract.setLanguage("kor+eng");
 
             String result = tesseract.doOCR(preprocessedFile);
