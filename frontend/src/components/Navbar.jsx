@@ -247,8 +247,7 @@ const Navbar = () => {
                             { to: '/statistics', label: '통계' },
                             { to: '/ranking', label: '순위' },
                             { to: '/boards', label: '자유 게시판' },
-                            { to: '/raid', label: '레이드 정보' },
-                            { to: '/ingame', label: '인게임 정보' }
+                            { to: '/raid', label: '레이드 정보' }
                         ].map((tab) => (
                             <NavLink
                                 key={tab.to}

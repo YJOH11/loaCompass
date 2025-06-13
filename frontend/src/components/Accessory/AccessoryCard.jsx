@@ -278,6 +278,8 @@ export default function AccessoryCard({ item }) {
          return "text-purple-400"; // purple
        case "하":
          return "text-sky-400"; // skyblue
+       case "무":
+         return "text-green-500"; // skyblue
        default:
          return "text-black"; // default
      }
