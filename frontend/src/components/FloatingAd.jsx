@@ -1,48 +1,49 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Advertisement from "./Advertisement";
 
 export default function FloatingAd({ position = "left" }) {
     const adRef = useRef(null);
-    const currentY = useRef(120);
+    const [isFixed, setIsFixed] = useState(false);
+    const [adInitialTop, setAdInitialTop] = useState(0);
 
     useEffect(() => {
-        const adHeight = adRef.current?.offsetHeight || 160;
+        if (adRef.current) {
+            // 최초 위치 측정 (absolute 기준 top 위치)
+            const rect = adRef.current.getBoundingClientRect();
+            const scrollTop = window.scrollY || document.documentElement.scrollTop;
+            setAdInitialTop(rect.top + scrollTop);
+        }
 
-        const animate = () => {
-            // 기준 위치 = 현재 스크롤 위치 + 여유
-            const targetY = window.scrollY + 120;
+        const handleScroll = () => {
+            const scrollTop = window.scrollY || document.documentElement.scrollTop;
 
-            // 광고가 화면 아래로 안 나가게 제한
-            const maxY = window.scrollY + window.innerHeight - adHeight - 20;
-            const limitedY = Math.min(targetY, maxY);
-
-            // 부드럽게 이동
-            currentY.current += (limitedY - currentY.current) * 0.11;
-
-            if (adRef.current) {
-                adRef.current.style.transform = `translateY(${currentY.current}px)`;
+            // 광고가 화면 상단에 닿으면 fixed
+            if (scrollTop >= adInitialTop) {
+                setIsFixed(true);
+            } else {
+                setIsFixed(false);
             }
-
-            requestAnimationFrame(animate);
         };
 
-        animate();
-    }, []);
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, [adInitialTop]);
 
     const sideClass =
         position === "left"
             ? "left-[calc(50%-650px)]"
-            : "right-[calc(50%-650px)]"; // ← 기존 620px → 600px로 줄임
-
+            : "right-[calc(50%-650px)]";
 
     return (
         <div
             ref={adRef}
-            className={`fixed top-0 ${sideClass} w-[160px] hidden xl:block z-7`}
-            style={{ transform: `translateY(120px)` }}
+            className={`w-[160px] hidden xl:block ${isFixed ? "fixed" : "absolute"} ${sideClass}`}
+            style={{
+                top: isFixed ? "0px" : "120px",
+                zIndex: 30, // nav보다 낮게
+            }}
         >
             <Advertisement />
         </div>
-
     );
 }
