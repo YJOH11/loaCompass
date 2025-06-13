@@ -153,6 +153,7 @@ function CharacterScoreFromImage() {
         </div>
       )}
     </div>
+
   );
 }
 
