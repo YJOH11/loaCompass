@@ -44,116 +44,163 @@ const ClearMainPage = () => {
   const tier2 = jobTiers.slice(2, 5);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white flex flex-col items-center">
-      <div className="flex justify-center gap-4 py-4 border-b border-gray-200 dark:border-gray-700 w-full bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-white z-10">
-        {Object.keys(raidData).map((act) => (
-          <button
-            key={act}
-            onClick={() => {
-              setSelectedAct(act);
-              setSelectedGate(raidData[act][0]);
-            }}
-            className={`px-4 py-2 font-semibold rounded transition ${selectedAct === act ? 'bg-indigo-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white'
-              }`}
-          >
-            {act}
-          </button>
-        ))}
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      {/* 헤더 섹션 */}
+      <div className="relative bg-gradient-to-br from-indigo-600 to-blue-700 dark:from-indigo-900 dark:to-blue-900">
+        <div className="absolute inset-0 bg-black/20 backdrop-blur-sm"></div>
+        <div className="relative container mx-auto px-4 py-8">
+          <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">레이드 정보</h1>
+          <p className="text-blue-100 text-lg">최신 레이드 공략과 클리어 기록을 확인하세요</p>
+        </div>
       </div>
 
-      <div className="relative w-full max-w-[1280px]">
-        <img
-          src={bossImages[selectedGate] || '/images/default.jpg'}
-          alt="Boss"
-          className="w-full object-contain"
-        />
-
-        <div className="absolute top-4 right-4 flex gap-2">
-          {raidData[selectedAct].map((gate) => (
-            <button
-              key={gate}
-              onClick={() => setSelectedGate(gate)}
-              className={`px-3 py-1.5 rounded-full text-sm transition ${selectedGate === gate ? 'bg-indigo-600 text-white' : 'bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-white'
+      {/* 네비게이션 */}
+      <div className="sticky top-0 z-20 bg-white dark:bg-gray-800 shadow-md">
+        <div className="container mx-auto px-4">
+          <div className="flex gap-2 overflow-x-auto py-4 scrollbar-hide">
+            {Object.keys(raidData).map((act) => (
+              <button
+                key={act}
+                onClick={() => {
+                  setSelectedAct(act);
+                  setSelectedGate(raidData[act][0]);
+                }}
+                className={`px-6 py-2.5 rounded-lg font-medium transition-all duration-200 ${
+                  selectedAct === act
+                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                 }`}
-            >
-              {gate}
-            </button>
-          ))}
+              >
+                {act}
+              </button>
+            ))}
+          </div>
         </div>
+      </div>
 
-        <div className="absolute top-20 right-4 bg-white dark:bg-black bg-opacity-90 dark:bg-opacity-70 text-gray-900 dark:text-white p-4 rounded shadow-lg w-96">
-          <h2 className="text-xl font-bold mb-1">{selectedGate}</h2>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-            {topRecord ? (
-              <>
-                1위 공대: <span className="font-semibold text-indigo-500">{topRecord.guildName || '이름 없음'}</span>
-                <span className="ml-2 text-xs">(클리어 타임: {topRecord.clearTime})</span>
-              </>
-            ) : (
-              <span className="text-red-500">아직 클리어 기록이 없습니다.</span>
-            )}
-          </p>
-
-          {topRecord && (
-            <div className="mb-3">
-              <p className="text-sm font-semibold mb-1">※ 파티 구성</p>
-              <div className="flex gap-6 text-sm">
-                {[1, 2].map((partyNum) => (
-                  <div key={partyNum}>
-                    <h4 className="font-semibold">{partyNum}파티</h4>
-                    <ul className="list-disc ml-4">
-                      {topRecord[`party${partyNum}`].map((m, idx) => (
-                        <li key={idx}>
-                          <span
-                            onClick={() => navigate(`/character/${encodeURIComponent(m.characterName)}`)}
-                            className="text-indigo-400 hover:underline cursor-pointer"
-                          >
-                            {m.characterName}
-                          </span>
-                          &nbsp;({m.job}, {m.level})
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
+      {/* 메인 콘텐츠 */}
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* 레이드 이미지 섹션 */}
+          <div className="lg:col-span-2">
+            <div className="relative rounded-2xl overflow-hidden bg-gray-800 shadow-2xl">
+              <img
+                src={bossImages[selectedGate] || '/images/default.jpg'}
+                alt={selectedGate}
+                className="w-full h-[500px] object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+              
+              {/* 게이트 선택 버튼 */}
+              <div className="absolute bottom-0 left-0 right-0 p-6">
+                <div className="flex flex-wrap gap-2">
+                  {raidData[selectedAct].map((gate) => (
+                    <button
+                      key={gate}
+                      onClick={() => setSelectedGate(gate)}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                        selectedGate === gate
+                          ? 'bg-indigo-600 text-white shadow-lg'
+                          : 'bg-gray-700/80 text-gray-200 hover:bg-gray-600/80 backdrop-blur-sm'
+                      }`}
+                    >
+                      {gate}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
-          )}
-
-          <div className="mb-4">
-            <p className="text-sm font-semibold mb-1">※ 추천 직업 티어</p>
-            <div className="flex flex-wrap gap-2">
-              {tier1.map((t, idx) => (
-                <div key={idx} className="bg-yellow-400 text-black px-2 py-1 rounded text-xs">
-                  1티어: {t.job}
-                </div>
-              ))}
-              {tier2.map((t, idx) => (
-                <div key={idx} className="bg-gray-400 text-black px-2 py-1 rounded text-xs">
-                  2티어: {t.job}
-                </div>
-              ))}
-            </div>
           </div>
 
-          <div className="flex gap-4">
-            <button
-              className="bg-indigo-600 px-4 py-2 rounded hover:bg-indigo-700 text-sm"
-              onClick={() => navigate('/clear/submit')}
-            >
-              클리어 인증
-            </button>
-            <button
-              className="bg-gray-600 px-4 py-2 rounded hover:bg-gray-700 text-sm"
-              onClick={() => navigate(`/clear/list?boss=${encodeURIComponent(selectedGate)}`)}
-            >
-              기록 보기
-            </button>
-          </div>
-        </div>
+          {/* 클리어 정보 패널 */}
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-xl h-fit">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">{selectedGate}</h2>
+            
+            {topRecord ? (
+              <div className="space-y-6">
+                {/* 최고 기록 */}
+                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">최고 기록</h3>
+                  <div className="space-y-2">
+                    <p className="text-indigo-600 dark:text-indigo-400 font-medium text-lg">
+                      {topRecord.guildName || '이름 없음'}
+                    </p>
+                    <p className="text-gray-600 dark:text-gray-400">
+                      클리어 타임: {topRecord.clearTime}
+                    </p>
+                  </div>
+                </div>
 
-        <div className="w-full px-4 py-3 bg-white/70 dark:bg-black/50 backdrop-blur-sm z-10 overflow-visible relative">
-          <JobTierDisplay jobTiers={jobTiers} />
+                {/* 파티 구성 */}
+                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">파티 구성</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    {[1, 2].map((partyNum) => (
+                      <div key={partyNum} className="space-y-2">
+                        <h4 className="font-medium text-gray-700 dark:text-gray-300">{partyNum}파티</h4>
+                        <ul className="space-y-2">
+                          {topRecord[`party${partyNum}`].map((m, idx) => (
+                            <li key={idx} className="text-sm">
+                              <button
+                                onClick={() => navigate(`/character/${encodeURIComponent(m.characterName)}`)}
+                                className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 transition-colors"
+                              >
+                                {m.characterName}
+                              </button>
+                              <span className="text-gray-600 dark:text-gray-400"> • {m.job} ({m.level})</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 직업 티어 */}
+                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">추천 직업</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {tier1.map((t, idx) => (
+                      <span key={idx} className="px-3 py-1 bg-yellow-400/90 text-yellow-900 rounded-full text-sm">
+                        {t.job}
+                      </span>
+                    ))}
+                    {tier2.map((t, idx) => (
+                      <span key={idx} className="px-3 py-1 bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-full text-sm">
+                        {t.job}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 액션 버튼 */}
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => navigate('/clear/submit')}
+                    className="flex-1 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors"
+                  >
+                    클리어 인증
+                  </button>
+                  <button
+                    onClick={() => navigate(`/clear/list?boss=${encodeURIComponent(selectedGate)}`)}
+                    className="flex-1 px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-white rounded-lg transition-colors"
+                  >
+                    기록 보기
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-gray-500 dark:text-gray-400 mb-4">아직 클리어 기록이 없습니다.</p>
+                <button
+                  onClick={() => navigate('/clear/submit')}
+                  className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors"
+                >
+                  첫 클리어 인증하기
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
