@@ -81,7 +81,7 @@ const Navbar = () => {
 
 
     return (
-        <nav className="w-full bg-white dark:bg-gray-900 text-black dark:text-white">
+        <nav className="w-full bg-white dark:bg-gray-900 text-black dark:text-white overflow-visible">
             {/* 첫 번째 줄 */}
             <div className="max-w-9xl mx-auto px-8">
                 <div className="flex items-center justify-between py-3">
@@ -130,7 +130,8 @@ const Navbar = () => {
                                             <span className="font-extrabold text-gray-800 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200">로침반</span>
                                         </div>
                                     </Link>
-                                </div>                                <CharacterSearchInput
+                                </div>
+                                <CharacterSearchInput
                                     favorites={favorites}
                                     onFavoriteToggle={handleFavoriteToggle}
                                     // 🍔 모바일에서 검색창 숨기거나 조절 필요 시 여기에 Tailwind 클래스 추가
