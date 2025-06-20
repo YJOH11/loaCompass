@@ -23,13 +23,13 @@ export default function SassagaeCrawler() {
 
         try {
             const response = await axios.get(
-                `http://localhost:5000/api/search`, {
-                    params: {
-                        keyword,
-                        searchType,
-                        maxConcurrent
-                    }
-                }
+                `${import.meta.env.VITE_FLASK_API_URL}/api/search`, {
+                params: {
+                    keyword,
+                    searchType,
+                    maxConcurrent,
+                },
+            }
             );
 
             if (response.data) {
@@ -65,8 +65,8 @@ export default function SassagaeCrawler() {
                             <span className="text-lg font-semibold text-gray-800 dark:text-gray-200">게시판 안내</span>
                         </div>
                         <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
-                            로스트아크 인벤 사건/사고 게시판의 게시글을 검색할 수 있습니다.<br/>
-                            특정 닉네임과 관련된 사건/사고 이력을 확인하실 수 있으며,<br/>
+                            로스트아크 인벤 사건/사고 게시판의 게시글을 검색할 수 있습니다.<br />
+                            특정 닉네임과 관련된 사건/사고 이력을 확인하실 수 있으며,<br />
                             제목 검색과 본문 검색을 선택하여 사용하실 수 있습니다.
                         </p>
                     </div>
@@ -148,7 +148,7 @@ export default function SassagaeCrawler() {
                         <div className="p-4 bg-gray-200 dark:bg-gray-700 border-b border-gray-300 dark:border-gray-600">
                             <h3 className="font-semibold text-black dark:text-white">검색결과: {results.length}건</h3>
                         </div>
-                        
+
                         <div className="p-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                 {results.map((post, index) => (
