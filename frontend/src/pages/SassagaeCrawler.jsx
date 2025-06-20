@@ -23,7 +23,7 @@ export default function SassagaeCrawler() {
 
         try {
             const response = await axios.get(
-                `${import.meta.env.VITE_FLASK_API_URL}/api/search`, {
+                `${import.meta.env.VITE_FLASK_API_URL}/pyapi/search`, {
                 params: {
                     keyword,
                     searchType,
