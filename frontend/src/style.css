@@ -5,10 +5,10 @@
 }
 
 /* 모바일 (예: 767px 이하 화면) */
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 900px) {
     .container {
-        width: 100% !important; /* 모바일 화면에 꽉 차게 */
-        padding: 0 15px !important;
+        width: 100%; /* 모바일 화면에 꽉 차게 */
+        padding: 0 15px;
     }
     h1 {
         font-size: 24px; /* 모바일에 맞게 글꼴 크기 조절 */

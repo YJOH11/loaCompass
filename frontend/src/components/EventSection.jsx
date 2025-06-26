@@ -10,32 +10,13 @@ import { Pagination, Navigation, Autoplay } from 'swiper/modules'; // 필요한 
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
+
+
 const EventSection = () => {
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // 목업 이벤트 데이터 (API 연결 전 테스트용)
-    const mockEvents = [
-        {
-            id: 1,
-            title: '로스트아크 7월 이벤트',
-            imageUrl: 'https://cdn-lostark.game.onstove.com/uploadfiles/banner/c2a00f7a8ae240e3aebed893c3729c3f.jpg',
-            url: 'https://lostark.game.onstove.com/Promotion/Reward/240207',
-        },
-        {
-            id: 2,
-            title: '숨겨진 재미를 찾아서',
-            imageUrl: 'https://cdn-lostark.game.onstove.com/uploadfiles/banner/c88d8f024a5d4a66a5f8a98af90f89ec.jpg',
-            url: 'https://lostark.game.onstove.com/Promotion/Reward/240208',
-        },
-        {
-            id: 3,
-            title: '여름 업데이트 기념 출석 체크',
-            imageUrl: 'https://cdn-lostark.game.onstove.com/uploadfiles/banner/d14057f7075d4b05b07aed8e7f0a0b7f.jpg',
-            url: 'https://lostark.game.onstove.com/Promotion/Reward/240209',
-        }
-    ];
 
     useEffect(() => {
         const fetchEvents = async () => {
@@ -56,7 +37,7 @@ const EventSection = () => {
     }, []);
 
     // API에서 데이터를 가져오지 못했을 경우 목업 데이터 사용
-    const displayEvents = events.length > 0 ? events : mockEvents;
+    const displayEvents = events;
 
     return (
         <div className="mb-8 bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
@@ -120,8 +101,8 @@ const EventSection = () => {
                                 slidesPerView: 3, // 3개씩 표시
                             },
                         }}
-                        className="mySwiper" // 커스텀 CSS를 적용할 경우 사용
-                    >
+                    >  <div className="mt-8" />
+
                         {displayEvents.map((event) => (
                             <SwiperSlide key={event.id}>
                                 <a
@@ -147,6 +128,7 @@ const EventSection = () => {
                                 </a>
                             </SwiperSlide>
                         ))}
+
                     </Swiper>
                 )}
             </div>

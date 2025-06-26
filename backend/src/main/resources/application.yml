@@ -3,9 +3,14 @@ server:
 
 spring:
   profiles:
-    active: local  # 기본은 local
+    active: local
   main:
     allow-circular-references: true
+  datasource:
+    url: jdbc:mysql://localhost:3306/loacompass
+    username: root
+    password: 1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: update
@@ -13,6 +18,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
 
 mybatis:
   mapper-locations: classpath:mapper/**/*.xml

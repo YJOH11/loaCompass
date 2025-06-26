@@ -183,7 +183,7 @@ export default function CharacterSearchInput({ favorites = [], setFavorites, onF
                     className="absolute right-20 top-1/2 -translate-y-1/2 px-3 py-1.5 text-sm text-white bg-indigo-400 hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-600 rounded-md transition"
                     title="이미지로 검색"
                 >
-                    🔍
+                    이미지
                 </button>
 
                 {/* 숨겨진 파일 업로드 input */}
