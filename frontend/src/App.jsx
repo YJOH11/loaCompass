@@ -1,24 +1,13 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+// src/App.jsx
+import AppRouter from './routes/AppRouter';
+import './index.css'
+
+
 
 function App() {
-  const [response, setResponse] = useState("");
+    return (
 
-  useEffect(() => {
-    axios.get('http://localhost:8080/api/db-test')
-      .then((res) => setResponse(res.data))
-      .catch((err) => {
-        console.error("API 호출 실패:", err);
-        setResponse("❌ API 호출 실패");
-      });
-  }, []);
-
-  return (
-    <div>
-      <h1>axios로 API 호출</h1>
-      <p>{response}</p>
-    </div>
-  );
+            <AppRouter/>
+    );
 }
-
 export default App;

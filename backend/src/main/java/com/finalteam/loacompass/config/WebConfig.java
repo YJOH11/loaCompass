@@ -13,10 +13,11 @@ public class WebConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**") // 모든 요청 허용
-                        .allowedOrigins("http://localhost:5173") // 프론트 주소
-                        .allowedMethods("*") // GET, POST 등 모두 허용
-                        .allowCredentials(true);
+                registry.addMapping("/**")
+                        .allowedOrigins("http://localhost:5173", "http://3.36.92.116:5173","http://lochimban.com","https://lochimban.com")
+                        .allowedMethods("*")
+                        .allowedHeaders("*")
+                        .allowCredentials(true); // 로그인/세션 인증
             }
         };
     }

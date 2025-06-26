@@ -27,4 +27,29 @@ Thumbs.db
 /backend/build/
 backend/.gradle/
 backend/target/
-g
+
+# API Key 보관
+/backend/src/main/resources/application-local.yml
+
+# Java compiled class files
+*.class
+
+# 일반적으로 컴파일 결과물이 위치하는 디렉토리
+/backend/bin/
+
+# ── Python ───────────────────────────────────────────────────
+# 컴파일된 바이트코드
+__pycache__/
+*.py[cod]
+*$py.class
+
+# 가상환경
+venv/
+ENV/
+env/
+.venv/
+
+# 패키지 분배 파일
+*.egg-info/
+dist/
+build/
